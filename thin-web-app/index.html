@@ -1,0 +1,1308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sanlam Online Analytics Portal | DuckLake Lakehouse Replica</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Chart.js for High Performance Interactive Visualizations -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+  <!-- 1. Sanlam Top Utility Bar -->
+  <header class="sanlam-utility-bar">
+    <div class="utility-nav-links">
+      <a href="#" class="utility-link">Personal</a>
+      <a href="#" class="utility-link">Business</a>
+      <a href="#" class="utility-link active">Corporate &amp; Analytics</a>
+    </div>
+    <div class="utility-right">
+      <span class="region-tag">🇿🇦 SOUTH AFRICA ▾</span>
+      <a href="#" class="utility-link">Help &amp; Contact</a>
+    </div>
+  </header>
+
+  <!-- 2. Sanlam Main Brand Header -->
+  <div class="sanlam-header">
+    <div class="header-container">
+      <a href="/" class="logo-area">
+        <!-- Official Sanlam Brand Mark SVG -->
+        <svg class="brand-logo-svg" viewBox="0 0 200 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M18.5 8C12.7 8 8 12.7 8 18.5C8 24.3 12.7 29 18.5 29C24.3 29 29 24.3 29 18.5C29 12.7 24.3 8 18.5 8ZM18.5 24C15.5 24 13 21.5 13 18.5C13 15.5 15.5 13 18.5 13C21.5 13 24 15.5 24 18.5C24 21.5 21.5 24 18.5 24Z" fill="#0075C9"/>
+          <path d="M28.5 28.5C25.5 32 21 34 16 34C7.2 34 0 26.8 0 18C0 9.2 7.2 2 16 2C21.5 2 26.3 4.8 29.2 9L24.8 12C22.8 9.5 19.6 8 16 8C10.5 8 6 12.5 6 18C6 23.5 10.5 28 16 28C19.2 28 22.1 26.5 24 24.2L28.5 28.5Z" fill="#00205B"/>
+          <text x="42" y="27" font-family="'Roboto', 'Inter', sans-serif" font-weight="700" font-size="22" fill="#00205B" letter-spacing="-0.5">Sanlam</text>
+          <text x="122" y="27" font-family="'Roboto', 'Inter', sans-serif" font-weight="400" font-size="14" fill="#0075C9" letter-spacing="0.5">Online</text>
+        </svg>
+        <span class="portal-badge">Lakehouse Portal</span>
+      </a>
+
+      <!-- Controls & Governance -->
+      <div class="header-controls">
+        <!-- Role Display (US-1.2: the role is resolved server-side from the
+             caller's identity and shown read-only; it is never chosen here) -->
+        <div class="role-badge-container" title="Role resolved from your signed-in identity">
+          <span class="role-icon">&#128100;</span>
+          <span id="roleDisplay" class="role-display" data-role="">Resolving&hellip;</span>
+        </div>
+
+        <!-- POPIA indicator. US-1.2: masking follows the server-resolved
+             entitlement, so this reports state and is not clickable. -->
+        <div id="popiaIndicator" class="popia-pill active" title="Personal information is masked for your role">
+          <span id="popiaDot">🛡️</span> <span id="popiaText">POPIA Masked</span>
+        </div>
+
+        <!-- Lakehouse Status -->
+        <div class="lakehouse-status-indicator" title="Lakehouse connected to Google Cloud Storage">
+          <span class="status-dot"></span>
+          <span id="lakehouseStatusText">DuckLake 100% Ready</span>
+        </div>
+
+        <!-- Schema & SQL Inspector Button -->
+        <button id="btnSchemaInspector" class="btn-secondary" style="margin-left: 8px; padding: 6px 12px; font-size: 12px;">
+          <span>🔍 Schema &amp; SQL</span>
+        </button>
+
+        <!-- Fetch Telemetry Counter Badge -->
+        <div id="fetchTelemetryBadge" class="fetch-telemetry-badge" title="Query execution metrics and last live data fetch time">
+          <span class="telemetry-pulse"></span>
+          <span class="telemetry-label">Last Fetch:</span>
+          <span id="telemetryLastFetchTime" class="telemetry-time">Ready</span>
+          <span class="telemetry-divider">|</span>
+          <span id="telemetryDuration" class="telemetry-duration">0 ms</span>
+          <span class="telemetry-pill">Live GCS</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Dashboard Switcher (Scoped exclusively to the 2 Flagship PBI Replicas) -->
+  <nav class="domain-nav-bar">
+    <div class="domain-tabs-container">
+      <div class="domain-tab active" id="tabNavMemberAnalysis" data-dashboard="member_analysis" style="cursor: pointer;">
+        📊 Member Analysis Summary (PBI Replica)
+      </div>
+      <div class="domain-tab" id="tabNavInvestmentAnalysis" data-dashboard="investment_analysis" style="cursor: pointer;">
+        💹 Fund Analytics - Investment Analysis (PBI Replica)
+      </div>
+      <div class="domain-tab" id="tabNavAnnuityReporting" data-dashboard="annuity_reporting" style="cursor: pointer;">
+        🛡️ Life Annuity: Quotes &amp; Acceptances (PBI Replica)
+      </div>
+      <div class="domain-tab" id="tabNavSysAdmin" data-dashboard="sysadmin_cockpit" style="cursor: pointer;">
+        ⚡ SysAdmin: Platform &amp; Cloud Cockpit
+        <span class="cockpit-live-pill">LIVE APM</span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 4. Main Content Area -->
+  <main class="main-container">
+
+    <!-- ── Power BI Replica: Member Analysis Summary (Option A) ── -->
+    <div id="memberAnalysisView" class="pbi-report-container" style="display: block; position: relative;">
+
+      <!-- US-6.0: shown while the member_analysis payload reports demo_data -->
+      <div id="memberDemoBanner" class="demo-data-banner" role="status" style="display: none;"></div>
+
+      <!-- Loading Overlay for Member Analysis -->
+      <div id="memberAnalysisLoadingOverlay" class="pbi-loading-overlay" style="display: none;">
+        <div class="pbi-spinner"></div>
+        <div class="pbi-loading-title">Fetching Live Member Analysis Data...</div>
+        <div class="pbi-loading-sub">Executing analytical DuckDB query against Google Cloud Storage Lakehouse</div>
+      </div>
+      
+      <!-- Power BI Top Blue Header Bar -->
+      <div class="pbi-header-strip">
+        <div class="pbi-title-box">
+          <div class="pbi-logo-circle">
+            <svg viewBox="0 0 40 40" width="34" height="34" fill="none">
+              <circle cx="20" cy="20" r="18" stroke="#0075C9" stroke-width="3" fill="#FFFFFF"/>
+              <circle cx="20" cy="20" r="11" stroke="#00205B" stroke-width="2.5" fill="#0075C9"/>
+              <circle cx="20" cy="20" r="5" fill="#FFFFFF"/>
+            </svg>
+          </div>
+          <h2 class="pbi-report-title">Member Analysis Summary</h2>
+        </div>
+        <div class="pbi-cloud-tag">
+          <span class="pbi-tag-pulse"></span>
+          <span>scbi-cube live semantic replica</span>
+        </div>
+      </div>
+
+      <!-- Option A: Power BI Report Sub-Tabs Bar -->
+      <div class="pbi-subtab-bar">
+        <button class="pbi-subtab-btn active" data-tab="overview">
+          <span>Page 1: Summary &amp; Demographics</span>
+        </button>
+        <button class="pbi-subtab-btn" data-tab="retirement">
+          <span>Page 2: Retirement Age Analysis</span>
+        </button>
+        <button class="pbi-subtab-btn" data-tab="age_salary">
+          <span>Page 3: Age &amp; Salary Bands</span>
+        </button>
+        <button class="pbi-subtab-btn" data-tab="contributions">
+          <span>Page 4: Contributions</span>
+        </button>
+        <button class="pbi-subtab-btn" data-tab="products_risk">
+          <span>Page 5: Products &amp; Risk</span>
+        </button>
+      </div>
+
+      <!-- Power BI Slicer Grid (8 Slicers matching PDF) -->
+      <div class="pbi-slicers-panel">
+        <div class="pbi-slicer-row">
+          <div class="pbi-slicer-col">
+            <label class="pbi-slicer-lbl">Date</label>
+            <select id="pbiSlicerDate" class="pbi-slicer-input"></select>
+          </div>
+          <div class="pbi-slicer-col">
+            <label class="pbi-slicer-lbl">Fund</label>
+            <select id="pbiSlicerFund" class="pbi-slicer-input"></select>
+          </div>
+          <div class="pbi-slicer-col">
+            <label class="pbi-slicer-lbl">Business Unit</label>
+            <select id="pbiSlicerBU" class="pbi-slicer-input"></select>
+          </div>
+        </div>
+        <div class="pbi-slicer-row">
+          <div class="pbi-slicer-col">
+            <label class="pbi-slicer-lbl">Client</label>
+            <select id="pbiSlicerClient" class="pbi-slicer-input"></select>
+          </div>
+          <div class="pbi-slicer-col">
+            <label class="pbi-slicer-lbl">Employer</label>
+            <select id="pbiSlicerEmployer" class="pbi-slicer-input"></select>
+          </div>
+          <div class="pbi-slicer-col">
+            <label class="pbi-slicer-lbl">Brokerage</label>
+            <select id="pbiSlicerBrokerage" class="pbi-slicer-input"></select>
+          </div>
+          <div class="pbi-slicer-col">
+            <label class="pbi-slicer-lbl">Association</label>
+            <select id="pbiSlicerAssociation" class="pbi-slicer-input"></select>
+          </div>
+          <div class="pbi-slicer-col">
+            <label class="pbi-slicer-lbl">Paypoint Classification</label>
+            <select id="pbiSlicerPaypoint" class="pbi-slicer-input"></select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sub-Tab 1: Overview & Demographics (Page 1) -->
+      <div id="pbiTabOverview" class="pbi-tab-pane active">
+        <div class="pbi-overview-grid">
+          <!-- Left Column: 3 Demographic Segment Cards -->
+          <div class="pbi-demographic-col">
+            <!-- All Members -->
+            <div class="pbi-demo-card">
+              <div class="pbi-card-header-blue">All Members</div>
+              <div class="pbi-demo-body">
+                <div class="pbi-demo-stat">
+                  <div class="pbi-demo-val" id="pbiAllTotalMembers">366,784</div>
+                  <div class="pbi-demo-lbl">Total Members</div>
+                </div>
+                <div class="pbi-demo-stat">
+                  <div class="pbi-demo-val" id="pbiAllAvgAge">40</div>
+                  <div class="pbi-demo-lbl">Avg Age</div>
+                </div>
+                <div class="pbi-demo-stat">
+                  <div class="pbi-demo-val" id="pbiAllAvgSalary">23,824.06</div>
+                  <div class="pbi-demo-lbl">Avg Monthly Salary</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Male Members -->
+            <div class="pbi-demo-card">
+              <div class="pbi-card-header-blue">Male Members</div>
+              <div class="pbi-demo-body">
+                <div class="pbi-demo-stat">
+                  <div class="pbi-demo-val" id="pbiMaleTotalMembers">203,994</div>
+                  <div class="pbi-demo-lbl">Total Members</div>
+                </div>
+                <div class="pbi-demo-stat">
+                  <div class="pbi-demo-val" id="pbiMaleAvgAge">40</div>
+                  <div class="pbi-demo-lbl">Avg Age</div>
+                </div>
+                <div class="pbi-demo-stat">
+                  <div class="pbi-demo-val" id="pbiMaleAvgSalary">24,832.38</div>
+                  <div class="pbi-demo-lbl">Avg Monthly Salary</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Female Members -->
+            <div class="pbi-demo-card">
+              <div class="pbi-card-header-blue">Female Members</div>
+              <div class="pbi-demo-body">
+                <div class="pbi-demo-stat">
+                  <div class="pbi-demo-val" id="pbiFemaleTotalMembers">162,790</div>
+                  <div class="pbi-demo-lbl">Total Members</div>
+                </div>
+                <div class="pbi-demo-stat">
+                  <div class="pbi-demo-val" id="pbiFemaleAvgAge">40</div>
+                  <div class="pbi-demo-lbl">Avg Age</div>
+                </div>
+                <div class="pbi-demo-stat">
+                  <div class="pbi-demo-val" id="pbiFemaleAvgSalary">22,560.50</div>
+                  <div class="pbi-demo-lbl">Avg Monthly Salary</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Center Column: Member Count by Age Band -->
+          <div class="pbi-center-col">
+            <div class="pbi-chart-card">
+              <div class="pbi-chart-header-blue">Member Count by Age Band</div>
+              <div class="pbi-chart-body" style="height: 420px;">
+                <canvas id="pbiChartAgeBand"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column: Big Financial KPI Cards -->
+          <div class="pbi-financial-col">
+            <div class="pbi-big-kpi-card">
+              <div class="pbi-big-kpi-val" id="pbiKpiTotalAua">122.33bn</div>
+              <div class="pbi-big-kpi-lbl">AUA Amount</div>
+            </div>
+            <div class="pbi-big-kpi-card">
+              <div class="pbi-big-kpi-val" id="pbiKpiAvgAua">333.53K</div>
+              <div class="pbi-big-kpi-lbl">Avg AUA</div>
+            </div>
+            <div class="pbi-big-kpi-card">
+              <div class="pbi-big-kpi-val" id="pbiKpiTotalSalary">5.48bn</div>
+              <div class="pbi-big-kpi-lbl">Total Member Monthly Salary</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sub-Tab 2: Retirement Analysis (Page 2) -->
+      <div id="pbiTabRetirement" class="pbi-tab-pane" style="display: none;">
+        <div class="pbi-two-col-grid">
+          <div class="pbi-chart-card">
+            <div class="pbi-chart-header-blue">Members Near Normal Retirement Age by Gender</div>
+            <div class="pbi-chart-body" style="height: 460px;">
+              <canvas id="pbiChartNearRetirement"></canvas>
+            </div>
+          </div>
+          <div class="pbi-chart-card">
+            <div class="pbi-chart-header-blue">Members Past Early Retirement Age by Gender</div>
+            <div class="pbi-chart-body" style="height: 460px;">
+              <canvas id="pbiChartPastRetirement"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sub-Tab 3: Age & Salary Bands (Page 3) -->
+      <div id="pbiTabAgeSalary" class="pbi-tab-pane" style="display: none;">
+        <div class="pbi-two-col-grid">
+          <div class="pbi-chart-card">
+            <div class="pbi-chart-header-blue">Member Count by Age Band and Gender</div>
+            <div class="pbi-chart-body" style="height: 460px;">
+              <canvas id="pbiChartAgeBandGender"></canvas>
+            </div>
+          </div>
+          <div class="pbi-chart-card">
+            <div class="pbi-chart-header-blue">Member Count by Salary Band and Gender</div>
+            <div class="pbi-chart-body" style="height: 460px;">
+              <canvas id="pbiChartSalaryBandGender"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sub-Tab 4: Contributions (Page 4) -->
+      <div id="pbiTabContributions" class="pbi-tab-pane" style="display: none;">
+        <div class="pbi-quad-grid">
+          <div class="pbi-chart-card">
+            <div class="pbi-chart-header-blue">Average Gross Contribution by Age Band</div>
+            <div class="pbi-chart-body" style="height: 250px;">
+              <canvas id="pbiChartGrossAge"></canvas>
+            </div>
+          </div>
+          <div class="pbi-chart-card">
+            <div class="pbi-chart-header-blue">Average Net Contribution by Age Band</div>
+            <div class="pbi-chart-body" style="height: 250px;">
+              <canvas id="pbiChartNetAge"></canvas>
+            </div>
+          </div>
+          <div class="pbi-chart-card">
+            <div class="pbi-chart-header-blue">Average Gross Contribution by Monthly Salary Band</div>
+            <div class="pbi-chart-body" style="height: 250px;">
+              <canvas id="pbiChartGrossSalary"></canvas>
+            </div>
+          </div>
+          <div class="pbi-chart-card">
+            <div class="pbi-chart-header-blue">Average Net Contribution by Monthly Salary Band</div>
+            <div class="pbi-chart-body" style="height: 250px;">
+              <canvas id="pbiChartNetSalary"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sub-Tab 5: Products & Risk (Page 5) -->
+      <div id="pbiTabProductsRisk" class="pbi-tab-pane" style="display: none;">
+        <div class="pbi-two-col-grid">
+          <div class="pbi-chart-card">
+            <div class="pbi-chart-header-blue">AUA Amount by Product Group</div>
+            <div class="pbi-chart-body" style="height: 460px; display: flex; align-items: center; justify-content: center;">
+              <canvas id="pbiChartProductDonut"></canvas>
+            </div>
+          </div>
+          <div class="pbi-chart-card">
+            <div class="pbi-chart-header-blue">Member Count by Top 10 Risk Products and Gender</div>
+            <div class="pbi-chart-body" style="height: 460px;">
+              <canvas id="pbiChartTopRisk"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── Power BI Replica: Fund Analytics - Investment Analysis (5 Pages / Option A) ── -->
+    <div id="investmentAnalysisView" class="pbi-report-container" style="display: none; position: relative;">
+      
+      <!-- Loading Overlay for Investment Analysis -->
+      <div id="investmentAnalysisLoadingOverlay" class="pbi-loading-overlay" style="display: none;">
+        <div class="pbi-spinner"></div>
+        <div class="pbi-loading-title">Fetching Live Investment Analytics Data...</div>
+        <div class="pbi-loading-sub">Executing analytical DuckDB query against Google Cloud Storage Lakehouse</div>
+      </div>
+      
+      <!-- Power BI Top Blue Header Bar -->
+      <div class="pbi-header-strip">
+        <div class="pbi-title-box">
+          <div class="pbi-logo-circle">
+            <svg viewBox="0 0 40 40" width="34" height="34" fill="none">
+              <circle cx="20" cy="20" r="18" stroke="#0075C9" stroke-width="3" fill="#FFFFFF"/>
+              <circle cx="20" cy="20" r="11" stroke="#00205B" stroke-width="2.5" fill="#0075C9"/>
+              <circle cx="20" cy="20" r="5" fill="#FFFFFF"/>
+            </svg>
+          </div>
+          <h2 class="pbi-report-title">Fund Analytics - Investment Analysis</h2>
+        </div>
+        <div class="pbi-cloud-tag">
+          <span class="pbi-tag-pulse"></span>
+          <span>scbi-cube live semantic replica</span>
+        </div>
+      </div>
+
+      <!-- Option A: Power BI Report Sub-Tabs Bar -->
+      <div class="pbi-subtab-bar">
+        <button class="pbi-inv-subtab-btn active" data-tab="overview">
+          <span>Page 1: Summary &amp; Portfolio Allocation</span>
+        </button>
+        <button class="pbi-inv-subtab-btn" data-tab="distribution">
+          <span>Page 2: Member Choice Risk Distribution</span>
+        </button>
+        <button class="pbi-inv-subtab-btn" data-tab="risk_matrix">
+          <span>Page 3: Risk Rating Asset Distribution</span>
+        </button>
+        <button class="pbi-inv-subtab-btn" data-tab="holdings">
+          <span>Page 4: Investment Holdings Detail</span>
+        </button>
+        <button class="pbi-inv-subtab-btn" data-tab="pensionable_service">
+          <span>Page 5: Pensionable Service &amp; Age Matrix</span>
+        </button>
+      </div>
+
+      <!-- Power BI Slicer Grid (7 Slicers matching PDF) -->
+      <div class="pbi-slicers-panel">
+        <div class="pbi-slicer-row">
+          <div class="pbi-slicer-col">
+            <label class="pbi-slicer-lbl">Date</label>
+            <select id="pbiInvSlicerDate" class="pbi-slicer-input"></select>
+          </div>
+          <div class="pbi-slicer-col">
+            <label class="pbi-slicer-lbl">Business Unit</label>
+            <select id="pbiInvSlicerBU" class="pbi-slicer-input"></select>
+          </div>
+          <div class="pbi-slicer-col">
+            <label class="pbi-slicer-lbl">Client Name</label>
+            <select id="pbiInvSlicerClient" class="pbi-slicer-input"></select>
+          </div>
+        </div>
+        <div class="pbi-slicer-row">
+          <div class="pbi-slicer-col">
+            <label class="pbi-slicer-lbl">Fund Name</label>
+            <select id="pbiInvSlicerFund" class="pbi-slicer-input"></select>
+          </div>
+          <div class="pbi-slicer-col">
+            <label class="pbi-slicer-lbl">Participating Employer Name</label>
+            <select id="pbiInvSlicerEmployer" class="pbi-slicer-input"></select>
+          </div>
+          <div class="pbi-slicer-col">
+            <label class="pbi-slicer-lbl">Association Name</label>
+            <select id="pbiInvSlicerAssociation" class="pbi-slicer-input"></select>
+          </div>
+          <div class="pbi-slicer-col">
+            <label class="pbi-slicer-lbl">Brokerage Name</label>
+            <select id="pbiInvSlicerBrokerage" class="pbi-slicer-input"></select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sub-Tab 1: Overview & Portfolio Allocation (Page 1) -->
+      <div id="pbiInvTabOverview" class="pbi-inv-tab-pane active">
+        <div class="pbi-inv-overview-layout">
+          <!-- Left Column: 4 KPI Cards -->
+          <div class="pbi-inv-kpi-col">
+            <div class="pbi-big-kpi-card">
+              <div class="pbi-big-kpi-val" id="pbiInvKpiAua">291.34bn</div>
+              <div class="pbi-big-kpi-lbl">AUA Amount</div>
+            </div>
+            <div class="pbi-big-kpi-card">
+              <div class="pbi-big-kpi-val" id="pbiInvKpiClients">6076</div>
+              <div class="pbi-big-kpi-lbl">Distinct Clients</div>
+            </div>
+            <div class="pbi-big-kpi-card">
+              <div class="pbi-big-kpi-val" id="pbiInvKpiPortfolios">695</div>
+              <div class="pbi-big-kpi-lbl">Investment Portfolios</div>
+            </div>
+            <div class="pbi-big-kpi-card">
+              <div class="pbi-big-kpi-val" id="pbiInvKpiPaypoints">11K</div>
+              <div class="pbi-big-kpi-lbl">Distinct Paypoints</div>
+            </div>
+          </div>
+
+          <!-- Right Area: 2x2 Grid of Charts -->
+          <div class="pbi-inv-charts-area">
+            <!-- Top Row -->
+            <div class="pbi-chart-card">
+              <div class="pbi-chart-header-blue">Top 10 Portfolios by AUA (Default vs Member Choice)</div>
+              <div class="pbi-chart-body" style="height: 250px;">
+                <canvas id="pbiChartTopPortfolios"></canvas>
+              </div>
+            </div>
+
+            <div class="pbi-chart-card">
+              <div class="pbi-chart-header-blue">AUA by Member Choice</div>
+              <div class="pbi-chart-body" style="height: 250px; display: flex; align-items: center; justify-content: center;">
+                <canvas id="pbiChartMemberChoiceDonut"></canvas>
+              </div>
+            </div>
+
+            <!-- Bottom Row -->
+            <div class="pbi-chart-card">
+              <div class="pbi-chart-header-blue">AUA by Age Band</div>
+              <div class="pbi-chart-body" style="height: 250px;">
+                <canvas id="pbiChartAgeBandAua"></canvas>
+              </div>
+            </div>
+
+            <div class="pbi-chart-card">
+              <div class="pbi-chart-header-blue">AUA by Gender</div>
+              <div class="pbi-chart-body" style="height: 250px; display: flex; align-items: center; justify-content: center;">
+                <canvas id="pbiChartGenderDonut"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sub-Tab 2: Member Choice Risk Distribution (Page 2) -->
+      <div id="pbiInvTabDistribution" class="pbi-inv-tab-pane" style="display: none;">
+        <!-- Top 3 KPI Cards -->
+        <div class="pbi-inv-top-kpi-row">
+          <div class="pbi-big-kpi-card">
+            <div class="pbi-big-kpi-val" id="pbiInvKpiTotalMembers">1M</div>
+            <div class="pbi-big-kpi-lbl">Total Membership Count</div>
+          </div>
+          <div class="pbi-big-kpi-card">
+            <div class="pbi-big-kpi-val" id="pbiInvKpiChoiceExercised">24K</div>
+            <div class="pbi-big-kpi-lbl">Member Choice Exercised</div>
+          </div>
+          <div class="pbi-big-kpi-card">
+            <div class="pbi-big-kpi-val" id="pbiInvKpiDefaultCount">516K</div>
+            <div class="pbi-big-kpi-lbl">Default</div>
+          </div>
+        </div>
+
+        <!-- 2 Column 100% Stacked Bar Charts -->
+        <div class="pbi-two-col-grid" style="margin-top: 18px;">
+          <div class="pbi-chart-card">
+            <div class="pbi-chart-header-blue">Investment portfolio distribution for members exercising Member Choice</div>
+            <div class="pbi-chart-body" style="height: 480px;">
+              <canvas id="pbiChartMemberChoiceDist"></canvas>
+            </div>
+          </div>
+
+          <div class="pbi-chart-card">
+            <div class="pbi-chart-header-blue">Investment portfolio distribution for Default member choice</div>
+            <div class="pbi-chart-body" style="height: 480px;">
+              <canvas id="pbiChartDefaultDist"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sub-Tab 3: Risk Rating Asset Distribution (Page 3) -->
+      <div id="pbiInvTabRiskMatrix" class="pbi-inv-tab-pane" style="display: none;">
+        <div class="pbi-matrix-banner">
+          <h3>Asset distribution as a % of total assets in each age band</h3>
+        </div>
+
+        <div class="pbi-matrix-cards-grid" id="pbiMatrixCardsContainer">
+          <!-- Injected dynamically for all 6 age bands -->
+        </div>
+      </div>
+
+      <!-- Sub-Tab 4: Investment Holdings Detail (Page 4) -->
+      <div id="pbiInvTabHoldings" class="pbi-inv-tab-pane" style="display: none;">
+        <div class="pbi-chart-card">
+          <div class="pbi-chart-header-blue">Investment Holdings &amp; Portfolio Detail (DirectQuery Timeout Resolved)</div>
+          <div class="table-responsive" style="padding: 14px;">
+            <table class="data-table" id="pbiInvHoldingsTable">
+              <thead>
+                <tr>
+                  <th>Portfolio Code</th>
+                  <th>Portfolio Name</th>
+                  <th>Risk Meter</th>
+                  <th>Asset Category</th>
+                  <th>Total AUA</th>
+                  <th>Active Members</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="pbiInvHoldingsBody">
+                <!-- Injected dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sub-Tab 5: Pensionable Service & Age Matrix (Page 5) -->
+      <div id="pbiInvTabPensionableService" class="pbi-inv-tab-pane" style="display: none;">
+        <div class="pbi-chart-card">
+          <div class="pbi-chart-header-blue">Member Count by Pensionable Service and Age band</div>
+          <div class="table-responsive" style="padding: 14px;">
+            <table class="data-table pbi-crosstab-table" id="pbiInvCrosstabTable">
+              <thead>
+                <tr>
+                  <th>Pensionable Service Years Band</th>
+                  <th>&lt;18 years old</th>
+                  <th>18 to 24 years old</th>
+                  <th>25 to 34 years old</th>
+                  <th>35 to 44 years old</th>
+                  <th>45 to 54 years old</th>
+                  <th>55 to 64 years old</th>
+                  <th>65 years +</th>
+                  <th>Total</th>
+                </tr>
+              </thead>
+              <tbody id="pbiInvCrosstabBody">
+                <!-- Injected dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── Power BI Replica: Life Annuity Reporting: Quotes & Acceptances ── -->
+    <div id="annuityReportingView" class="pbi-report-container" style="display: none; position: relative;">
+      
+      <!-- Loading Overlay for Annuity Reporting -->
+      <div id="annuityLoadingOverlay" class="pbi-loading-overlay" style="display: none;">
+        <div class="pbi-spinner"></div>
+        <div class="pbi-loading-title">Fetching Live Life Annuity Data...</div>
+        <div class="pbi-loading-sub">Executing analytical DuckDB query against Google Cloud Storage Lakehouse</div>
+      </div>
+      
+      <!-- Power BI Top Blue Header Bar -->
+      <div class="pbi-header-strip">
+        <div class="pbi-title-box">
+          <div class="pbi-logo-circle">
+            <svg viewBox="0 0 40 40" width="34" height="34" fill="none">
+              <circle cx="20" cy="20" r="18" stroke="#0075C9" stroke-width="3" fill="#FFFFFF"/>
+              <circle cx="20" cy="20" r="11" stroke="#00205B" stroke-width="2.5" fill="#0075C9"/>
+              <circle cx="20" cy="20" r="5" fill="#FFFFFF"/>
+            </svg>
+          </div>
+          <h2 class="pbi-report-title" id="annuityReportHeading">Acceptances over time</h2>
+        </div>
+        <div class="pbi-cloud-tag">
+          <span class="pbi-tag-pulse"></span>
+          <span>scbi-cube live lakehouse replica</span>
+        </div>
+      </div>
+
+      <!-- 2. Subtabs Bar that wraps (No horizontal scrolling) -->
+      <div class="pbi-subtab-bar-wrap">
+        <button class="pbi-subtab-btn-wrap active" data-tab="acceptances_over_time">
+          <span>Page 1: Acceptances over time</span>
+        </button>
+        <button class="pbi-subtab-btn-wrap" data-tab="ytd_figures">
+          <span>Page 2: YTD Quotes &amp; Acceptances</span>
+        </button>
+        <button class="pbi-subtab-btn-wrap" data-tab="business_summary">
+          <span>Page 3: Business Summary</span>
+        </button>
+        <button class="pbi-subtab-btn-wrap" data-tab="top_consultants">
+          <span>Page 4: Top Consultants</span>
+        </button>
+        <button class="pbi-subtab-btn-wrap" data-tab="purchase_price_distribution">
+          <span>Page 5: Purchase Price Distribution</span>
+        </button>
+        <button class="pbi-subtab-btn-wrap" data-tab="consultant_details">
+          <span>Page 6: Consultant Details</span>
+        </button>
+        <button class="pbi-subtab-btn-wrap" data-tab="detailed_ledger">
+          <span>Page 7: Transaction Ledger</span>
+        </button>
+        <button class="pbi-subtab-btn-wrap" data-tab="alexforbes">
+          <span>Page 8: Alexforbes Summary</span>
+        </button>
+        <button class="pbi-subtab-btn-wrap" data-tab="graviton">
+          <span>Page 9: Graviton Summary</span>
+        </button>
+        <button class="pbi-subtab-btn-wrap" data-tab="new_business_dc">
+          <span>Page 10: SCInvest DC New Business</span>
+        </button>
+      </div>
+
+      <!-- 3. Global Cascading Slicers Bar (Driven dynamically by live data) -->
+      <div class="pbi-slicers-panel">
+        <div class="pbi-slicer-row">
+          <div class="pbi-slicer-col">
+            <label class="pbi-slicer-lbl">Year</label>
+            <select id="annuitySlicerYear" class="pbi-slicer-input"></select>
+          </div>
+          <div class="pbi-slicer-col">
+            <label class="pbi-slicer-lbl">Date</label>
+            <select id="annuitySlicerDate" class="pbi-slicer-input"></select>
+          </div>
+          <div class="pbi-slicer-col">
+            <label class="pbi-slicer-lbl">Accepted Fund Name</label>
+            <select id="annuitySlicerFund" class="pbi-slicer-input"></select>
+          </div>
+          <div class="pbi-slicer-col">
+            <label class="pbi-slicer-lbl">Business</label>
+            <select id="annuitySlicerBusiness" class="pbi-slicer-input"></select>
+          </div>
+          <div class="pbi-slicer-col">
+            <label class="pbi-slicer-lbl">Business Type</label>
+            <select id="annuitySlicerBusinessType" class="pbi-slicer-input"></select>
+          </div>
+          <div class="pbi-slicer-col">
+            <label class="pbi-slicer-lbl">Quote Status</label>
+            <select id="annuitySlicerStatus" class="pbi-slicer-input"></select>
+          </div>
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 4px;">
+          <button id="btnResetAnnuityFilters" class="btn-secondary" style="padding: 4px 10px; font-size: 11px;">
+            ↺ Reset Slicers
+          </button>
+          <button id="btnExportAnnuityCsv" class="btn-secondary" style="padding: 4px 10px; font-size: 11px;">
+            ⬇ Export View CSV
+          </button>
+        </div>
+      </div>
+
+      <!-- 4. Top 9-KPI Cards Strip (Driven dynamically by live data) -->
+      <div class="pbi-kpi-strip">
+        <div class="pbi-kpi-card-mini" title="Distinct Count of Quoted Members">
+          <div class="pbi-kpi-val-mini" id="annuityKpiQuotedMembers">--</div>
+          <div class="pbi-kpi-lbl-mini">Quoted Members</div>
+        </div>
+        <div class="pbi-kpi-card-mini" title="Distinct Count of Accepted Members">
+          <div class="pbi-kpi-val-mini" id="annuityKpiAcceptedMembers">--</div>
+          <div class="pbi-kpi-lbl-mini">Accepted Members</div>
+        </div>
+        <div class="pbi-kpi-card-mini" title="Total Distinct Quotation Count">
+          <div class="pbi-kpi-val-mini" id="annuityKpiQuoteCount">--</div>
+          <div class="pbi-kpi-lbl-mini">Quotation Count</div>
+        </div>
+        <div class="pbi-kpi-card-mini" title="Distinct Accepted Quotation Count">
+          <div class="pbi-kpi-val-mini" id="annuityKpiAcceptedQuotes">--</div>
+          <div class="pbi-kpi-lbl-mini">Accepted Quotations</div>
+        </div>
+        <div class="pbi-kpi-card-mini" title="Last Quotation Price (SUM)">
+          <div class="pbi-kpi-val-mini" id="annuityKpiQuotedPrice">--</div>
+          <div class="pbi-kpi-lbl-mini">Quoted Purchase Price (La...</div>
+        </div>
+        <div class="pbi-kpi-card-mini" title="Accepted Purchase Price (SUM)">
+          <div class="pbi-kpi-val-mini" id="annuityKpiAcceptedPrice">--</div>
+          <div class="pbi-kpi-lbl-mini">Accepted Purchase Price</div>
+        </div>
+        <div class="pbi-kpi-card-mini" title="Member Conversion Rate = Accepted / Quoted Members">
+          <div class="pbi-kpi-val-mini" id="annuityKpiMemberConv">--</div>
+          <div class="pbi-kpi-lbl-mini">Member Conversion Rat...</div>
+        </div>
+        <div class="pbi-kpi-card-mini" title="Purchase Price Conversion Rate = Accepted / Last Quotation Price">
+          <div class="pbi-kpi-val-mini" id="annuityKpiPriceConv">--</div>
+          <div class="pbi-kpi-lbl-mini">Purchase Price Conv. Rat...</div>
+        </div>
+        <div class="pbi-kpi-card-mini" title="Top Business by Total Accepted Purchase Price">
+          <div class="pbi-kpi-val-mini" id="annuityKpiTopBusiness" style="font-size: 16px;">--</div>
+          <div class="pbi-kpi-lbl-mini">Top Business (Tot. Acce...</div>
+        </div>
+      </div>
+
+      <!-- ── Sub-Tab 1: Acceptances over Time (Page 1) ── -->
+      <div id="annuityPaneOverview" class="pbi-tab-pane" style="display: block;">
+        <div style="display: flex; flex-direction: column; gap: 20px;">
+          <!-- Upper Visual: Acceptances over Time Timeline -->
+          <div class="pbi-chart-card">
+            <div class="pbi-chart-header-blue">Acceptances over Time</div>
+            <div class="pbi-chart-body" style="height: 310px;">
+              <canvas id="chartAnnuityTimeline"></canvas>
+            </div>
+          </div>
+          <!-- Lower Visual: Accepted Purchase Price Value per Business -->
+          <div class="pbi-chart-card">
+            <div class="pbi-chart-header-blue">Accepted Purchase Price Value per Business</div>
+            <div class="pbi-chart-body" style="height: 310px;">
+              <canvas id="chartAnnuityBusinessByMonth"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Sub-Tab 2: YTD Quotes and Acceptances (Page 2) ── -->
+      <div id="annuityPaneYtd" class="pbi-tab-pane" style="display: none;">
+        <div style="display: flex; flex-direction: column; gap: 20px;">
+          <div class="pbi-chart-card">
+            <div class="pbi-chart-header-blue">YTD Figures — Cumulative Progression (Quoted vs Accepted)</div>
+            <div class="pbi-chart-body" style="height: 300px;">
+              <canvas id="chartAnnuityYtd"></canvas>
+            </div>
+          </div>
+          <div class="pbi-chart-card">
+            <div class="pbi-chart-header-blue">YTD Product Breakdown &amp; Conversion Trajectory</div>
+            <div class="annuity-table-wrapper">
+              <table class="annuity-data-table" id="tableAnnuityYtdProducts">
+                <thead>
+                  <tr>
+                    <th>Product Name</th>
+                    <th class="num-col">Quotation Count</th>
+                    <th class="num-col">Accepted Count</th>
+                    <th class="num-col">Conversion Rate</th>
+                    <th class="num-col">Total Accepted Purchase Price</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Sub-Tab 3: Business Summary (Page 3) ── -->
+      <div id="annuityPaneBusinessSummary" class="pbi-tab-pane" style="display: none;">
+        <div class="pbi-chart-card">
+          <div class="pbi-chart-header-blue">Acceptances per Business (Stacked by Product)</div>
+          <div class="pbi-chart-body" style="height: 480px;">
+            <canvas id="chartAnnuityBusSummary"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Sub-Tab 4: Top Consultants (Page 4) ── -->
+      <div id="annuityPaneTopConsultants" class="pbi-tab-pane" style="display: none;">
+        <div class="pbi-two-col-grid">
+          <!-- Left: 100% Stacked Bar Chart: What do they sell? -->
+          <div class="pbi-chart-card">
+            <div class="pbi-chart-header-blue">Top 20 Consultants by Accepted Purchase Price: What do they sell?</div>
+            <div class="pbi-chart-body" style="height: 540px;">
+              <canvas id="chartAnnuityTop20"></canvas>
+            </div>
+          </div>
+          <!-- Right: Leaderboard Data Table -->
+          <div class="pbi-chart-card">
+            <div class="pbi-chart-header-blue">Top 20 Consultants by Purchase Price</div>
+            <div class="annuity-table-wrapper" style="max-height: 540px; overflow-y: auto;">
+              <table class="annuity-data-table" id="tableAnnuityTop20">
+                <thead>
+                  <tr>
+                    <th>Consultant Name</th>
+                    <th>Consultant Business</th>
+                    <th class="num-col">Quoted Members</th>
+                    <th class="num-col">Accepted Members</th>
+                    <th class="num-col">Quoted Purchase Price</th>
+                    <th class="num-col">Accepted Purchase Price</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Sub-Tab 5: Purchase Price Distribution (Page 5) ── -->
+      <div id="annuityPanePriceDistribution" class="pbi-tab-pane" style="display: none;">
+        <div style="display: flex; flex-direction: column; gap: 20px;">
+          <!-- Upper: Bands Matrix -->
+          <div class="pbi-chart-card">
+            <div class="pbi-chart-header-blue">Converted Quotes per Purchase Price Band</div>
+            <div class="annuity-table-wrapper">
+              <table class="annuity-data-table" id="tableAnnuityBands">
+                <thead>
+                  <tr>
+                    <th>Purchase Price Group</th>
+                    <th class="num-col">Quoted Member Count</th>
+                    <th class="num-col">Quotation Count</th>
+                    <th class="num-col">Accepted Member Count</th>
+                    <th class="num-col">Quoted Purchase Price</th>
+                    <th class="num-col">Accepted Purchase Price</th>
+                    <th class="num-col">Member Conv. %</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+          <!-- Lower: Quotes > R10M -->
+          <div class="pbi-chart-card">
+            <div class="pbi-chart-header-blue">Converted Quotes where Purchase Price &gt; R10M</div>
+            <div class="annuity-table-wrapper" style="max-height: 380px; overflow-y: auto;">
+              <table class="annuity-data-table" id="tableAnnuityHighValue">
+                <thead>
+                  <tr>
+                    <th>Report Month</th>
+                    <th>Source</th>
+                    <th>Business</th>
+                    <th>Business Type</th>
+                    <th>Quotation Number</th>
+                    <th>Quotation Status</th>
+                    <th>Consultant Name</th>
+                    <th>Member ID / Name</th>
+                    <th>Product Description</th>
+                    <th class="num-col">Purchase Price</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Sub-Tab 6: Consultant Details (Page 6) ── -->
+      <div id="annuityPaneConsultantDetails" class="pbi-tab-pane" style="display: none;">
+        <div class="pbi-chart-card">
+          <div class="pbi-chart-header-blue">Consultant Details</div>
+          <div class="annuity-table-controls">
+            <input type="text" id="annuitySearchConsultants" class="annuity-search-input" placeholder="Search consultant name, team, business...">
+            <span id="annuityConsultantsCount" style="font-size: 12px; color: #64748B;">Showing live consultants</span>
+          </div>
+          <div class="annuity-table-wrapper" style="max-height: 520px; overflow-y: auto;">
+            <table class="annuity-data-table" id="tableAnnuityConsultants">
+              <thead>
+                <tr>
+                  <th>Consultant Name</th>
+                  <th>White Label</th>
+                  <th>Consultant Business</th>
+                  <th>Consultant Team</th>
+                  <th class="num-col">Number of Quoted Members</th>
+                  <th class="num-col">Number of Accepted Members</th>
+                  <th class="num-col">Accepted Purchase Price</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+          <div class="annuity-pagination">
+            <button id="btnPrevConsultants" class="annuity-page-btn">Previous</button>
+            <span id="pageIndicatorConsultants">Page 1</span>
+            <button id="btnNextConsultants" class="annuity-page-btn">Next</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Sub-Tab 7: Transaction Ledger (Page 7) ── -->
+      <div id="annuityPaneDetailedLedger" class="pbi-tab-pane" style="display: none;">
+        <div class="pbi-chart-card">
+          <div class="pbi-chart-header-blue">Quotation Transaction Ledger &amp; Drillthrough Audit</div>
+          <div class="annuity-table-controls">
+            <input type="text" id="annuitySearchLedger" class="annuity-search-input" placeholder="Search quote #, consultant...">
+            <span id="annuityLedgerCount" style="font-size: 12px; color: #64748B;">Live quotes ledger</span>
+          </div>
+          <div class="annuity-table-wrapper" style="max-height: 520px; overflow-y: auto;">
+            <table class="annuity-data-table" id="tableAnnuityLedger">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Quotation Number</th>
+                  <th>Quotation Status</th>
+                  <th>Member ID Number</th>
+                  <th>Quotation Source</th>
+                  <th>White-Label</th>
+                  <th>Business</th>
+                  <th>Team</th>
+                  <th>Business Type</th>
+                  <th>Consultant ID</th>
+                  <th>Consultant Name</th>
+                  <th class="num-col">Purchase Price</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+          <div class="annuity-pagination">
+            <button id="btnPrevLedger" class="annuity-page-btn">Previous</button>
+            <span id="pageIndicatorLedger">Page 1</span>
+            <button id="btnNextLedger" class="annuity-page-btn">Next</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Sub-Tab 8: Alexforbes Summary (Page 8) ── -->
+      <div id="annuityPaneAlexforbes" class="pbi-tab-pane" style="display: none;">
+        <div class="pbi-chart-card">
+          <div class="pbi-chart-header-blue">Alexforbes Consultant Quotes &amp; Acceptances Summary</div>
+          <div class="annuity-table-wrapper" style="max-height: 540px; overflow-y: auto;">
+            <table class="annuity-data-table" id="tableAnnuityAlexforbes">
+              <thead>
+                <tr>
+                  <th>Consultant Name</th>
+                  <th>White Label</th>
+                  <th>Consultant Business</th>
+                  <th>Consultant Team</th>
+                  <th>Quotes Product(s)</th>
+                  <th class="num-col">Number of Quoted Members</th>
+                  <th class="num-col">Number of Accepted Members</th>
+                  <th class="num-col">Quoted Purchase Price</th>
+                  <th class="num-col">Accepted Purchase Price</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Sub-Tab 9: Graviton Summary (Page 9) ── -->
+      <div id="annuityPaneGraviton" class="pbi-tab-pane" style="display: none;">
+        <div class="pbi-chart-card">
+          <div class="pbi-chart-header-blue">Graviton Consultant Quotes &amp; Acceptances Summary</div>
+          <div class="annuity-table-wrapper" style="max-height: 540px; overflow-y: auto;">
+            <table class="annuity-data-table" id="tableAnnuityGraviton">
+              <thead>
+                <tr>
+                  <th>Consultant Name</th>
+                  <th>White Label</th>
+                  <th>Consultant Business</th>
+                  <th>Consultant Team</th>
+                  <th>Quotes Product(s)</th>
+                  <th class="num-col">Number of Quoted Members</th>
+                  <th class="num-col">Number of Accepted Members</th>
+                  <th class="num-col">Quoted Purchase Price</th>
+                  <th class="num-col">Accepted Purchase Price</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Sub-Tab 10: SCInvest DC New Business (Page 10) ── -->
+      <div id="annuityPaneDcNewBusiness" class="pbi-tab-pane" style="display: none;">
+        <div class="pbi-chart-card">
+          <div class="pbi-chart-header-blue">SCInvest Annuity New Business - Defined Contribution</div>
+          <div class="annuity-table-wrapper" style="max-height: 540px; overflow-y: auto;">
+            <table class="annuity-data-table" id="tableAnnuityDcNewBusiness">
+              <thead>
+                <tr>
+                  <th>Business Type</th>
+                  <th>Business</th>
+                  <th>Team</th>
+                  <th>Quote - Quotation Number</th>
+                  <th>Accepted Fund Measure</th>
+                  <th>Quotation Status</th>
+                  <th class="num-col">Purchase Price</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── ⚡ SysAdmin Platform & Cloud Telemetry Cockpit ── -->
+    <div id="sysadminCockpitView" class="pbi-report-container cockpit-container" style="display: none; position: relative;">
+      
+      <!-- Cockpit Header Strip -->
+      <div class="cockpit-header-strip">
+        <div class="cockpit-title-box">
+          <div class="cockpit-icon-box">⚡</div>
+          <div>
+            <h2 class="cockpit-title">Platform &amp; Cloud Telemetry Cockpit</h2>
+            <p class="cockpit-sub">Real-Time Observability: Google Cloud Run Containers, Cloud SQL &amp; DuckDB Lakehouse</p>
+          </div>
+        </div>
+
+        <div class="cockpit-controls-cluster">
+          <div class="cockpit-interval-selector">
+            <span class="cockpit-lbl">Auto-Refresh:</span>
+            <select id="cockpitRefreshInterval" class="cockpit-select">
+              <option value="1000">1s (Ultra Fast)</option>
+              <option value="2000" selected>2s (Balanced)</option>
+              <option value="5000">5s (Low Overhead)</option>
+              <option value="0">Paused</option>
+            </select>
+          </div>
+
+          <button id="btnCockpitRefresh" class="cockpit-btn cockpit-btn-secondary" title="Refresh Telemetry Snapshot Now">
+            <span>↻ Refresh</span>
+          </button>
+
+          <button id="btnOpenLlmModal" class="cockpit-btn cockpit-btn-primary" title="Bundle System Performance Metrics for LLM Recommendations">
+            <span>🤖 Export LLM Diagnostic Bundle</span>
+          </button>
+
+          <button id="btnCopyQuickPrompt" class="cockpit-btn cockpit-btn-accent" title="Copy LLM Tuning Prompt to Clipboard">
+            <span>📋 Copy Prompt</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 4 High-Impact Platform KPI Cards -->
+      <div class="cockpit-kpi-grid">
+        <!-- Card 1: Cloud Run Containers -->
+        <div class="cockpit-kpi-card">
+          <div class="cockpit-kpi-header">
+            <span class="cockpit-kpi-tag">Google Cloud Run</span>
+            <span id="cockpitCloudRunPill" class="cockpit-badge badge-green">Ready (2/2)</span>
+          </div>
+          <div class="cockpit-kpi-value" id="cockpitCloudRunTitle">scbi-cube &bull; 2 vCPU</div>
+          <div class="cockpit-kpi-detail">
+            <span>RAM: <strong>4Gi</strong> | Conc: <strong>160</strong> | Boost: <strong>ON</strong></span>
+            <span class="cockpit-ping" id="cockpitCubePing">Ping: <strong>-- ms</strong></span>
+          </div>
+          <div class="cockpit-kpi-sub">europe-west1-docker.pkg.dev/.../scbi-cube</div>
+        </div>
+
+        <!-- Card 2: Cloud SQL Catalog -->
+        <div class="cockpit-kpi-card">
+          <div class="cockpit-kpi-header">
+            <span class="cockpit-kpi-tag">Google Cloud SQL</span>
+            <span id="cockpitCloudSqlPill" class="cockpit-badge badge-blue">Runnable</span>
+          </div>
+          <div class="cockpit-kpi-value">PostgreSQL 16</div>
+          <div class="cockpit-kpi-detail">
+            <span>Tier: <strong>db-custom-1-3840</strong> (3.75 GB)</span>
+            <span>SSD: <strong>50 GB</strong></span>
+          </div>
+          <div class="cockpit-kpi-sub">Instance: scbi-ducklake-catalog (ducklake_catalog)</div>
+        </div>
+
+        <!-- Card 3: DuckDB Engine -->
+        <div class="cockpit-kpi-card">
+          <div class="cockpit-kpi-header">
+            <span class="cockpit-kpi-tag">In-Process DuckDB</span>
+            <span id="cockpitEnginePill" class="cockpit-badge badge-purple">Lakehouse Active</span>
+          </div>
+          <div class="cockpit-kpi-value" id="cockpitProcessMemory">-- MB (RSS)</div>
+          <div class="cockpit-kpi-detail">
+            <span>Process CPU: <strong id="cockpitProcessCpu">0.0%</strong></span>
+            <span>Host CPU: <strong id="cockpitHostCpu">0.0%</strong></span>
+            <span>Threads: <strong id="cockpitThreads">--</strong></span>
+          </div>
+          <div class="cockpit-kpi-sub">Target: gs://scbi-ducklake-myanalyticsproduct (44 Marts)</div>
+        </div>
+
+        <!-- Card 4: Query Analytics & Latency -->
+        <div class="cockpit-kpi-card">
+          <div class="cockpit-kpi-header">
+            <span class="cockpit-kpi-tag">Query Performance</span>
+            <span id="cockpitCacheRatioBadge" class="cockpit-badge badge-green">100% Cache</span>
+          </div>
+          <div class="cockpit-kpi-value" id="cockpitAvgLatency">-- ms avg</div>
+          <div class="cockpit-kpi-detail">
+            <span>p50: <strong id="cockpitP50">--</strong> | p95: <strong id="cockpitP95">--</strong> | p99: <strong id="cockpitP99">--</strong></span>
+          </div>
+          <div class="cockpit-kpi-sub">Total Dispatches: <strong id="cockpitTotalQueries">0</strong> | Uptime: <span id="cockpitUptime">--</span></div>
+        </div>
+      </div>
+
+      <!-- Real-Time Visualizations (3 Chart.js Graphs) -->
+      <div class="cockpit-charts-row">
+        <!-- Chart 1: Real-Time CPU & Memory Trend -->
+        <div class="cockpit-chart-box" style="flex: 2;">
+          <div class="cockpit-box-header">
+            <div class="cockpit-box-title">⚡ Real-Time Resource Utilization (60s Window)</div>
+            <div class="cockpit-chart-legend-indicator">
+              <span class="indicator-dot blue"></span> Process Memory (MB)
+              <span class="indicator-dot orange"></span> CPU %
+            </div>
+          </div>
+          <div class="cockpit-canvas-container" style="height: 220px; position: relative;">
+            <canvas id="chartCockpitCpuMem"></canvas>
+          </div>
+        </div>
+
+        <!-- Chart 2: Query Latency Distribution -->
+        <div class="cockpit-chart-box" style="flex: 1.5;">
+          <div class="cockpit-box-header">
+            <div class="cockpit-box-title">⏱️ Query Execution Duration (ms)</div>
+            <span class="cockpit-sub-tag">Recent Query Stream</span>
+          </div>
+          <div class="cockpit-canvas-container" style="height: 220px; position: relative;">
+            <canvas id="chartCockpitLatency"></canvas>
+          </div>
+        </div>
+
+        <!-- Chart 3: Engine Breakdown Donut -->
+        <div class="cockpit-chart-box" style="flex: 1;">
+          <div class="cockpit-box-header">
+            <div class="cockpit-box-title">🧩 Engine Distribution</div>
+            <span class="cockpit-sub-tag">Execution Routes</span>
+          </div>
+          <div class="cockpit-canvas-container" style="height: 220px; position: relative;">
+            <canvas id="chartCockpitEngines"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Split Row: Live Query Execution Ledger + Live Cloud Run Log Terminal -->
+      <div class="cockpit-split-row">
+        <!-- Query Execution Ledger -->
+        <div class="cockpit-ledger-box" style="flex: 3;">
+          <div class="cockpit-box-header">
+            <div class="cockpit-box-title">
+              📋 Live Query Execution Ledger
+              <span class="cockpit-badge badge-blue" id="cockpitLedgerCount">0 logged</span>
+            </div>
+            <div class="cockpit-ledger-actions">
+              <select id="cockpitLedgerFilter" class="cockpit-mini-select">
+                <option value="all">All Dashboards</option>
+                <option value="member_analysis">Member Analysis</option>
+                <option value="investment_analysis">Investment Analysis</option>
+                <option value="annuity_reporting">Life Annuity</option>
+              </select>
+              <input type="text" id="cockpitLedgerSearch" class="cockpit-search-input" placeholder="Search tab or query...">
+            </div>
+          </div>
+          
+          <div class="cockpit-table-wrapper" style="max-height: 320px; overflow-y: auto;">
+            <table class="cockpit-table" id="cockpitLedgerTable">
+              <thead>
+                <tr>
+                  <th>Time</th>
+                  <th>Dashboard</th>
+                  <th>Tab / Operation</th>
+                  <th>Engine</th>
+                  <th class="num-col">Duration</th>
+                  <th class="num-col">RSS Mem</th>
+                  <th>Cache</th>
+                  <th>Filters Applied</th>
+                </tr>
+              </thead>
+              <tbody id="cockpitLedgerBody">
+                <!-- Dynamically populated rows -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Live GCP Cloud Run Container Terminal -->
+        <div class="cockpit-terminal-box" style="flex: 2;">
+          <div class="cockpit-box-header terminal-header">
+            <div class="terminal-dots">
+              <span class="dot red"></span>
+              <span class="dot yellow"></span>
+              <span class="dot green"></span>
+            </div>
+            <div class="cockpit-box-title" style="font-size: 11.5px; color: #E2E8F0;">
+              Cloud Run: scbi-cube container stdout/stderr
+            </div>
+            <button id="btnRefreshLogs" class="terminal-refresh-btn" title="Refresh container logs">↻</button>
+          </div>
+          <div class="cockpit-terminal-screen" id="cockpitLogTerminal">
+            <!-- Dynamically populated log lines -->
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── LLM Diagnostic Bundle Modal ── -->
+    <div class="llm-modal-overlay" id="llmModalOverlay" style="display: none;">
+      <div class="llm-modal-box">
+        <div class="llm-modal-header">
+          <div class="llm-modal-title">
+            <span style="font-size: 24px;">🤖</span>
+            <div>
+              <h3>LLM Performance Diagnostic &amp; Tuning Bundle</h3>
+              <p>Ready to export for Gemini, Claude 3.5, or GPT-4o architecture recommendations</p>
+            </div>
+          </div>
+          <button id="btnCloseLlmModal" class="llm-modal-close">&times;</button>
+        </div>
+
+        <div class="llm-modal-body">
+          <div class="llm-modal-tabs">
+            <button class="llm-tab-btn active" id="btnTabLlmMarkdown">Formatted Markdown &amp; Prompt</button>
+            <button class="llm-tab-btn" id="btnTabLlmJson">Raw Diagnostic JSON</button>
+          </div>
+
+          <pre class="llm-preview-box" id="llmBundlePreview"></pre>
+        </div>
+
+        <div class="llm-modal-footer">
+          <div class="llm-footer-left">
+            <button id="btnDownloadJson" class="cockpit-btn cockpit-btn-secondary">
+              <span>📥 Download .json</span>
+            </button>
+            <button id="btnDownloadMd" class="cockpit-btn cockpit-btn-secondary">
+              <span>📝 Download .md</span>
+            </button>
+          </div>
+          <div class="llm-footer-right">
+            <button id="btnCopyPromptFromModal" class="cockpit-btn cockpit-btn-primary">
+              <span>📋 Copy Full Prompt to Clipboard</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  <!-- Sliding Schema Drawer -->
+  <div class="drawer-overlay" id="drawerOverlay"></div>
+  <aside class="drawer" id="schemaDrawer">
+    <div class="drawer-header">
+      <h3>Semantic Model &amp; DuckDB SQL</h3>
+      <button id="btnCloseDrawer" style="background: none; border: none; font-size: 20px; cursor: pointer;">✕</button>
+    </div>
+    <div class="drawer-body">
+      <h4 style="font-size: 13px; color: var(--sanlam-navy); margin-bottom: 6px;">Underlying DuckDB External View Query:</h4>
+      <pre class="code-block" id="drawerDuckDbSql"></pre>
+
+      <h4 style="font-size: 13px; color: var(--sanlam-navy); margin-top: 18px; margin-bottom: 6px;">Cube.js JavaScript Semantic Schema:</h4>
+      <pre class="code-block" id="drawerCubeJs"></pre>
+
+      <h4 style="font-size: 13px; color: var(--sanlam-navy); margin-top: 18px; margin-bottom: 6px;">Google Cloud Storage Parquet Target:</h4>
+      <pre class="code-block" id="drawerGcsPath"></pre>
+    </div>
+  </aside>
+
+  <!-- 6. Sanlam Corporate Footer -->
+  <footer class="sanlam-footer">
+    <div class="footer-container">
+      <div class="footer-copy">
+        &copy; 2026 Sanlam. All rights reserved. Sanlam Life Insurance Limited is a Licensed Life Insurer, Financial Services Provider (FSP 479) and Registered Credit Provider (NCRCP43).
+      </div>
+      <div class="footer-links">
+        <a href="#">Privacy Policy &amp; POPIA</a>
+        <a href="#">Terms &amp; Conditions</a>
+        <a href="#">Security Center</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

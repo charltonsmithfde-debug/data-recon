@@ -1,0 +1,2235 @@
+{
+  "fund_analytics_monthly_metrics": {
+    "title": "Fund Analytics Monthly Metrics (Consolidated Member Model)",
+    "central_facts": [
+      "CNF__AGG_CONSOLIDATED_MEMBER_MEASURES_MONTHLY",
+      "CNF__FACT_MEMBER_SEGMENTATION",
+      "CNF__FACT_IN_FUND_EXIT_MEMBER_AUA_MONTHLY",
+      "CNF__FACT_IN_FUND_EXIT_MEMBER_AUM_MONTHLY"
+    ],
+    "dimensions": [],
+    "relationships": [],
+    "measures": [],
+    "report_visuals": [],
+    "published_report": "FundAnalyticsMonthlyMetrics.pbip",
+    "business_narrative": "Executive C-Suite scorecard for Sanlam Corporate Umbrella Funds. Communicates overall fund scale, capital adequacy, assets under administration (AUA) vs multi-manager assets under management (AUM), monthly employer and member contributions, and total fund operational friction (admin fees + risk premiums). Key sign-off metric is the Average Funding Level (77.5%) across active participating members.",
+    "kpis": [
+      {
+        "label": "Total AUA",
+        "value": "R 412.8 B",
+        "change": "+11.2% YoY",
+        "dax": "SUM(Aua_Amount)",
+        "subtext": "Sanlam Umbrella Funds"
+      },
+      {
+        "label": "Total AUM",
+        "value": "R 184.2 B",
+        "change": "+8.4% YoY",
+        "dax": "SUM(Sc_Invest_Aum_Amount)",
+        "subtext": "SC Multi-Manager"
+      },
+      {
+        "label": "Gross Contributions",
+        "value": "R 3.45 B",
+        "change": "+6.8% MoM",
+        "dax": "SUM(Gross_Contribution)",
+        "subtext": "Monthly Payroll Grain"
+      },
+      {
+        "label": "Total Fund Cost",
+        "value": "R 142.6 M",
+        "change": "-1.5% vs budget",
+        "dax": "[Total_Admin_Fee] + [Total_Risk_Premium_Billed]",
+        "subtext": "Admin Fee + Risk Premium"
+      },
+      {
+        "label": "Active Members",
+        "value": "1,309,631",
+        "change": "+3.2% YTD",
+        "dax": "DISTINCTCOUNT(Active_Member_Indicator)",
+        "subtext": "Conformed Member Headcount"
+      },
+      {
+        "label": "Avg Funding Level",
+        "value": "77.5%",
+        "change": "+1.8% vs 2024",
+        "dax": "Avg_Funding_Level",
+        "subtext": "Projected Retirement Adequacy"
+      }
+    ],
+    "slicers": {
+      "date_range": [
+        "All 2024-2025",
+        "2025 Full Year",
+        "2024 Full Year",
+        "Q4 2025 Latest"
+      ],
+      "fund": [
+        "All Funds",
+        "Sanlam Umbrella Pension Fund",
+        "Sanlam Umbrella Provident Fund",
+        "Sanlam Corporate Preservation",
+        "Sanlam Institutional Portfolio"
+      ],
+      "employer": [
+        "All Employers",
+        "Sasol Group",
+        "Standard Bank SA",
+        "Anglo American",
+        "Discovery Health"
+      ],
+      "product": [
+        "All Products",
+        "Umbrella Core",
+        "Umbrella Comprehensive",
+        "Multi-Manager Choice"
+      ]
+    },
+    "visual_layout": [
+      {
+        "type": "area",
+        "title": "Total AUA and AUM Trajectory (2024-2025)",
+        "xAxis": "Date",
+        "yAxis": "ZAR Billions",
+        "series": [
+          "Total AUA",
+          "Total AUM"
+        ]
+      },
+      {
+        "type": "bar",
+        "title": "Gross Contributions vs Fund Costs by Fund Category",
+        "xAxis": "Fund Category",
+        "yAxis": "ZAR Millions",
+        "series": [
+          "Gross Contributions",
+          "Total Fund Cost"
+        ]
+      }
+    ]
+  },
+  "member_monthly": {
+    "title": "Member Monthly (Full Fund Analytics Galaxy)",
+    "central_facts": [
+      "CNF__FACT_MEMBER_INVESTMENT_AUA",
+      "CNF__FACT_MEMBER_INVESTMENT_AUM",
+      "CNF__FACT_MEMBER_BASE_CONTRIBUTION",
+      "CNF__FACT_MEMBER_MONTHLY_FEES",
+      "CNF__FACT_MEMBER_BASE_RISK_PREMIUM",
+      "CNF__FACT_MEMBER_SEGMENTATION"
+    ],
+    "dimensions": [
+      {
+        "table": "DIM_DATE",
+        "schema": "SCBI_SDP_MART",
+        "source": "DIM_DATE"
+      },
+      {
+        "table": "CNF__DIM_CLIENT",
+        "schema": "SCBI_CDP_MART",
+        "source": "DIM_CNF_CLIENT"
+      },
+      {
+        "table": "CNF__DIM_FUND",
+        "schema": "SCBI_CDP_MART",
+        "source": "DIM_CNF_FUND"
+      },
+      {
+        "table": "CNF__DIM_EMPLOYER",
+        "schema": "SCBI_CDP_MART",
+        "source": "DIM_CNF_EMPLOYER"
+      },
+      {
+        "table": "CNF__DIM_EMPLOYER_BRANCH",
+        "schema": "SCBI_CDP_MART",
+        "source": "DIM_CNF_EMPLOYER_BRANCH"
+      },
+      {
+        "table": "CNF__DIM_PAYPOINT",
+        "schema": "SCBI_CDP_MART",
+        "source": "DIM_CNF_PAYPOINT"
+      },
+      {
+        "table": "CNF__DIM_MEMBER",
+        "schema": "SCBI_CDP_MART",
+        "source": "DIM_CNF_MEMBER"
+      },
+      {
+        "table": "CNF__DIM_ADMIN_PRODUCT",
+        "schema": "SCBI_CDP_MART",
+        "source": "DIM_CNF_ADMIN_PRODUCT"
+      },
+      {
+        "table": "CNF__DIM_INVESTMENT_PRODUCT",
+        "schema": "SCBI_CDP_MART",
+        "source": "DIM_CNF_INVESTMENT_PRODUCT"
+      },
+      {
+        "table": "CNF__DIM_RISK_PRODUCT",
+        "schema": "SCBI_CDP_MART",
+        "source": "DIM_CNF_RISK_PRODUCT"
+      },
+      {
+        "table": "CNF__DIM_INSURER",
+        "schema": "SCBI_CDP_MART",
+        "source": "DIM_CNF_INSURER"
+      },
+      {
+        "table": "CNF__DIM_AGGREGATOR",
+        "schema": "SCBI_CDP_MART",
+        "source": "DIM_CNF_AGGREGATOR"
+      },
+      {
+        "table": "CNF__DIM_REVISION_ASSOCIATION",
+        "schema": "SCBI_CDP_MART",
+        "source": "DIM_CNF_REVISION_ASSOCIATION"
+      },
+      {
+        "table": "CNF__DIM_SERVICE_OFFERING",
+        "schema": "SCBI_CDP_MART",
+        "source": "DIM_CNF_SERVICE_OFFERING"
+      }
+    ],
+    "relationships": [],
+    "measures": [],
+    "report_visuals": [],
+    "published_report": "member_monthly_report.md",
+    "business_narrative": "Detailed member-grain monthly analytics covering retirement savings buckets (Vested vs Savings vs Retirement Pots), employee/employer contribution splits, billed fees, and risk premiums across all participating schemes.",
+    "kpis": [
+      {
+        "label": "Total Member AUA",
+        "value": "R 412.8 B",
+        "change": "+11.2% YoY",
+        "dax": "SUM(Aua_Amount)",
+        "subtext": "Consolidated AUA"
+      },
+      {
+        "label": "Vested Pot AUA",
+        "value": "R 284.6 B",
+        "change": "68.9% of Total",
+        "dax": "SUM(Vested_Aua_Amount)",
+        "subtext": "Pre-Two-Pot Protected"
+      },
+      {
+        "label": "Savings Pot AUA",
+        "value": "R 38.4 B",
+        "change": "Accessible Pot",
+        "dax": "SUM(Savings_Aua_Amount)",
+        "subtext": "Two-Pot Emergency Pot"
+      },
+      {
+        "label": "Retirement Pot AUA",
+        "value": "R 89.8 B",
+        "change": "Strictly Preserved",
+        "dax": "SUM(Retirement_Aua_Amount)",
+        "subtext": "Locked Until Retirement"
+      },
+      {
+        "label": "Net Monthly Contributions",
+        "value": "R 3.12 B",
+        "change": "+6.4% YoY",
+        "dax": "SUM(Net_Contribution)",
+        "subtext": "After Fee Deductions"
+      },
+      {
+        "label": "Admin Billed Fees",
+        "value": "R 84.5 M",
+        "change": "0.205% AUA",
+        "dax": "SUM(Admin_Billed_Amount)",
+        "subtext": "Scheme Admin Fee"
+      }
+    ],
+    "slicers": {
+      "date_range": [
+        "All 2024-2025",
+        "2025 Full Year",
+        "2024 Full Year",
+        "Q4 2025 Latest"
+      ],
+      "fund": [
+        "All Funds",
+        "Sanlam Umbrella Pension Fund",
+        "Sanlam Umbrella Provident Fund",
+        "Sanlam Corporate Preservation"
+      ],
+      "employer": [
+        "All Employers",
+        "Sasol Group",
+        "Standard Bank SA",
+        "Anglo American",
+        "Discovery Health"
+      ],
+      "pot": [
+        "All Pots",
+        "Vested Pot",
+        "Savings Pot",
+        "Retirement Pot"
+      ]
+    },
+    "visual_layout": [
+      {
+        "type": "bar",
+        "title": "Two-Pot Allocation Breakdown: Vested vs Savings vs Retirement",
+        "xAxis": "Fund",
+        "yAxis": "ZAR Billions",
+        "series": [
+          "Vested Pot",
+          "Savings Pot",
+          "Retirement Pot"
+        ]
+      },
+      {
+        "type": "line",
+        "title": "Monthly Employer vs Member Contributions",
+        "xAxis": "Month",
+        "yAxis": "ZAR Millions",
+        "series": [
+          "Employer Contribution",
+          "Member Contribution"
+        ]
+      }
+    ]
+  },
+  "member_transactions": {
+    "title": "SC Member Transactions Journal",
+    "central_facts": [
+      "CNF__AGG_CONSOLIDATED_MEMBER_MEASURES_MONTHLY",
+      "CNF__FACT_MEMBER_TRANSACTIONS",
+      "CNF__FACT_MEMBER_SEGMENTATION"
+    ],
+    "dimensions": [
+      {
+        "table": "DIM_DATE",
+        "schema": "SCBI_SDP_MART",
+        "source": "DIM_DATE"
+      },
+      {
+        "table": "CNF__DIM_CLIENT",
+        "schema": "SCBI_CDP_MART",
+        "source": "DIM_CNF_CLIENT"
+      },
+      {
+        "table": "CNF__DIM_FUND",
+        "schema": "SCBI_CDP_MART",
+        "source": "DIM_CNF_FUND"
+      },
+      {
+        "table": "CNF__DIM_EMPLOYER",
+        "schema": "SCBI_CDP_MART",
+        "source": "DIM_CNF_EMPLOYER"
+      },
+      {
+        "table": "CNF__DIM_EMPLOYER_BRANCH",
+        "schema": "SCBI_CDP_MART",
+        "source": "DIM_CNF_EMPLOYER_BRANCH"
+      },
+      {
+        "table": "CNF__DIM_PAYPOINT",
+        "schema": "SCBI_CDP_MART",
+        "source": "DIM_CNF_PAYPOINT"
+      },
+      {
+        "table": "CNF__DIM_MEMBER",
+        "schema": "SCBI_CDP_MART",
+        "source": "DIM_CNF_MEMBER"
+      },
+      {
+        "table": "CNF__DIM_ADMIN_PRODUCT",
+        "schema": "SCBI_CDP_MART",
+        "source": "DIM_CNF_ADMIN_PRODUCT"
+      },
+      {
+        "table": "CNF__DIM_INVESTMENT_PRODUCT",
+        "schema": "SCBI_CDP_MART",
+        "source": "DIM_CNF_INVESTMENT_PRODUCT"
+      },
+      {
+        "table": "CNF__DIM_TRANSACTION_TYPE",
+        "schema": "SCBI_CDP_MART",
+        "source": "DIM_CNF_TRANSACTION_TYPE"
+      },
+      {
+        "table": "CNF__DIM_RISK_PRODUCT",
+        "schema": "SCBI_CDP_MART",
+        "source": "DIM_CNF_RISK_PRODUCT"
+      },
+      {
+        "table": "CNF__DIM_INSURER",
+        "schema": "SCBI_CDP_MART",
+        "source": "DIM_CNF_INSURER"
+      },
+      {
+        "table": "CNF__DIM_AGGREGATOR",
+        "schema": "SCBI_CDP_MART",
+        "source": "DIM_CNF_AGGREGATOR"
+      },
+      {
+        "table": "CNF__DIM_REVISION_ASSOCIATION",
+        "schema": "SCBI_CDP_MART",
+        "source": "DIM_CNF_REVISION_ASSOCIATION"
+      },
+      {
+        "table": "CNF__DIM_SERVICE_OFFERING",
+        "schema": "SCBI_CDP_MART",
+        "source": "DIM_CNF_SERVICE_OFFERING"
+      }
+    ],
+    "relationships": [],
+    "measures": [],
+    "report_visuals": [],
+    "published_report": "member_transactions.pbip",
+    "business_narrative": "Detailed transaction audit journal. Communicates monthly transaction velocity, volume of unit allocations, trading prices, and transacting member counts across contribution, fee, market valuation, and risk premium transactions.",
+    "kpis": [
+      {
+        "label": "Transaction Records",
+        "value": "35,489,903",
+        "change": "+15.2% YoY",
+        "dax": "COUNTROWS(FACT)",
+        "subtext": "2024-2025 Volume"
+      },
+      {
+        "label": "Total Settled Amount",
+        "value": "R 24.8 B",
+        "change": "+8.9% YoY",
+        "dax": "SUM(Transaction_Amount)",
+        "subtext": "Total Transaction Value"
+      },
+      {
+        "label": "Transacting Members",
+        "value": "642,641",
+        "change": "+4.1% YoY",
+        "dax": "Transacting_Member_Count",
+        "subtext": "Active Traders/Contributors"
+      },
+      {
+        "label": "Avg Transaction Price",
+        "value": "R 38.50",
+        "change": "+6.2% YoY",
+        "dax": "Avg_Transaction_Price",
+        "subtext": "Volume-Weighted Unit Price"
+      },
+      {
+        "label": "Transaction Units",
+        "value": "644.2 M",
+        "change": "Units Traded",
+        "dax": "SUM(Transaction_Units)",
+        "subtext": "Instrument Units"
+      },
+      {
+        "label": "Settlement SLA Rate",
+        "value": "99.8%",
+        "change": "Same-Day Execution",
+        "dax": "Settled / Total",
+        "subtext": "Target: 99.5%"
+      }
+    ],
+    "slicers": {
+      "date_range": [
+        "All 2024-2025",
+        "2025 Full Year",
+        "2024 Full Year",
+        "Q4 2025 Latest"
+      ],
+      "transaction_type": [
+        "All Types",
+        "Contribution Allocation",
+        "Fee Deduction",
+        "Market Value Adjustment",
+        "Risk Premium",
+        "Switch"
+      ],
+      "fund": [
+        "All Funds",
+        "Sanlam Umbrella Pension Fund",
+        "Sanlam Umbrella Provident Fund"
+      ],
+      "status": [
+        "All Statuses",
+        "Settled",
+        "Calculated",
+        "Pending Allocation"
+      ]
+    },
+    "visual_layout": [
+      {
+        "type": "bar",
+        "title": "Monthly Transaction Value by Category",
+        "xAxis": "Month",
+        "yAxis": "ZAR Millions",
+        "series": [
+          "Contributions",
+          "Fee Deductions",
+          "Risk Premiums"
+        ]
+      },
+      {
+        "type": "line",
+        "title": "Transacting Member Count Velocity",
+        "xAxis": "Month",
+        "yAxis": "Members",
+        "series": [
+          "Transacting Members"
+        ]
+      }
+    ]
+  },
+  "assetflows_member_monthly": {
+    "title": "SC Asset Flows & Claims Reconciler",
+    "central_facts": [
+      "CNF__AGG_CONSOLIDATED_MEMBER_MEASURES_MONTHLY",
+      "CNF__FACT_MEMBER_INVESTMENT_AUA",
+      "CNF__FACT_MEMBER_INVESTMENT_AUM",
+      "CNF__FACT_MEMBER_CLAIMS",
+      "CNF__FACT_MEMBER_CLAIM_PAYMENT",
+      "CNF__FACT_MEMBER_SEGMENTATION"
+    ],
+    "dimensions": [
+      {
+        "table": "DIM_DATE",
+        "schema": "SCBI_SDP_MART",
+        "source": "DIM_DATE"
+      },
+      {
+        "table": "CNF__DIM_CLIENT",
+        "schema": "SCBI_CDP_MART",
+        "source": "DIM_CNF_CLIENT"
+      },
+      {
+        "table": "CNF__DIM_FUND",
+        "schema": "SCBI_CDP_MART",
+        "source": "DIM_CNF_FUND"
+      },
+      {
+        "table": "CNF__DIM_EMPLOYER",
+        "schema": "SCBI_CDP_MART",
+        "source": "DIM_CNF_EMPLOYER"
+      },
+      {
+        "table": "CNF__DIM_EMPLOYER_BRANCH",
+        "schema": "SCBI_CDP_MART",
+        "source": "DIM_CNF_EMPLOYER_BRANCH"
+      },
+      {
+        "table": "CNF__DIM_PAYPOINT",
+        "schema": "SCBI_CDP_MART",
+        "source": "DIM_CNF_PAYPOINT"
+      },
+      {
+        "table": "CNF__DIM_MEMBER",
+        "schema": "SCBI_CDP_MART",
+        "source": "DIM_CNF_MEMBER"
+      },
+      {
+        "table": "CNF__DIM_INVESTMENT_PRODUCT",
+        "schema": "SCBI_CDP_MART",
+        "source": "DIM_CNF_INVESTMENT_PRODUCT"
+      },
+      {
+        "table": "CNF__DIM_ADMIN_PRODUCT",
+        "schema": "SCBI_CDP_MART",
+        "source": "DIM_CNF_ADMIN_PRODUCT"
+      },
+      {
+        "table": "CNF__DIM_REVISION_ASSOCIATION",
+        "schema": "SCBI_CDP_MART",
+        "source": "DIM_CNF_REVISION_ASSOCIATION"
+      },
+      {
+        "table": "CNF__DIM_AGGREGATOR",
+        "schema": "SCBI_CDP_MART",
+        "source": "DIM_CNF_AGGREGATOR"
+      },
+      {
+        "table": "CNF__DIM_INSURER",
+        "schema": "SCBI_CDP_MART",
+        "source": "DIM_CNF_INSURER"
+      },
+      {
+        "table": "CNF__DIM_CLAIM_TYPE",
+        "schema": "SCBI_CDP_MART",
+        "source": "DIM_CNF_CLAIM_TYPE"
+      },
+      {
+        "table": "CNF__DIM_CLAIM_STATUS",
+        "schema": "SCBI_CDP_MART",
+        "source": "DIM_CNF_CLAIM_STATUS"
+      },
+      {
+        "table": "CNF__DIM_BENEFICIARY",
+        "schema": "SCBI_CDP_MART",
+        "source": "DIM_CNF_BENEFICIARY"
+      }
+    ],
+    "relationships": [],
+    "measures": [
+      {
+        "hana_name": "Sum(AUAAmount)",
+        "name": "Total AUA",
+        "dax": "SUM(AUA[AUA_AMOUNT])",
+        "format": "#,##0.00"
+      },
+      {
+        "hana_name": "Sum(AUMAmount)",
+        "name": "Total AUM",
+        "dax": "SUM(AUM[SC_INVEST_AUM_AMOUNT])",
+        "format": "#,##0.00"
+      },
+      {
+        "hana_name": "Sum(ClaimAmount)",
+        "name": "Claim Amount",
+        "dax": "SUM(CLAIMS[CLAIM_AMOUNT])",
+        "format": "#,##0.00"
+      },
+      {
+        "hana_name": "Sum(ClaimPaidAmount)",
+        "name": "Claim Paid Amount",
+        "dax": "SUM(CLAIM_PAYMENT[PAID_AMOUNT])",
+        "format": "#,##0.00"
+      },
+      {
+        "hana_name": "Sum(YTD_ClaimPaidAmount)",
+        "name": "YTD Claim Paid Amount",
+        "dax": "TOTALYTD([Claim Paid Amount], DIM_DATE[DATE_NK])",
+        "format": "#,##0.00"
+      },
+      {
+        "hana_name": "Avg(ConservativeReplacementRatio)",
+        "name": "Avg Conservative Replacement Ratio",
+        "dax": "AVERAGE(SEG[PROJECTED_CONSERVATIVE_REPLACEMENT_RATIO])",
+        "format": "0.00%"
+      },
+      {
+        "hana_name": "Avg(RealisticReplacementRatio)",
+        "name": "Avg Realistic Replacement Ratio",
+        "dax": "AVERAGE(SEG[PROJECTED_REALISTIC_REPLACEMENT_RATIO])",
+        "format": "0.00%"
+      },
+      {
+        "hana_name": "Avg(OptimisticReplacementRatio)",
+        "name": "Avg Optimistic Replacement Ratio",
+        "dax": "AVERAGE(SEG[PROJECTED_OPTIMISTIC_REPLACEMENT_RATIO])",
+        "format": "0.00%"
+      }
+    ],
+    "report_visuals": [],
+    "published_report": "AssetFlowsMemberMonthly/template.pbip",
+    "business_narrative": "Reconciliation of fund cashflows and claim settlements. Communicates net asset flows (contributions minus benefit payouts), claim processing velocity, death/disability benefits, and retirement lump sums.",
+    "kpis": [
+      {
+        "label": "Net Inflow Flow",
+        "value": "+ R 16.7 B",
+        "change": "Positive Inflow",
+        "dax": "Gross Contributions - Claims Paid",
+        "subtext": "Net Fund Asset Flow"
+      },
+      {
+        "label": "Total Claims Paid",
+        "value": "R 8.1 B",
+        "change": "+14.2% YoY",
+        "dax": "SUM(Paid_Amount)",
+        "subtext": "Settled Member Benefits"
+      },
+      {
+        "label": "Total Claim Amount",
+        "value": "R 8.9 B",
+        "change": "Incurred Pipeline",
+        "dax": "SUM(Claim_Amount)",
+        "subtext": "Submitted Claims"
+      },
+      {
+        "label": "YTD Claims Paid",
+        "value": "R 7.6 B",
+        "change": "+12.8% YoY",
+        "dax": "Ytd_Claim_Paid_Amount",
+        "subtext": "Calendar Year-to-Date"
+      },
+      {
+        "label": "Claim Settlement Ratio",
+        "value": "91.0%",
+        "change": "+1.5% YoY",
+        "dax": "Paid Amount / Claim Amount",
+        "subtext": "Settlement Efficiency"
+      },
+      {
+        "label": "Assetflows Members",
+        "value": "1,132,304",
+        "change": "+3.1% YoY",
+        "dax": "Assetflows_Member_Count",
+        "subtext": "Cashflow Participating Members"
+      }
+    ],
+    "slicers": {
+      "date_range": [
+        "All 2024-2025",
+        "2025 Full Year",
+        "2024 Full Year",
+        "Q4 2025 Latest"
+      ],
+      "claim_type": [
+        "All Claim Types",
+        "Retirement Lump Sum",
+        "Death Benefit",
+        "Disability",
+        "Withdrawal (Pre-Retirement)",
+        "Two-Pot Emergency"
+      ],
+      "claim_status": [
+        "All Statuses",
+        "Paid",
+        "In Review",
+        "Approved",
+        "Repudiated"
+      ],
+      "fund": [
+        "All Funds",
+        "Sanlam Umbrella Pension Fund",
+        "Sanlam Umbrella Provident Fund"
+      ]
+    },
+    "visual_layout": [
+      {
+        "type": "bar",
+        "title": "Gross Contributions vs Claims Paid Flow",
+        "xAxis": "Month",
+        "yAxis": "ZAR Millions",
+        "series": [
+          "Contributions",
+          "Claims Paid",
+          "Net Inflow"
+        ]
+      },
+      {
+        "type": "bar",
+        "title": "Claims Paid Distribution by Claim Type",
+        "xAxis": "Claim Type",
+        "yAxis": "ZAR Millions",
+        "series": [
+          "Paid Amount"
+        ]
+      }
+    ]
+  },
+  "digital_portal": {
+    "title": "SC Digital Portal Overview",
+    "central_facts": [
+      "CNF__AGG_DIGITAL_PORTAL_REGISTRATIONS_YTD",
+      "CNF__AGG_DIGITAL_PORTAL_REGISTRATIONS_TD",
+      "CNF__AGG_DIGITAL_PORTAL_EVENTS_YTD",
+      "CNF__FACT_DIGITAL_PORTAL_REGISTRATIONS",
+      "CNF__FACT_DIGITAL_PORTAL_EVENTS",
+      "CNF__FACT_MEMBER_SEGMENTATION",
+      "CNF__AGG_DIGITAL_PORTAL_EVENTS_TD"
+    ],
+    "dimensions": [
+      {
+        "table": "DIM_DATE",
+        "schema": "SCBI_SDP_MART",
+        "source": "DIM_DATE"
+      },
+      {
+        "table": "CNF__DIM_CLIENT",
+        "schema": "SCBI_CDP_MART",
+        "source": "DIM_DIGITAL_CLIENT"
+      },
+      {
+        "table": "CNF__DIM_FUND",
+        "schema": "SCBI_CDP_MART",
+        "source": "DIM_DIGITAL_FUND"
+      },
+      {
+        "table": "CNF__DIM_EMPLOYER",
+        "schema": "SCBI_CDP_MART",
+        "source": "DIM_CNF_EMPLOYER"
+      },
+      {
+        "table": "CNF__DIM_PAYPOINT",
+        "schema": "SCBI_CDP_MART",
+        "source": "DIM_CNF_PAYPOINT"
+      },
+      {
+        "table": "CNF__DIM_MEMBER",
+        "schema": "SCBI_CDP_MART",
+        "source": "DIM_CNF_MEMBER"
+      },
+      {
+        "table": "CNF__DIM_DIGITAL_PORTAL",
+        "schema": "SCBI_CDP_MART",
+        "source": "DIM_DIGITAL_PORTAL"
+      },
+      {
+        "table": "CNF__DIM_DIGITAL_PORTAL_USER",
+        "schema": "SCBI_CDP_MART",
+        "source": "DIM_DIGITAL_PORTAL_USER"
+      }
+    ],
+    "relationships": [],
+    "measures": [],
+    "report_visuals": [],
+    "published_report": "digital_portal.pbip",
+    "business_narrative": "Comprehensive digital transformation dashboard. Communicates member digital adoption velocity, registration vs deregistration trends, session frequency, and feature utilisation. Highlighting self-service engagement following Two-Pot retirement system implementation.",
+    "kpis": [
+      {
+        "label": "Active Portal Users",
+        "value": "1,057,629",
+        "change": "+18.3% YoY",
+        "dax": "DISTINCTCOUNT(Portal_User_Hk)",
+        "subtext": "Registered Digital Identities"
+      },
+      {
+        "label": "Total Digital Events",
+        "value": "39,406,740",
+        "change": "+24.5% YoY",
+        "dax": "SUM(EventCounter)",
+        "subtext": "Interactive Touchpoints"
+      },
+      {
+        "label": "Total User Sessions",
+        "value": "4,820,150",
+        "change": "+21.2% YoY",
+        "dax": "DISTINCTCOUNT(SessionID)",
+        "subtext": "Portal Sessions"
+      },
+      {
+        "label": "YTD Registrations",
+        "value": "3,181,250",
+        "change": "+9.1% YoY",
+        "dax": "SUM(YTD_RegistrationCount)",
+        "subtext": "Self-Service Onboarding"
+      },
+      {
+        "label": "Digital Adoption Rate",
+        "value": "68.4%",
+        "change": "+4.8% vs target",
+        "dax": "Active Users / Total Fund Members",
+        "subtext": "Target: 70.0%"
+      },
+      {
+        "label": "Two-Pot Queries",
+        "value": "9,842,100",
+        "change": "+142% post-Sept",
+        "dax": "CALCULATE(Events, Feature='Two-Pot')",
+        "subtext": "Savings Pot Withdrawals"
+      }
+    ],
+    "slicers": {
+      "date_range": [
+        "All 2024-2025",
+        "2025 Full Year",
+        "2024 Full Year",
+        "Q4 2025 Latest"
+      ],
+      "portal": [
+        "All Portals",
+        "Member Online Portal",
+        "Client Online",
+        "Sanlam Mobile App (iOS)",
+        "Sanlam Mobile App (Android)"
+      ],
+      "employer": [
+        "All Employers",
+        "Sasol Group",
+        "Standard Bank SA",
+        "Anglo American",
+        "Discovery Health"
+      ],
+      "feature": [
+        "All Features",
+        "Two-Pot Savings Query",
+        "Benefit Statement Download",
+        "Investment Switch",
+        "Claims Status Inquiry"
+      ]
+    },
+    "visual_layout": [
+      {
+        "type": "area",
+        "title": "Digital Event Interaction & Session Velocity",
+        "xAxis": "Quarter",
+        "yAxis": "Interactions (M)",
+        "series": [
+          "Event Interactions",
+          "User Sessions"
+        ]
+      },
+      {
+        "type": "bar",
+        "title": "Digital Event Volume by Feature Category",
+        "xAxis": "Feature",
+        "yAxis": "Events",
+        "series": [
+          "Interactions"
+        ]
+      }
+    ]
+  },
+  "digital_portal_events": {
+    "title": "SC Digital Portal Events Telemetry",
+    "central_facts": [
+      "CNF__FACT_DIGITAL_PORTAL_EVENTS",
+      "CNF__AGG_DIGITAL_PORTAL_EVENTS_YTD",
+      "CNF__AGG_DIGITAL_PORTAL_EVENTS_TD",
+      "CNF__FACT_MEMBER_SEGMENTATION"
+    ],
+    "dimensions": [
+      {
+        "table": "DIM_DATE",
+        "schema": "SCBI_SDP_MART",
+        "source": "DIM_DATE"
+      },
+      {
+        "table": "CNF__DIM_PAYPOINT",
+        "schema": "SCBI_CDP_MART",
+        "source": "DIM_CNF_PAYPOINT"
+      },
+      {
+        "table": "CNF__DIM_MEMBER",
+        "schema": "SCBI_CDP_MART",
+        "source": "DIM_CNF_MEMBER"
+      },
+      {
+        "table": "CNF__DIM_DIGITAL_PORTAL",
+        "schema": "SCBI_CDP_MART",
+        "source": "DIM_DIGITAL_PORTAL"
+      },
+      {
+        "table": "CNF__DIM_DIGITAL_PORTAL_USER",
+        "schema": "SCBI_CDP_MART",
+        "source": "DIM_DIGITAL_PORTAL_USER"
+      },
+      {
+        "table": "CNF__DIM_EMPLOYER",
+        "schema": "SCBI_CDP_MART",
+        "source": "DIM_CNF_EMPLOYER"
+      },
+      {
+        "table": "CNF__DIM_AGGREGATOR",
+        "schema": "SCBI_CDP_MART",
+        "source": "DIM_CNF_AGGREGATOR"
+      }
+    ],
+    "relationships": [],
+    "measures": [],
+    "report_visuals": [],
+    "published_report": "digital_portal_events.pbip",
+    "business_narrative": "Detailed technical telemetry of digital portal user interactions. Communicates session depth, device channels, error-free completion rates, and peak usage hours for member servicing capacity planning.",
+    "kpis": [
+      {
+        "label": "Total Event Interactions",
+        "value": "39,406,740",
+        "change": "+24.5% YoY",
+        "dax": "SUM(EventCounter)",
+        "subtext": "2024-2025 Logged Events"
+      },
+      {
+        "label": "Distinct User Sessions",
+        "value": "4,820,150",
+        "change": "+19.8% YoY",
+        "dax": "DISTINCTCOUNT(SessionID)",
+        "subtext": "Average 8.2 events/session"
+      },
+      {
+        "label": "Distinct Portal Users",
+        "value": "1,057,629",
+        "change": "+18.3% YoY",
+        "dax": "DISTINCTCOUNT(Portal_User_Hk)",
+        "subtext": "Authenticated Users"
+      },
+      {
+        "label": "Mobile App Share",
+        "value": "58.4%",
+        "change": "+6.2% vs web",
+        "dax": "Mobile Events / Total Events",
+        "subtext": "iOS & Android Traffic"
+      },
+      {
+        "label": "Peak Hourly Volume",
+        "value": "48,200",
+        "change": "10:00 - 11:00 AM",
+        "dax": "MAX(Events_per_Hour)",
+        "subtext": "System Concurrency Target"
+      },
+      {
+        "label": "Self-Service Success",
+        "value": "96.8%",
+        "change": "+0.6% vs SLA",
+        "dax": "Successful Events / Total Events",
+        "subtext": "SLA: 95.0%"
+      }
+    ],
+    "slicers": {
+      "date_range": [
+        "All 2024-2025",
+        "2025 Full Year",
+        "2024 Full Year",
+        "Q4 2025 Latest"
+      ],
+      "device": [
+        "All Channels",
+        "Mobile App (iOS)",
+        "Mobile App (Android)",
+        "Web Portal (Chrome)",
+        "Web Portal (Safari)"
+      ],
+      "event_category": [
+        "All Categories",
+        "Benefit Statement",
+        "Two-Pot Savings",
+        "Investment Switch",
+        "Claims Inquiry"
+      ],
+      "status": [
+        "All Results",
+        "Success",
+        "Pending Approval",
+        "Validation Error"
+      ]
+    },
+    "visual_layout": [
+      {
+        "type": "line",
+        "title": "Hourly Event Traffic Velocity by Channel",
+        "xAxis": "Time of Day",
+        "yAxis": "Events",
+        "series": [
+          "Mobile App",
+          "Web Portal"
+        ]
+      },
+      {
+        "type": "bar",
+        "title": "Top Digital Feature Interactions",
+        "xAxis": "Category",
+        "yAxis": "Events",
+        "series": [
+          "Count"
+        ]
+      }
+    ]
+  },
+  "digital_portal_registrations": {
+    "title": "SC Digital Portal Registrations Lifecycle",
+    "central_facts": [
+      "CNF__FACT_DIGITAL_PORTAL_REGISTRATIONS",
+      "CNF__AGG_DIGITAL_PORTAL_REGISTRATIONS_YTD",
+      "CNF__AGG_DIGITAL_PORTAL_REGISTRATIONS_TD",
+      "CNF__FACT_MEMBER_SEGMENTATION"
+    ],
+    "dimensions": [
+      {
+        "table": "DIM_DATE",
+        "schema": "SCBI_SDP_MART",
+        "source": "DIM_DATE"
+      },
+      {
+        "table": "CNF__DIM_CLIENT",
+        "schema": "SCBI_CDP_MART",
+        "source": "DIM_CNF_CLIENT"
+      },
+      {
+        "table": "CNF__DIM_EMPLOYER",
+        "schema": "SCBI_CDP_MART",
+        "source": "DIM_CNF_EMPLOYER"
+      },
+      {
+        "table": "CNF__DIM_PAYPOINT",
+        "schema": "SCBI_CDP_MART",
+        "source": "DIM_CNF_PAYPOINT"
+      },
+      {
+        "table": "CNF__DIM_MEMBER",
+        "schema": "SCBI_CDP_MART",
+        "source": "DIM_CNF_MEMBER"
+      },
+      {
+        "table": "CNF__DIM_DIGITAL_PORTAL",
+        "schema": "SCBI_CDP_MART",
+        "source": "DIM_DIGITAL_PORTAL"
+      },
+      {
+        "table": "CNF__DIM_DIGITAL_PORTAL_USER",
+        "schema": "SCBI_CDP_MART",
+        "source": "DIM_DIGITAL_PORTAL_USER"
+      }
+    ],
+    "relationships": [],
+    "measures": [],
+    "report_visuals": [],
+    "published_report": "digital_portal_registrations.pbip",
+    "business_narrative": "Monitors member registration lifecycle, self-service onboarding conversion, and credential renewals. Tracks net member digital growth across participating funds and employers.",
+    "kpis": [
+      {
+        "label": "Active Digital Members",
+        "value": "1,057,629",
+        "change": "+18.3% YoY",
+        "dax": "DISTINCTCOUNT(ActiveMemberIndicator)",
+        "subtext": "Active Accounts"
+      },
+      {
+        "label": "YTD Registrations",
+        "value": "3,181,250",
+        "change": "+9.1% YoY",
+        "dax": "DISTINCTCOUNT(YTD_RegistrationIndicator)",
+        "subtext": "New Onboarded Profiles"
+      },
+      {
+        "label": "Total Registrations (TD)",
+        "value": "4,912,400",
+        "change": "+15.6% vs inception",
+        "dax": "DISTINCTCOUNT(TD_RegistrationIndicator)",
+        "subtext": "Cumulative To-Date"
+      },
+      {
+        "label": "Deregistration Rate",
+        "value": "0.84%",
+        "change": "-0.12% YoY",
+        "dax": "Deregistrations / Registrations",
+        "subtext": "Account Attrition"
+      },
+      {
+        "label": "Registration Velocity",
+        "value": "12,450 / wk",
+        "change": "+8.4% MoM",
+        "dax": "Weekly Avg Registrations",
+        "subtext": "Onboarding Pace"
+      },
+      {
+        "label": "ID Verification Rate",
+        "value": "99.1%",
+        "change": "POPIA Compliant",
+        "dax": "Verified SA IDs / Total",
+        "subtext": "KYC Verified"
+      }
+    ],
+    "slicers": {
+      "date_range": [
+        "All 2024-2025",
+        "2025 Full Year",
+        "2024 Full Year",
+        "Q4 2025 Latest"
+      ],
+      "fund": [
+        "All Funds",
+        "Sanlam Umbrella Pension Fund",
+        "Sanlam Umbrella Provident Fund",
+        "Corporate Preservation"
+      ],
+      "employer": [
+        "All Employers",
+        "Sasol Group",
+        "Standard Bank SA",
+        "Anglo American",
+        "Discovery Health"
+      ],
+      "method": [
+        "All Methods",
+        "Self-Service Mobile",
+        "Web Portal",
+        "Employer HR Batch"
+      ]
+    },
+    "visual_layout": [
+      {
+        "type": "bar",
+        "title": "Monthly Registrations vs Deregistrations",
+        "xAxis": "Month",
+        "yAxis": "Accounts",
+        "series": [
+          "New Registrations",
+          "Deregistrations"
+        ]
+      },
+      {
+        "type": "bar",
+        "title": "Registration Volume by Employer Group",
+        "xAxis": "Employer",
+        "yAxis": "Registrations",
+        "series": [
+          "Total Accounts"
+        ]
+      }
+    ]
+  },
+  "aggregated_digital_portal_registrations": {
+    "title": "SC Aggregated Digital Portal Registrations (Demographics)",
+    "central_facts": [
+      "CNF__FACT_DIGITAL_PORTAL_REGISTRATIONS",
+      "CNF__AGG_DIGITAL_PORTAL_REGISTRATIONS_YTD",
+      "CNF__FACT_MEMBER_SEGMENTATION",
+      "CNF__AGG_DIGITAL_PORTAL_REGISTRATIONS_TD"
+    ],
+    "dimensions": [],
+    "relationships": [],
+    "measures": [],
+    "report_visuals": [],
+    "published_report": "aggregated_digital_portal_registrations.pbip",
+    "business_narrative": "Demographic and segmentation analysis of digital portal adoption. Slices registration adoption by age band, salary band, gender, marital status, and employer to highlight underserved cohorts for targeted digital literacy campaigns.",
+    "kpis": [
+      {
+        "label": "Total Registered Profiles",
+        "value": "1,057,629",
+        "change": "+18.3% YoY",
+        "dax": "SUM(ActiveMemberIndicator)",
+        "subtext": "Demographically Profiled"
+      },
+      {
+        "label": "Young Adults (< 30 yrs)",
+        "value": "342,100",
+        "change": "82.4% Adoption",
+        "dax": "SUM(Registrations, Age < 30)",
+        "subtext": "Highest Digital Adoption"
+      },
+      {
+        "label": "Mid-Career (30-50 yrs)",
+        "value": "512,400",
+        "change": "71.2% Adoption",
+        "dax": "SUM(Registrations, Age 30-50)",
+        "subtext": "Core Wealth Accumulators"
+      },
+      {
+        "label": "Pre-Retirement (50+ yrs)",
+        "value": "203,129",
+        "change": "49.6% Adoption",
+        "dax": "SUM(Registrations, Age 50+)",
+        "subtext": "Target Adoption Growth"
+      },
+      {
+        "label": "High Salary Band (> R50k)",
+        "value": "88.2%",
+        "change": "+3.1% YoY",
+        "dax": "Adoption Rate in Top Band",
+        "subtext": "Affluent Segment Adoption"
+      },
+      {
+        "label": "Emerging Band (< R15k)",
+        "value": "54.7%",
+        "change": "+8.9% YoY",
+        "dax": "Adoption Rate in Base Band",
+        "subtext": "Two-Pot Driven Surge"
+      }
+    ],
+    "slicers": {
+      "date_range": [
+        "All 2024-2025",
+        "2025 Full Year",
+        "2024 Full Year",
+        "Q4 2025 Latest"
+      ],
+      "age_band": [
+        "All Age Bands",
+        "< 25 Years",
+        "25 - 34 Years",
+        "35 - 49 Years",
+        "50 - 59 Years",
+        "60+ Years"
+      ],
+      "salary_band": [
+        "All Salary Bands",
+        "< R10,000",
+        "R10,000 - R25,000",
+        "R25,000 - R50,000",
+        "> R50,000"
+      ],
+      "gender": [
+        "All Genders",
+        "Female",
+        "Male",
+        "Unspecified"
+      ]
+    },
+    "visual_layout": [
+      {
+        "type": "bar",
+        "title": "Digital Adoption Rate by Age Band",
+        "xAxis": "Age Band",
+        "yAxis": "Adoption Rate %",
+        "series": [
+          "Adoption %",
+          "Target %"
+        ]
+      },
+      {
+        "type": "bar",
+        "title": "Member Distribution by Salary Band & Digital Status",
+        "xAxis": "Salary Band",
+        "yAxis": "Members",
+        "series": [
+          "Registered",
+          "Unregistered"
+        ]
+      }
+    ]
+  },
+  "annuity_quotation": {
+    "title": "SC Annuity Quotation Executive",
+    "central_facts": [
+      "CNF__FACT_ANNUITY_QUOTATIONS",
+      "CNF__FACT_MEMBER_SEGMENTATION"
+    ],
+    "dimensions": [],
+    "relationships": [
+      {
+        "from_table": "CNF__FACT_ANNUITY_QUOTATIONS",
+        "from_col": "DATE_SK",
+        "to_table": "DIM_DATE",
+        "to_col": "DATE_SK",
+        "cardinality": "many\u2192one",
+        "is_active": true
+      },
+      {
+        "from_table": "CNF__FACT_ANNUITY_QUOTATIONS",
+        "from_col": "QUOTATION_CREATED_DATE_SK",
+        "to_table": "DIM_DATE",
+        "to_col": "DATE_SK",
+        "cardinality": "many\u2192one",
+        "is_active": false
+      },
+      {
+        "from_table": "CNF__FACT_ANNUITY_QUOTATIONS",
+        "from_col": "QUOTATION_END_DATE_SK",
+        "to_table": "DIM_DATE",
+        "to_col": "DATE_SK",
+        "cardinality": "many\u2192one",
+        "is_active": false
+      },
+      {
+        "from_table": "CNF__FACT_ANNUITY_QUOTATIONS",
+        "from_col": "QUOTATION_FIRST_PAYMENT_DATE_SK",
+        "to_table": "DIM_DATE",
+        "to_col": "DATE_SK",
+        "cardinality": "many\u2192one",
+        "is_active": false
+      },
+      {
+        "from_table": "CNF__FACT_ANNUITY_QUOTATIONS",
+        "from_col": "QUOTATION_EFFECTIVE_FROM_DATE_SK",
+        "to_table": "DIM_DATE",
+        "to_col": "DATE_SK",
+        "cardinality": "many\u2192one",
+        "is_active": false
+      },
+      {
+        "from_table": "CNF__FACT_ANNUITY_QUOTATIONS",
+        "from_col": "FUND_HK",
+        "to_table": "CNF__DIM_FUND",
+        "to_col": "FUND_HK",
+        "cardinality": "many\u2192one",
+        "is_active": true
+      },
+      {
+        "from_table": "CNF__FACT_ANNUITY_QUOTATIONS",
+        "from_col": "QUOTED_FUND_HK",
+        "to_table": "CNF__DIM_FUND",
+        "to_col": "FUND_HK",
+        "cardinality": "many\u2192one",
+        "is_active": false
+      },
+      {
+        "from_table": "CNF__FACT_ANNUITY_QUOTATIONS",
+        "from_col": "MEMBER_HK",
+        "to_table": "CNF__DIM_MEMBER",
+        "to_col": "MEMBER_HK",
+        "cardinality": "many\u2192one",
+        "is_active": true
+      },
+      {
+        "from_table": "CNF__FACT_ANNUITY_QUOTATIONS",
+        "from_col": "QUOTED_MEMBER_HK",
+        "to_table": "CNF__DIM_MEMBER",
+        "to_col": "MEMBER_HK",
+        "cardinality": "many\u2192one",
+        "is_active": false
+      },
+      {
+        "from_table": "CNF__FACT_ANNUITY_QUOTATIONS",
+        "from_col": "QUOTED_BENEFICIARY_HK",
+        "to_table": "CNF__DIM_BENEFICIARY",
+        "to_col": "BENEFICIARY_HK",
+        "cardinality": "many\u2192one",
+        "is_active": true
+      },
+      {
+        "from_table": "CNF__FACT_ANNUITY_QUOTATIONS",
+        "from_col": "QUOTED_BROKER_CONSULTANT_HK",
+        "to_table": "CNF__DIM_BROKER_CONSULTANT",
+        "to_col": "BROKER_CONSULTANT_HK",
+        "cardinality": "many\u2192one",
+        "is_active": true
+      },
+      {
+        "from_table": "CNF__FACT_ANNUITY_QUOTATIONS",
+        "from_col": "AGGREGATOR_HK",
+        "to_table": "CNF__DIM_AGGREGATOR",
+        "to_col": "AGGREGATOR_HK",
+        "cardinality": "many\u2192one",
+        "is_active": true
+      },
+      {
+        "from_table": "CNF__FACT_ANNUITY_QUOTATIONS",
+        "from_col": "ANNUITY_PRODUCT_HK",
+        "to_table": "CNF__DIM_ANNUITY_PRODUCT",
+        "to_col": "PRODUCT_HK",
+        "cardinality": "many\u2192one",
+        "is_active": true
+      },
+      {
+        "from_table": "CNF__FACT_ANNUITY_QUOTATIONS",
+        "from_col": "QUOTED_PRODUCT_HK",
+        "to_table": "CNF__DIM_ANNUITY_PRODUCT",
+        "to_col": "PRODUCT_HK",
+        "cardinality": "many\u2192one",
+        "is_active": false
+      }
+    ],
+    "measures": [
+      {
+        "hana_name": "`CNF__FACT_ANNUITY_QUOTATIONS`",
+        "name": "`DATE_SK`",
+        "dax": "DIM_DATE",
+        "format": "DATE_SK"
+      },
+      {
+        "hana_name": "`CNF__FACT_ANNUITY_QUOTATIONS`",
+        "name": "`QUOTATION_CREATED_DATE_SK`",
+        "dax": "DIM_DATE",
+        "format": "DATE_SK"
+      },
+      {
+        "hana_name": "`CNF__FACT_ANNUITY_QUOTATIONS`",
+        "name": "`QUOTATION_END_DATE_SK`",
+        "dax": "DIM_DATE",
+        "format": "DATE_SK"
+      },
+      {
+        "hana_name": "`CNF__FACT_ANNUITY_QUOTATIONS`",
+        "name": "`QUOTATION_FIRST_PAYMENT_DATE_SK`",
+        "dax": "DIM_DATE",
+        "format": "DATE_SK"
+      },
+      {
+        "hana_name": "`CNF__FACT_ANNUITY_QUOTATIONS`",
+        "name": "`QUOTATION_EFFECTIVE_FROM_DATE_SK`",
+        "dax": "DIM_DATE",
+        "format": "DATE_SK"
+      },
+      {
+        "hana_name": "`CNF__FACT_ANNUITY_QUOTATIONS`",
+        "name": "`FUND_HK`",
+        "dax": "CNF__DIM_FUND",
+        "format": "FUND_HK"
+      },
+      {
+        "hana_name": "`CNF__FACT_ANNUITY_QUOTATIONS`",
+        "name": "`QUOTED_FUND_HK`",
+        "dax": "CNF__DIM_FUND",
+        "format": "FUND_HK"
+      },
+      {
+        "hana_name": "`CNF__FACT_ANNUITY_QUOTATIONS`",
+        "name": "`MEMBER_HK`",
+        "dax": "CNF__DIM_MEMBER",
+        "format": "MEMBER_HK"
+      },
+      {
+        "hana_name": "`CNF__FACT_ANNUITY_QUOTATIONS`",
+        "name": "`QUOTED_MEMBER_HK`",
+        "dax": "CNF__DIM_MEMBER",
+        "format": "MEMBER_HK"
+      },
+      {
+        "hana_name": "`CNF__FACT_ANNUITY_QUOTATIONS`",
+        "name": "`QUOTED_BENEFICIARY_HK`",
+        "dax": "CNF__DIM_BENEFICIARY",
+        "format": "BENEFICIARY_HK"
+      },
+      {
+        "hana_name": "`CNF__FACT_ANNUITY_QUOTATIONS`",
+        "name": "`QUOTED_BROKER_CONSULTANT_HK`",
+        "dax": "CNF__DIM_BROKER_CONSULTANT",
+        "format": "BROKER_CONSULTANT_HK"
+      },
+      {
+        "hana_name": "`CNF__FACT_ANNUITY_QUOTATIONS`",
+        "name": "`AGGREGATOR_HK`",
+        "dax": "CNF__DIM_AGGREGATOR",
+        "format": "AGGREGATOR_HK"
+      },
+      {
+        "hana_name": "`CNF__FACT_ANNUITY_QUOTATIONS`",
+        "name": "`ANNUITY_PRODUCT_HK`",
+        "dax": "CNF__DIM_ANNUITY_PRODUCT",
+        "format": "PRODUCT_HK"
+      },
+      {
+        "hana_name": "`CNF__FACT_ANNUITY_QUOTATIONS`",
+        "name": "`QUOTED_PRODUCT_HK`",
+        "dax": "CNF__DIM_ANNUITY_PRODUCT",
+        "format": "PRODUCT_HK"
+      },
+      {
+        "hana_name": "`Sum(QuotationPurchasePrice)`",
+        "name": "Quote Purchase Price",
+        "dax": "SUM(CNF__FACT_ANNUITY_QUOTATIONS[QUOTATION_PURCHASE_PRICE])",
+        "format": "#,##0.00"
+      },
+      {
+        "hana_name": "`Sum(QuotationAnnuityPayment)`",
+        "name": "Quote Monthly Annuity Payment",
+        "dax": "SUM(CNF__FACT_ANNUITY_QUOTATIONS[QUOTATION_ANNUITY_PAYMENT])",
+        "format": "#,##0.00"
+      },
+      {
+        "hana_name": "`Sum(AcceptedAnnuityAmount)`",
+        "name": "Accepted Annuity Amount",
+        "dax": "SUM(CNF__FACT_ANNUITY_QUOTATIONS[ACCEPTED_ANNUITY_AMOUNT])",
+        "format": "#,##0.00"
+      },
+      {
+        "hana_name": "Calc: `AcceptedPurchasePrice` (`Status <> 'Quoted'`)",
+        "name": "Accepted Purchase Price",
+        "dax": "CALCULATE(SUM(CNF__FACT_ANNUITY_QUOTATIONS[QUOTATION_PURCHASE_PRICE]), CNF__FACT_ANNUITY_QUOTATIONS[DERIVED_QUOTATION_STATUS] <> \"quoted\")",
+        "format": "#,##0.00"
+      },
+      {
+        "hana_name": "Calc: `CalcAcceptedPurchasePrice` (`Status = 'Quoted and Accepted'`)",
+        "name": "Accepted Purchase Price (Converted)",
+        "dax": "CALCULATE(SUM(CNF__FACT_ANNUITY_QUOTATIONS[QUOTATION_PURCHASE_PRICE]), CNF__FACT_ANNUITY_QUOTATIONS[DERIVED_QUOTATION_STATUS] = \"quoted and accepted\")",
+        "format": "#,##0.00"
+      },
+      {
+        "hana_name": "Calc: `LastQuotationPrice` (latest quote only)",
+        "name": "Last Quotation Price",
+        "dax": "CALCULATE(SUM(CNF__FACT_ANNUITY_QUOTATIONS[QUOTATION_PURCHASE_PRICE]), CNF__FACT_ANNUITY_QUOTATIONS[QUOTATION_NUMBER] = CNF__FACT_ANNUITY_QUOTATIONS[LATEST_QUOTATION_NUMBER], CNF__FACT_ANNUITY_QUOTATIONS[QUOTATION_NUMBER] <> \"n/a\")",
+        "format": "#,##0.00"
+      },
+      {
+        "hana_name": "`YTD_QuotationPurchasePrice`",
+        "name": "YTD Quote Purchase Price",
+        "dax": "TOTALYTD([Quote Purchase Price], DIM_DATE[DATE_NK])",
+        "format": "#,##0.00"
+      },
+      {
+        "hana_name": "`YTD_QuotationAnnuityPayment`",
+        "name": "YTD Quote Monthly Annuity Payment",
+        "dax": "TOTALYTD([Quote Monthly Annuity Payment], DIM_DATE[DATE_NK])",
+        "format": "#,##0.00"
+      },
+      {
+        "hana_name": "`YTD_AcceptedPurchasePrice`",
+        "name": "YTD Accepted Purchase Price",
+        "dax": "TOTALYTD([Accepted Purchase Price], DIM_DATE[DATE_NK])",
+        "format": "#,##0.00"
+      },
+      {
+        "hana_name": "`Sum(QuotedAFWithprofitCount)`",
+        "name": "Quote AF With-Profit Count",
+        "dax": "SUM(CNF__FACT_ANNUITY_QUOTATIONS[QUOTED_AF_WITHPROFIT_COUNT])",
+        "format": "#,##0"
+      },
+      {
+        "hana_name": "`Sum(QuotedCompleteCount)`",
+        "name": "Quote Complete Count",
+        "dax": "SUM(CNF__FACT_ANNUITY_QUOTATIONS[QUOTED_COMPLETE_COUNT])",
+        "format": "#,##0"
+      },
+      {
+        "hana_name": "`Sum(QuotedGuaranteedCount)`",
+        "name": "Quote Guaranteed Count",
+        "dax": "SUM(CNF__FACT_ANNUITY_QUOTATIONS[QUOTED_GUARANTEED_COUNT])",
+        "format": "#,##0"
+      },
+      {
+        "hana_name": "`Sum(QuotedInflationCount)`",
+        "name": "Quote Inflation Count",
+        "dax": "SUM(CNF__FACT_ANNUITY_QUOTATIONS[QUOTED_INFLATION_COUNT])",
+        "format": "#,##0"
+      },
+      {
+        "hana_name": "`Sum(QuotedProviderCount)`",
+        "name": "Quote Provider Count",
+        "dax": "SUM(CNF__FACT_ANNUITY_QUOTATIONS[QUOTED_PROVIDER_COUNT])",
+        "format": "#,##0"
+      },
+      {
+        "hana_name": "`Sum(QuotedWithprofitCount)`",
+        "name": "Quote With-Profit Count",
+        "dax": "SUM(CNF__FACT_ANNUITY_QUOTATIONS[QUOTED_WITHPROFIT_COUNT])",
+        "format": "#,##0"
+      },
+      {
+        "hana_name": "`Sum(AcceptedCompleteCount)`",
+        "name": "Accepted Complete Count",
+        "dax": "SUM(CNF__FACT_ANNUITY_QUOTATIONS[ACCEPTED_COMPLETE_COUNT])",
+        "format": "#,##0"
+      },
+      {
+        "hana_name": "`Sum(AcceptedGuaranteedCount)`",
+        "name": "Accepted Guaranteed Count",
+        "dax": "SUM(CNF__FACT_ANNUITY_QUOTATIONS[ACCEPTED_GUARANTEED_COUNT])",
+        "format": "#,##0"
+      },
+      {
+        "hana_name": "`Sum(AcceptedInflationCount)`",
+        "name": "Accepted Inflation Count",
+        "dax": "SUM(CNF__FACT_ANNUITY_QUOTATIONS[ACCEPTED_INFLATION_COUNT])",
+        "format": "#,##0"
+      },
+      {
+        "hana_name": "`Sum(AcceptedProviderCount)`",
+        "name": "Accepted Provider Count",
+        "dax": "SUM(CNF__FACT_ANNUITY_QUOTATIONS[ACCEPTED_PROVIDER_COUNT])",
+        "format": "#,##0"
+      },
+      {
+        "hana_name": "`Sum(AcceptedWithProfitCount)`",
+        "name": "Accepted With-Profit Count",
+        "dax": "SUM(CNF__FACT_ANNUITY_QUOTATIONS[ACCEPTED_WITH_PROFIT_COUNT])",
+        "format": "#,##0"
+      },
+      {
+        "hana_name": "`YTD_QuotedAFWithProfitCount`",
+        "name": "YTD Quote AF With-Profit Count",
+        "dax": "TOTALYTD([Quote AF With-Profit Count], DIM_DATE[DATE_NK])",
+        "format": "#,##0"
+      },
+      {
+        "hana_name": "`YTD_QuotedCompleteCount`",
+        "name": "YTD Quote Complete Count",
+        "dax": "TOTALYTD([Quote Complete Count], DIM_DATE[DATE_NK])",
+        "format": "#,##0"
+      },
+      {
+        "hana_name": "`YTD_QuotedGuaranteedCount`",
+        "name": "YTD Quote Guaranteed Count",
+        "dax": "TOTALYTD([Quote Guaranteed Count], DIM_DATE[DATE_NK])",
+        "format": "#,##0"
+      },
+      {
+        "hana_name": "`YTD_QuotedInflationCount`",
+        "name": "YTD Quote Inflation Count",
+        "dax": "TOTALYTD([Quote Inflation Count], DIM_DATE[DATE_NK])",
+        "format": "#,##0"
+      },
+      {
+        "hana_name": "`YTD_QuotedProviderCount`",
+        "name": "YTD Quote Provider Count",
+        "dax": "TOTALYTD([Quote Provider Count], DIM_DATE[DATE_NK])",
+        "format": "#,##0"
+      },
+      {
+        "hana_name": "`YTD_QuotedWithprofitCount`",
+        "name": "YTD Quote With-Profit Count",
+        "dax": "TOTALYTD([Quote With-Profit Count], DIM_DATE[DATE_NK])",
+        "format": "#,##0"
+      },
+      {
+        "hana_name": "`YTD_AcceptedAFWithprofitCount`",
+        "name": "YTD Accepted AF With-Profit Count",
+        "dax": "TOTALYTD([Accepted AF With-Profit Count], DIM_DATE[DATE_NK])",
+        "format": "#,##0"
+      },
+      {
+        "hana_name": "`YTD_AcceptedCompleteCount`",
+        "name": "YTD Accepted Complete Count",
+        "dax": "TOTALYTD([Accepted Complete Count], DIM_DATE[DATE_NK])",
+        "format": "#,##0"
+      },
+      {
+        "hana_name": "`YTD_AcceptedGuaranteedCount`",
+        "name": "YTD Accepted Guaranteed Count",
+        "dax": "TOTALYTD([Accepted Guaranteed Count], DIM_DATE[DATE_NK])",
+        "format": "#,##0"
+      },
+      {
+        "hana_name": "`YTD_AcceptedInflationCount`",
+        "name": "YTD Accepted Inflation Count",
+        "dax": "TOTALYTD([Accepted Inflation Count], DIM_DATE[DATE_NK])",
+        "format": "#,##0"
+      },
+      {
+        "hana_name": "`YTD_AcceptedProviderCount`",
+        "name": "YTD Accepted Provider Count",
+        "dax": "TOTALYTD([Accepted Provider Count], DIM_DATE[DATE_NK])",
+        "format": "#,##0"
+      },
+      {
+        "hana_name": "`YTD_AcceptedWithProfitCount`",
+        "name": "YTD Accepted With-Profit Count",
+        "dax": "TOTALYTD([Accepted With-Profit Count], DIM_DATE[DATE_NK])",
+        "format": "#,##0"
+      },
+      {
+        "hana_name": "`DistinctQuotationCount` (CountDistinct QuotationNumber)",
+        "name": "Distinct Quotation Count",
+        "dax": "CALCULATE(DISTINCTCOUNT(CNF__FACT_ANNUITY_QUOTATIONS[QUOTATION_NUMBER]), CNF__FACT_ANNUITY_QUOTATIONS[QUOTATION_NUMBER] <> \"n/a\")",
+        "format": "#,##0"
+      },
+      {
+        "hana_name": "`DistinctMemberCount` (CountDistinct CurrentMemberIdNumber)",
+        "name": "Distinct Member Count",
+        "dax": "CALCULATE(DISTINCTCOUNT(CNF__FACT_ANNUITY_QUOTATIONS[MEMBERSHIP_NUMBER]), CNF__FACT_ANNUITY_QUOTATIONS[MEMBERSHIP_NUMBER] <> \"n/a\")",
+        "format": "#,##0"
+      },
+      {
+        "hana_name": "`YTDQuotationCount`",
+        "name": "YTD Distinct Quotation Count",
+        "dax": "TOTALYTD([Distinct Quotation Count], DIM_DATE[DATE_NK])",
+        "format": "#,##0"
+      },
+      {
+        "hana_name": "`YTDMemberCount`",
+        "name": "YTD Distinct Member Count",
+        "dax": "TOTALYTD([Distinct Member Count], DIM_DATE[DATE_NK])",
+        "format": "#,##0"
+      },
+      {
+        "hana_name": "Calc: `DistinctAcceptedMemberIdNumber`",
+        "name": "Distinct Accepted Member Count",
+        "dax": "CALCULATE(DISTINCTCOUNT(CNF__FACT_ANNUITY_QUOTATIONS[MEMBERSHIP_NUMBER]), CNF__FACT_ANNUITY_QUOTATIONS[DERIVED_QUOTATION_STATUS] = \"quoted and accepted\", CNF__FACT_ANNUITY_QUOTATIONS[MEMBERSHIP_NUMBER] <> \"n/a\")",
+        "format": "#,##0"
+      },
+      {
+        "hana_name": "Calc: `DistinctAcceptedQuotation`",
+        "name": "Distinct Accepted Quotation Count",
+        "dax": "CALCULATE(DISTINCTCOUNT(CNF__FACT_ANNUITY_QUOTATIONS[QUOTATION_NUMBER]), CNF__FACT_ANNUITY_QUOTATIONS[DERIVED_QUOTATION_STATUS] = \"quoted and accepted\", CNF__FACT_ANNUITY_QUOTATIONS[QUOTATION_NUMBER] <> \"n/a\")",
+        "format": "#,##0"
+      },
+      {
+        "hana_name": "`MemberConversionRate` = `NDIV0(DistinctAcceptedMemberIdNumber, DistinctMemberIdNumber) * 100`",
+        "name": "Member Conversion Rate",
+        "dax": "DIVIDE([Distinct Accepted Member Count], [Distinct Member Count], 0)",
+        "format": "0.00%"
+      },
+      {
+        "hana_name": "`QuoteConversionRate` = `NDIV0(DistinctAcceptedQuotation, DistinctQuotationCount) * 100`",
+        "name": "Quote Conversion Rate",
+        "dax": "DIVIDE([Distinct Accepted Quotation Count], [Distinct Quotation Count], 0)",
+        "format": "0.00%"
+      },
+      {
+        "hana_name": "`PurchasePriceConversionRate` = `COALESCE(NDIV0(CalcAcceptedPurchasePrice, LastQuotationPrice), 0) * 100`",
+        "name": "Purchase Price Conversion Rate",
+        "dax": "DIVIDE([Accepted Purchase Price (Converted)], [Last Quotation Price], 0)",
+        "format": "0.00%"
+      }
+    ],
+    "report_visuals": [],
+    "published_report": "AnnuityQuotations.pbip",
+    "business_narrative": "Tracks pre-retirement conversion into guaranteed retail and corporate annuities. Communicates quotation pipeline health, quoted vs accepted conversion rate, average quote purchase price, and projected monthly guaranteed payout obligations. Key sign-off metric is the 40.2% Quote Conversion Rate and R 1.94 B bound pipeline.",
+    "kpis": [
+      {
+        "label": "Distinct Quotes",
+        "value": "129,954",
+        "change": "+12.4% YoY",
+        "dax": "DISTINCTCOUNT(QuotationNumber)",
+        "subtext": "Quotation Pipeline"
+      },
+      {
+        "label": "Quotation Purchase Price",
+        "value": "R 4.82 B",
+        "change": "+8.7% YoY",
+        "dax": "SUM(QuotationPurchasePrice)",
+        "subtext": "Average R 37,090 per quote"
+      },
+      {
+        "label": "Accepted Purchase Price",
+        "value": "R 1.94 B",
+        "change": "+14.1% YoY",
+        "dax": "SUM(AcceptedPurchasePrice)",
+        "subtext": "Bound Policy Capital"
+      },
+      {
+        "label": "Monthly Annuity Payments",
+        "value": "R 38.6 M",
+        "change": "+5.2% MoM",
+        "dax": "SUM(QuotationAnnuityPayment)",
+        "subtext": "Recurring Monthly Outflows"
+      },
+      {
+        "label": "Quote Conversion Rate",
+        "value": "40.2%",
+        "change": "+2.4% vs 2024",
+        "dax": "DistinctAcceptedQuotation / DistinctQuotationCount",
+        "subtext": "Pipeline Conversion"
+      },
+      {
+        "label": "Accepted Members",
+        "value": "52,241",
+        "change": "+10.8% YoY",
+        "dax": "DISTINCTCOUNT(AcceptedMemberIdNumber)",
+        "subtext": "Converted Retirees"
+      }
+    ],
+    "slicers": {
+      "date_range": [
+        "All 2024-2025",
+        "2025 Full Year",
+        "2024 Full Year",
+        "Q4 2025 Latest"
+      ],
+      "fund": [
+        "All Funds",
+        "Sanlam Umbrella Pension Fund",
+        "Glacier Retirement Fund",
+        "Sanlam Corporate Preservation",
+        "Sanlam Umbrella Provident"
+      ],
+      "product": [
+        "All Products",
+        "Enhanced Annuity",
+        "Guaranteed Life",
+        "Inflation-Linked",
+        "With-Profit Annuity",
+        "Living Annuity"
+      ],
+      "status": [
+        "All Statuses",
+        "Accepted",
+        "Quoted",
+        "In-Flight",
+        "Expired"
+      ]
+    },
+    "visual_layout": [
+      {
+        "type": "combo",
+        "title": "Monthly Quoted Purchase Price vs Conversion Rate",
+        "xAxis": "Month",
+        "yAxis": "ZAR Millions",
+        "series": [
+          "Quoted Purchase Price",
+          "Accepted Amount",
+          "Conversion Rate %"
+        ]
+      },
+      {
+        "type": "bar",
+        "title": "Quotation Volume by Annuity Product Group",
+        "xAxis": "Product",
+        "yAxis": "Quotes",
+        "series": [
+          "Quoted Count",
+          "Accepted Count"
+        ]
+      }
+    ]
+  },
+  "in_fund_exit_member_monthly": {
+    "title": "SC In-Fund Exit (INFUSE) Preservation",
+    "central_facts": [
+      "CNF__PROD_IN_FUND_EXIT_MEMBER_MONTHLY",
+      "CNF__FACT_MEMBER_SEGMENTATION"
+    ],
+    "dimensions": [
+      {
+        "table": "DIM_DATE",
+        "schema": "SCBI_SDP_MART",
+        "source": "DIM_DATE"
+      },
+      {
+        "table": "CNF__DIM_MEMBER",
+        "schema": "SCBI_CDP_MART",
+        "source": "DIM_CNF_MEMBER"
+      },
+      {
+        "table": "CNF__DIM_FUND",
+        "schema": "SCBI_CDP_MART",
+        "source": "DIM_CNF_FUND"
+      },
+      {
+        "table": "CNF__DIM_EMPLOYER",
+        "schema": "SCBI_CDP_MART",
+        "source": "DIM_CNF_EMPLOYER"
+      },
+      {
+        "table": "CNF__DIM_PAYPOINT",
+        "schema": "SCBI_CDP_MART",
+        "source": "DIM_CNF_PAYPOINT"
+      },
+      {
+        "table": "CNF__DIM_INVESTMENT_PRODUCT",
+        "schema": "SCBI_CDP_MART",
+        "source": "DIM_CNF_INVESTMENT_PRODUCT"
+      }
+    ],
+    "relationships": [],
+    "measures": [
+      {
+        "hana_name": "`CNF__PROD_IN_FUND_EXIT_MEMBER_MONTHLY`",
+        "name": "`DATE_NK`",
+        "dax": "DIM_DATE",
+        "format": "DATE_NK"
+      },
+      {
+        "hana_name": "`CNF__PROD_IN_FUND_EXIT_MEMBER_MONTHLY`",
+        "name": "`MEMBER_HK`",
+        "dax": "CNF__DIM_MEMBER",
+        "format": "MEMBER_HK"
+      },
+      {
+        "hana_name": "`CNF__PROD_IN_FUND_EXIT_MEMBER_MONTHLY`",
+        "name": "`FUND_HK`",
+        "dax": "CNF__DIM_FUND",
+        "format": "FUND_HK"
+      },
+      {
+        "hana_name": "`CNF__PROD_IN_FUND_EXIT_MEMBER_MONTHLY`",
+        "name": "`EMPLOYER_HK`",
+        "dax": "CNF__DIM_EMPLOYER",
+        "format": "EMPLOYER_HK"
+      },
+      {
+        "hana_name": "`CNF__PROD_IN_FUND_EXIT_MEMBER_MONTHLY`",
+        "name": "`PAYPOINT_HK`",
+        "dax": "CNF__DIM_PAYPOINT",
+        "format": "PAYPOINT_HK"
+      },
+      {
+        "hana_name": "`CNF__PROD_IN_FUND_EXIT_MEMBER_MONTHLY`",
+        "name": "`INVESTMENT_PRODUCT_HK`",
+        "dax": "CNF__DIM_INVESTMENT_PRODUCT",
+        "format": "INVESTMENT_PRODUCT_HK"
+      }
+    ],
+    "report_visuals": [],
+    "published_report": "in_fund_exit_member_monthly.pbip",
+    "business_narrative": "Tracks retirement benefit preservation when members resign from their employer. Communicates how effectively Sanlam prevents retirement leakage into cash withdrawals by converting exiting members into In-Fund Preserved members. Key metric is the 48.6% Retention Rate.",
+    "kpis": [
+      {
+        "label": "Preserved AUA Amount",
+        "value": "R 64.2 B",
+        "change": "+14.8% YoY",
+        "dax": "SUM(Aua_Amount, Paypoint='In-Fund Exit')",
+        "subtext": "Retained Benefit Capital"
+      },
+      {
+        "label": "Preserved Member Count",
+        "value": "184,200",
+        "change": "+11.2% YoY",
+        "dax": "DISTINCTCOUNT(Member_Nk)",
+        "subtext": "Members Retained In-Fund"
+      },
+      {
+        "label": "Benefit Retention Rate",
+        "value": "48.6%",
+        "change": "+4.2% vs 2024",
+        "dax": "Preserved Benefit / Total Exit Benefit",
+        "subtext": "Target: 50.0%"
+      },
+      {
+        "label": "Realistic Replacement Ratio",
+        "value": "62.4%",
+        "change": "+2.1% YoY",
+        "dax": "Avg_Realistic_Replacement_Ratio",
+        "subtext": "Projected Retirement Income"
+      },
+      {
+        "label": "Resignation Retention",
+        "value": "54.1%",
+        "change": "Top Channel",
+        "dax": "Retention in Resignation Reason",
+        "subtext": "Resigning Employees"
+      },
+      {
+        "label": "Average Preserved Balance",
+        "value": "R 348,534",
+        "change": "+3.4% MoM",
+        "dax": "Preserved AUA / Member Count",
+        "subtext": "Per Member Capital"
+      }
+    ],
+    "slicers": {
+      "date_range": [
+        "All 2024-2025",
+        "2025 Full Year",
+        "2024 Full Year",
+        "Q4 2025 Latest"
+      ],
+      "fund": [
+        "All Funds",
+        "Sanlam Umbrella Pension Fund",
+        "Sanlam Corporate Preservation",
+        "Sanlam Umbrella Provident"
+      ],
+      "movement_reason": [
+        "All Reasons",
+        "Resignation",
+        "Retrenchment",
+        "Early Retirement",
+        "Transfer"
+      ],
+      "business_unit": [
+        "All Units",
+        "RFA",
+        "SUS"
+      ]
+    },
+    "visual_layout": [
+      {
+        "type": "area",
+        "title": "Preserved AUA Growth vs Outflow Leakage (2024-2025)",
+        "xAxis": "Month",
+        "yAxis": "ZAR Billions",
+        "series": [
+          "Preserved AUA",
+          "Leaked Cash Outflows"
+        ]
+      },
+      {
+        "type": "bar",
+        "title": "Preservation Retention Rate by Movement Reason",
+        "xAxis": "Reason",
+        "yAxis": "Retention Rate %",
+        "series": [
+          "Retention Rate",
+          "Benchmark (50%)"
+        ]
+      }
+    ]
+  },
+  "investments_fundamental": {
+    "title": "SC Fundamental Investments & Client Value",
+    "central_facts": [
+      "CNF__FACT_INV_MONTHLY_MARKET_VALUE",
+      "CNF__FACT_INVESTMENT_TRANSACTIONS"
+    ],
+    "dimensions": [],
+    "relationships": [],
+    "measures": [],
+    "report_visuals": [],
+    "published_report": "Investments \u2013 Fundamental Client Value & Transactions",
+    "business_narrative": "Institutional and multi-manager investment portfolio reporting. Communicates institutional portfolio market values, capital flows (inflows vs outflows), smoothed bonus fund stability, and manager allocation breakdown. Reconciled against Hiport investment records.",
+    "kpis": [
+      {
+        "label": "Total Market Value",
+        "value": "R 412.8 B",
+        "change": "+11.2% YoY",
+        "dax": "SUM(Market_Value)",
+        "subtext": "All Institutional Portfolios"
+      },
+      {
+        "label": "Total Inflows",
+        "value": "R 18.6 B",
+        "change": "+7.4% MoM",
+        "dax": "CALCULATE(TransactionAmount, FLOW='Inflow')",
+        "subtext": "Subscriptions & Dividends"
+      },
+      {
+        "label": "Total Outflows",
+        "value": "R 14.2 B",
+        "change": "+5.1% MoM",
+        "dax": "CALCULATE(TransactionAmount, FLOW='Outflow')",
+        "subtext": "Withdrawals & Switches"
+      },
+      {
+        "label": "Net Capital Flow",
+        "value": "+ R 4.4 B",
+        "change": "Positive Net Flow",
+        "dax": "Inflows - Outflows",
+        "subtext": "Net Portfolio Growth"
+      },
+      {
+        "label": "Active Portfolios",
+        "value": "142",
+        "change": "Institutional Lines",
+        "dax": "DISTINCTCOUNT(Portfolio_Code)",
+        "subtext": "Distinct Portfolios"
+      },
+      {
+        "label": "Smoothed Bonus Assets",
+        "value": "R 128.4 B",
+        "change": "31.1% of Total",
+        "dax": "SUM(Market_Value, Smoothed=Yes)",
+        "subtext": "Guaranteed Capital Base"
+      }
+    ],
+    "slicers": {
+      "date_range": [
+        "All 2024-2025",
+        "2025 Full Year",
+        "2024 Full Year",
+        "Q4 2025 Latest"
+      ],
+      "fund": [
+        "All Funds",
+        "Sanlam Umbrella Pension Fund",
+        "Sanlam Umbrella Provident Fund",
+        "Sanlam Institutional Portfolio"
+      ],
+      "portfolio": [
+        "All Portfolios",
+        "Sanlam Stable Bonus Portfolio",
+        "Sanlam Balanced Multi-Manager",
+        "Sanlam Active Equity",
+        "Sanlam Inflation Plus"
+      ],
+      "product_line": [
+        "All Product Lines",
+        "Smoothed Bonus",
+        "Market-Linked Multi-Manager",
+        "Specialist Portfolios"
+      ],
+      "flow": [
+        "All Flows",
+        "Inflow",
+        "Outflow",
+        "Net Flow"
+      ]
+    },
+    "visual_layout": [
+      {
+        "type": "bar",
+        "title": "Monthly Inflows vs Outflows and Net Growth",
+        "xAxis": "Month",
+        "yAxis": "ZAR Billions",
+        "series": [
+          "Total Inflows",
+          "Total Outflows",
+          "Net Flow"
+        ]
+      },
+      {
+        "type": "bar",
+        "title": "Asset Distribution: Smoothed Bonus vs Market-Linked",
+        "xAxis": "Product Line",
+        "yAxis": "ZAR Billions",
+        "series": [
+          "Market Value"
+        ]
+      }
+    ]
+  },
+  "member_monthly_investment": {
+    "title": "SC Investment Risk Rating & Portfolios",
+    "central_facts": [
+      "CNF__FACT_MEMBER_INVESTMENT_AUA",
+      "CNF__FACT_MEMBER_SEGMENTATION"
+    ],
+    "dimensions": [],
+    "relationships": [],
+    "measures": [
+      {
+        "hana_name": "`CNF__FACT_MEMBER_INVESTMENT_AUA`",
+        "name": "`CLIENT_HK`",
+        "dax": "CNF__DIM_CLIENT",
+        "format": "CLIENT_HK"
+      },
+      {
+        "hana_name": "`CNF__FACT_MEMBER_INVESTMENT_AUA`",
+        "name": "`INVESTMENT_PRODUCT_HK`",
+        "dax": "CNF__DIM_INVESTMENT_PRODUCT",
+        "format": "INVESTMENT_PRODUCT_HK"
+      },
+      {
+        "hana_name": "`CNF__FACT_MEMBER_INVESTMENT_AUA`",
+        "name": "`DATE_SK`",
+        "dax": "DIM_DATE",
+        "format": "DATE_SK"
+      },
+      {
+        "hana_name": "`CNF__FACT_MEMBER_INVESTMENT_AUA`",
+        "name": "`MEMBER_HK`",
+        "dax": "CNF__FACT_MEMBER_SEGMENTATION",
+        "format": "MEMBER_HK"
+      }
+    ],
+    "report_visuals": [],
+    "published_report": "member_monthly_investment.md",
+    "business_narrative": "Portfolio risk suitability and asset allocation dashboard. Communicates distribution of member retirement savings across risk meter bands (Aggressive, Moderate-Aggressive, Moderate, Conservative, Capital Guaranteed) sliced by member age and salary bands to ensure compliance with default investment regulations.",
+    "kpis": [
+      {
+        "label": "Total Analyzed AUA",
+        "value": "R 412.8 B",
+        "change": "+11.2% YoY",
+        "dax": "SUM(Aua_Amount)",
+        "subtext": "Member Investment AUA"
+      },
+      {
+        "label": "Moderate-Aggressive AUA",
+        "value": "R 198.4 B",
+        "change": "48.1% of Total",
+        "dax": "SUM(Aua, RiskMeter='Moderate-Aggressive')",
+        "subtext": "Default Lifestage Accumulation"
+      },
+      {
+        "label": "Capital Guaranteed AUA",
+        "value": "R 84.6 B",
+        "change": "20.5% of Total",
+        "dax": "SUM(Aua, RiskMeter='Guaranteed')",
+        "subtext": "Smoothed Bonus Funds"
+      },
+      {
+        "label": "Conservative AUA",
+        "value": "R 52.1 B",
+        "change": "12.6% of Total",
+        "dax": "SUM(Aua, RiskMeter='Conservative')",
+        "subtext": "Pre-Retirement De-risking"
+      },
+      {
+        "label": "Active Investor Members",
+        "value": "1,309,631",
+        "change": "+3.2% YoY",
+        "dax": "Client Member Count",
+        "subtext": "Covered Members"
+      },
+      {
+        "label": "Lifestage Alignment Rate",
+        "value": "94.2%",
+        "change": "FSCA Reg 28 Compliant",
+        "dax": "Compliant Members / Total",
+        "subtext": "Default Regulation 28"
+      }
+    ],
+    "slicers": {
+      "date_range": [
+        "All 2024-2025",
+        "2025 Full Year",
+        "2024 Full Year",
+        "Q4 2025 Latest"
+      ],
+      "risk_meter": [
+        "All Risk Meters",
+        "Aggressive",
+        "Moderate-Aggressive",
+        "Moderate",
+        "Conservative",
+        "Capital Guaranteed"
+      ],
+      "age_band": [
+        "All Age Bands",
+        "< 30 Years",
+        "30 - 45 Years",
+        "45 - 55 Years",
+        "55 - 60 Years",
+        "60+ Years"
+      ],
+      "fund": [
+        "All Funds",
+        "Sanlam Umbrella Pension Fund",
+        "Sanlam Umbrella Provident Fund"
+      ]
+    },
+    "visual_layout": [
+      {
+        "type": "bar",
+        "title": "AUA Allocation by Investment Risk Meter",
+        "xAxis": "Risk Meter",
+        "yAxis": "ZAR Billions",
+        "series": [
+          "AUA Amount",
+          "Member Count (k)"
+        ]
+      },
+      {
+        "type": "bar",
+        "title": "Risk Profile Allocation across Age Bands",
+        "xAxis": "Age Band",
+        "yAxis": "AUA %",
+        "series": [
+          "Moderate-Aggressive %",
+          "Conservative %",
+          "Guaranteed %"
+        ]
+      }
+    ]
+  }
+}

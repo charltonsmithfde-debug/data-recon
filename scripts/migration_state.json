@@ -1,0 +1,595 @@
+{
+  "tables": {
+    "CNF__DIM_DIGITAL_PORTAL": {
+      "status": "COMPLETED",
+      "schema": "SCBI_CDP_MART",
+      "stage_path": "@~/parquet_migration/cnf__dim_digital_portal/",
+      "rows_unloaded": 5,
+      "output_bytes": 2856,
+      "gcs_path": "gs://scbi-ducklake-myanalyticsproduct/scbi_cdp_mart/cnf__dim_digital_portal/",
+      "migrated_for_cube": "standalone_table",
+      "completed_at": "2026-09-16T14:50:05.376786",
+      "referencing_cubes": [
+        "standalone_table"
+      ]
+    },
+    "CNF__DIM_CLAIM_STATUS": {
+      "status": "COMPLETED",
+      "schema": "SCBI_CDP_MART",
+      "stage_path": "@~/parquet_migration/cnf__dim_claim_status/",
+      "rows_unloaded": 14,
+      "output_bytes": 3601,
+      "migrated_for_cube": "dimension_migration",
+      "completed_at": "2026-09-16T15:03:37.295253",
+      "gcs_path": "gs://scbi-ducklake-myanalyticsproduct/scbi_cdp_mart/cnf__dim_claim_status/"
+    },
+    "CNF__DIM_ADMIN_PRODUCT": {
+      "status": "COMPLETED",
+      "schema": "SCBI_CDP_MART",
+      "stage_path": "@~/parquet_migration/cnf__dim_admin_product/",
+      "rows_unloaded": 39,
+      "output_bytes": 6059,
+      "migrated_for_cube": "dimension_migration",
+      "completed_at": "2026-09-16T15:03:40.308498",
+      "gcs_path": "gs://scbi-ducklake-myanalyticsproduct/scbi_cdp_mart/cnf__dim_admin_product/"
+    },
+    "CNF__DIM_ANNUITY_PRODUCT": {
+      "status": "COMPLETED",
+      "schema": "SCBI_CDP_MART",
+      "stage_path": "@~/parquet_migration/cnf__dim_annuity_product/",
+      "rows_unloaded": 105,
+      "output_bytes": 14909,
+      "migrated_for_cube": "dimension_migration",
+      "completed_at": "2026-09-16T15:03:43.039506",
+      "gcs_path": "gs://scbi-ducklake-myanalyticsproduct/scbi_cdp_mart/cnf__dim_annuity_product/"
+    },
+    "CNF__DIM_INSURER": {
+      "status": "COMPLETED",
+      "schema": "SCBI_CDP_MART",
+      "stage_path": "@~/parquet_migration/cnf__dim_insurer/",
+      "rows_unloaded": 119,
+      "output_bytes": 14668,
+      "migrated_for_cube": "dimension_migration",
+      "completed_at": "2026-09-16T15:03:45.842651",
+      "gcs_path": "gs://scbi-ducklake-myanalyticsproduct/scbi_cdp_mart/cnf__dim_insurer/"
+    },
+    "CNF__DIM_CLAIM_TYPE": {
+      "status": "COMPLETED",
+      "schema": "SCBI_CDP_MART",
+      "stage_path": "@~/parquet_migration/cnf__dim_claim_type/",
+      "rows_unloaded": 124,
+      "output_bytes": 15797,
+      "migrated_for_cube": "dimension_migration",
+      "completed_at": "2026-09-16T15:03:47.992325",
+      "gcs_path": "gs://scbi-ducklake-myanalyticsproduct/scbi_cdp_mart/cnf__dim_claim_type/"
+    },
+    "CNF__DIM_SERVICE_OFFERING": {
+      "status": "COMPLETED",
+      "schema": "SCBI_CDP_MART",
+      "stage_path": "@~/parquet_migration/cnf__dim_service_offering/",
+      "rows_unloaded": 298,
+      "output_bytes": 29093,
+      "migrated_for_cube": "dimension_migration",
+      "completed_at": "2026-09-16T15:03:51.015054",
+      "gcs_path": "gs://scbi-ducklake-myanalyticsproduct/scbi_cdp_mart/cnf__dim_service_offering/"
+    },
+    "CNF__DIM_RISK_PRODUCT": {
+      "status": "COMPLETED",
+      "schema": "SCBI_CDP_MART",
+      "stage_path": "@~/parquet_migration/cnf__dim_risk_product/",
+      "rows_unloaded": 329,
+      "output_bytes": 47560,
+      "migrated_for_cube": "dimension_migration",
+      "completed_at": "2026-09-16T15:03:53.238197",
+      "gcs_path": "gs://scbi-ducklake-myanalyticsproduct/scbi_cdp_mart/cnf__dim_risk_product/"
+    },
+    "CNF__DIM_BROKER_CONSULTANT": {
+      "status": "COMPLETED",
+      "schema": "SCBI_CDP_MART",
+      "stage_path": "@~/parquet_migration/cnf__dim_broker_consultant/",
+      "rows_unloaded": 613,
+      "output_bytes": 83105,
+      "migrated_for_cube": "dimension_migration",
+      "completed_at": "2026-09-16T15:03:55.772195",
+      "gcs_path": "gs://scbi-ducklake-myanalyticsproduct/scbi_cdp_mart/cnf__dim_broker_consultant/"
+    },
+    "CNF__DIM_TRANSACTION_TYPE": {
+      "status": "COMPLETED",
+      "schema": "SCBI_CDP_MART",
+      "stage_path": "@~/parquet_migration/cnf__dim_transaction_type/",
+      "rows_unloaded": 890,
+      "output_bytes": 86255,
+      "migrated_for_cube": "dimension_migration",
+      "completed_at": "2026-09-16T15:03:57.949127",
+      "gcs_path": "gs://scbi-ducklake-myanalyticsproduct/scbi_cdp_mart/cnf__dim_transaction_type/"
+    },
+    "CNF__DIM_FUND": {
+      "status": "COMPLETED",
+      "schema": "SCBI_CDP_MART",
+      "stage_path": "@~/parquet_migration/cnf__dim_fund/",
+      "rows_unloaded": 6258,
+      "output_bytes": 690941,
+      "migrated_for_cube": "dimension_migration",
+      "completed_at": "2026-09-16T15:04:01.025180",
+      "gcs_path": "gs://scbi-ducklake-myanalyticsproduct/scbi_cdp_mart/cnf__dim_fund/"
+    },
+    "CNF__DIM_REVISION_ASSOCIATION": {
+      "status": "COMPLETED",
+      "schema": "SCBI_CDP_MART",
+      "stage_path": "@~/parquet_migration/cnf__dim_revision_association/",
+      "rows_unloaded": 17423,
+      "output_bytes": 1460754,
+      "migrated_for_cube": "dimension_migration",
+      "completed_at": "2026-09-16T15:04:04.878851",
+      "gcs_path": "gs://scbi-ducklake-myanalyticsproduct/scbi_cdp_mart/cnf__dim_revision_association/"
+    },
+    "CNF__DIM_INVESTMENT_PRODUCT": {
+      "status": "COMPLETED",
+      "schema": "SCBI_CDP_MART",
+      "stage_path": "@~/parquet_migration/cnf__dim_investment_product/",
+      "rows_unloaded": 12299,
+      "output_bytes": 1597018,
+      "migrated_for_cube": "dimension_migration",
+      "completed_at": "2026-09-16T15:04:11.107845",
+      "gcs_path": "gs://scbi-ducklake-myanalyticsproduct/scbi_cdp_mart/cnf__dim_investment_product/"
+    },
+    "CNF__DIM_AGGREGATOR": {
+      "status": "COMPLETED",
+      "schema": "SCBI_CDP_MART",
+      "stage_path": "@~/parquet_migration/cnf__dim_aggregator/",
+      "rows_unloaded": 27908,
+      "output_bytes": 1910476,
+      "migrated_for_cube": "dimension_migration",
+      "completed_at": "2026-09-16T15:04:15.084935",
+      "gcs_path": "gs://scbi-ducklake-myanalyticsproduct/scbi_cdp_mart/cnf__dim_aggregator/"
+    },
+    "CNF__DIM_EMPLOYER": {
+      "status": "COMPLETED",
+      "schema": "SCBI_CDP_MART",
+      "stage_path": "@~/parquet_migration/cnf__dim_employer/",
+      "rows_unloaded": 27463,
+      "output_bytes": 3022863,
+      "migrated_for_cube": "dimension_migration",
+      "completed_at": "2026-09-16T15:04:18.472560",
+      "gcs_path": "gs://scbi-ducklake-myanalyticsproduct/scbi_cdp_mart/cnf__dim_employer/"
+    },
+    "CNF__DIM_CLIENT": {
+      "status": "COMPLETED",
+      "schema": "SCBI_CDP_MART",
+      "stage_path": "@~/parquet_migration/cnf__dim_client/",
+      "rows_unloaded": 29798,
+      "output_bytes": 3750553,
+      "migrated_for_cube": "dimension_migration",
+      "completed_at": "2026-09-16T15:04:22.214858",
+      "gcs_path": "gs://scbi-ducklake-myanalyticsproduct/scbi_cdp_mart/cnf__dim_client/"
+    },
+    "CNF__DIM_EMPLOYER_BRANCH": {
+      "status": "COMPLETED",
+      "schema": "SCBI_CDP_MART",
+      "stage_path": "@~/parquet_migration/cnf__dim_employer_branch/",
+      "rows_unloaded": 39492,
+      "output_bytes": 4006025,
+      "migrated_for_cube": "dimension_migration",
+      "completed_at": "2026-09-16T15:04:26.881608",
+      "gcs_path": "gs://scbi-ducklake-myanalyticsproduct/scbi_cdp_mart/cnf__dim_employer_branch/"
+    },
+    "CNF__DIM_PAYPOINT": {
+      "status": "COMPLETED",
+      "schema": "SCBI_CDP_MART",
+      "stage_path": "@~/parquet_migration/cnf__dim_paypoint/",
+      "rows_unloaded": 41945,
+      "output_bytes": 4584828,
+      "migrated_for_cube": "dimension_migration",
+      "completed_at": "2026-09-16T15:04:32.382671",
+      "gcs_path": "gs://scbi-ducklake-myanalyticsproduct/scbi_cdp_mart/cnf__dim_paypoint/"
+    },
+    "DIM_DATE": {
+      "status": "COMPLETED",
+      "schema": "SCBI_SDP_MART",
+      "stage_path": "@~/parquet_migration/dim_date/",
+      "rows_unloaded": 1048577,
+      "output_bytes": 28383461,
+      "migrated_for_cube": "dimension_migration",
+      "completed_at": "2026-09-16T15:04:38.811809",
+      "gcs_path": "gs://scbi-ducklake-myanalyticsproduct/scbi_sdp_mart/dim_date/"
+    },
+    "CNF__DIM_DIGITAL_PORTAL_USER": {
+      "status": "COMPLETED",
+      "schema": "SCBI_CDP_MART",
+      "stage_path": "@~/parquet_migration/cnf__dim_digital_portal_user/",
+      "rows_unloaded": 1057629,
+      "output_bytes": 111275182,
+      "migrated_for_cube": "dimension_migration",
+      "completed_at": "2026-09-16T15:04:49.790107",
+      "gcs_path": "gs://scbi-ducklake-myanalyticsproduct/scbi_cdp_mart/cnf__dim_digital_portal_user/"
+    },
+    "CNF__DIM_BANK_ACCOUNT": {
+      "status": "COMPLETED",
+      "schema": "SCBI_CDP_MART",
+      "stage_path": "@~/parquet_migration/cnf__dim_bank_account/",
+      "rows_unloaded": 1640855,
+      "output_bytes": 145306991,
+      "migrated_for_cube": "dimension_migration",
+      "completed_at": "2026-09-16T15:05:10.227726",
+      "gcs_path": "gs://scbi-ducklake-myanalyticsproduct/scbi_cdp_mart/cnf__dim_bank_account/"
+    },
+    "CNF__DIM_BENEFICIARY": {
+      "status": "COMPLETED",
+      "schema": "SCBI_CDP_MART",
+      "stage_path": "@~/parquet_migration/cnf__dim_beneficiary/",
+      "rows_unloaded": 3271145,
+      "output_bytes": 401502853,
+      "migrated_for_cube": "dimension_migration",
+      "completed_at": "2026-09-16T15:05:40.347096",
+      "gcs_path": "gs://scbi-ducklake-myanalyticsproduct/scbi_cdp_mart/cnf__dim_beneficiary/"
+    },
+    "CNF__DIM_MEMBER": {
+      "status": "COMPLETED",
+      "schema": "SCBI_CDP_MART",
+      "stage_path": "@~/parquet_migration/cnf__dim_member/",
+      "rows_unloaded": 7119185,
+      "output_bytes": 986683840,
+      "migrated_for_cube": "dimension_migration",
+      "completed_at": "2026-09-16T15:06:44.752874",
+      "gcs_path": "gs://scbi-ducklake-myanalyticsproduct/scbi_cdp_mart/cnf__dim_member/"
+    },
+    "CNF__PROD_IN_FUND_EXIT_MEMBER_MONTHLY": {
+      "status": "COMPLETED",
+      "schema": "SCBI_CDP_PRODUCT",
+      "stage_path": "@~/parquet_migration/cnf__prod_in_fund_exit_member_monthly/",
+      "rows_unloaded": 11126683,
+      "output_bytes": 796900237,
+      "migrated_for_cube": "under_25gb_migration",
+      "completed_at": "2026-09-16T15:36:21.474404",
+      "gcs_path": "gs://scbi-ducklake-myanalyticsproduct/scbi_cdp_product/cnf__prod_in_fund_exit_member_monthly/",
+      "referencing_cubes": [
+        "under_25gb_migration"
+      ]
+    },
+    "CNF__FACT_INV_MONTHLY_MARKET_VALUE": {
+      "status": "COMPLETED",
+      "schema": "SCBI_CDP_MART",
+      "stage_path": "@~/parquet_migration/cnf__fact_inv_monthly_market_value/",
+      "rows_unloaded": 224629,
+      "output_bytes": 5110096,
+      "migrated_for_cube": "under_25gb_migration",
+      "completed_at": "2026-09-16T15:41:17.482295",
+      "gcs_path": "gs://scbi-ducklake-myanalyticsproduct/scbi_cdp_mart/cnf__fact_inv_monthly_market_value/",
+      "referencing_cubes": [
+        "under_25gb_migration"
+      ]
+    },
+    "CNF__FACT_ANNUITY_QUOTATIONS": {
+      "status": "COMPLETED",
+      "schema": "SCBI_CDP_MART",
+      "stage_path": "@~/parquet_migration/cnf__fact_annuity_quotations/",
+      "rows_unloaded": 129954,
+      "output_bytes": 14797486,
+      "migrated_for_cube": "under_25gb_migration",
+      "completed_at": "2026-09-16T15:42:12.052784",
+      "gcs_path": "gs://scbi-ducklake-myanalyticsproduct/scbi_cdp_mart/cnf__fact_annuity_quotations/",
+      "referencing_cubes": [
+        "under_25gb_migration"
+      ]
+    },
+    "CNF__FACT_INVESTMENT_TRANSACTIONS": {
+      "status": "COMPLETED",
+      "schema": "SCBI_CDP_MART",
+      "stage_path": "@~/parquet_migration/cnf__fact_investment_transactions/",
+      "rows_unloaded": 928006,
+      "output_bytes": 45293564,
+      "migrated_for_cube": "under_25gb_migration",
+      "completed_at": "2026-09-16T15:44:07.580481",
+      "gcs_path": "gs://scbi-ducklake-myanalyticsproduct/scbi_cdp_mart/cnf__fact_investment_transactions/",
+      "referencing_cubes": [
+        "under_25gb_migration"
+      ]
+    },
+    "CNF__FACT_IN_FUND_EXIT_MEMBER_AUM_MONTHLY": {
+      "status": "COMPLETED",
+      "schema": "SCBI_CDP_MART",
+      "stage_path": "@~/parquet_migration/cnf__fact_in_fund_exit_member_aum_monthly/",
+      "rows_unloaded": 4713786,
+      "output_bytes": 172685595,
+      "migrated_for_cube": "under_25gb_migration",
+      "completed_at": "2026-09-16T15:45:53.767215",
+      "gcs_path": "gs://scbi-ducklake-myanalyticsproduct/scbi_cdp_mart/cnf__fact_in_fund_exit_member_aum_monthly/",
+      "referencing_cubes": [
+        "under_25gb_migration"
+      ]
+    },
+    "CNF__FACT_MEMBER_CLAIMS": {
+      "status": "COMPLETED",
+      "schema": "SCBI_CDP_MART",
+      "stage_path": "@~/parquet_migration/cnf__fact_member_claims/",
+      "rows_unloaded": 1515852,
+      "output_bytes": 171223898,
+      "migrated_for_cube": "under_25gb_migration",
+      "completed_at": "2026-09-16T15:48:16.440739",
+      "gcs_path": "gs://scbi-ducklake-myanalyticsproduct/scbi_cdp_mart/cnf__fact_member_claims/",
+      "referencing_cubes": [
+        "under_25gb_migration"
+      ]
+    },
+    "CNF__FACT_DIGITAL_PORTAL_REGISTRATIONS": {
+      "status": "COMPLETED",
+      "schema": "SCBI_CDP_MART",
+      "stage_path": "@~/parquet_migration/cnf__fact_digital_portal_registrations/",
+      "rows_unloaded": 563402,
+      "output_bytes": 99619874,
+      "migrated_for_cube": "under_25gb_migration",
+      "completed_at": "2026-09-16T15:50:19.427319",
+      "gcs_path": "gs://scbi-ducklake-myanalyticsproduct/scbi_cdp_mart/cnf__fact_digital_portal_registrations/",
+      "referencing_cubes": [
+        "under_25gb_migration"
+      ]
+    },
+    "CNF__FACT_IN_FUND_EXIT_MEMBER_AUA_MONTHLY": {
+      "status": "COMPLETED",
+      "schema": "SCBI_CDP_MART",
+      "stage_path": "@~/parquet_migration/cnf__fact_in_fund_exit_member_aua_monthly/",
+      "rows_unloaded": 6412897,
+      "output_bytes": 312385148,
+      "migrated_for_cube": "under_25gb_migration",
+      "completed_at": "2026-09-16T15:52:14.238300",
+      "gcs_path": "gs://scbi-ducklake-myanalyticsproduct/scbi_cdp_mart/cnf__fact_in_fund_exit_member_aua_monthly/",
+      "referencing_cubes": [
+        "under_25gb_migration"
+      ]
+    },
+    "CNF__AGG_DIGITAL_PORTAL_REGISTRATIONS_YTD": {
+      "status": "COMPLETED",
+      "schema": "SCBI_CDP_MART",
+      "stage_path": "@~/parquet_migration/cnf__agg_digital_portal_registrations_ytd/",
+      "rows_unloaded": 3181250,
+      "output_bytes": 477853650,
+      "migrated_for_cube": "under_25gb_migration",
+      "completed_at": "2026-09-16T15:54:49.097233",
+      "gcs_path": "gs://scbi-ducklake-myanalyticsproduct/scbi_cdp_mart/cnf__agg_digital_portal_registrations_ytd/",
+      "referencing_cubes": [
+        "under_25gb_migration"
+      ]
+    },
+    "CNF__FACT_MEMBER_CLAIM_PAYMENT": {
+      "status": "COMPLETED",
+      "schema": "SCBI_CDP_MART",
+      "stage_path": "@~/parquet_migration/cnf__fact_member_claim_payment/",
+      "rows_unloaded": 3537991,
+      "output_bytes": 478116331,
+      "migrated_for_cube": "under_25gb_migration",
+      "completed_at": "2026-09-16T15:58:13.264128",
+      "gcs_path": "gs://scbi-ducklake-myanalyticsproduct/scbi_cdp_mart/cnf__fact_member_claim_payment/",
+      "referencing_cubes": [
+        "under_25gb_migration"
+      ]
+    },
+    "CNF__AGG_DIGITAL_PORTAL_REGISTRATIONS_TD": {
+      "status": "COMPLETED",
+      "schema": "SCBI_CDP_MART",
+      "stage_path": "@~/parquet_migration/cnf__agg_digital_portal_registrations_td/",
+      "rows_unloaded": 21284797,
+      "output_bytes": 3168703244,
+      "migrated_for_cube": "standalone_table",
+      "completed_at": "2026-09-16T17:01:32.557555",
+      "gcs_path": "gs://scbi-ducklake-myanalyticsproduct/scbi_cdp_mart/cnf__agg_digital_portal_registrations_td/",
+      "referencing_cubes": [
+        "standalone_table"
+      ]
+    },
+    "CNF__AGG_DIGITAL_PORTAL_EVENTS_YTD": {
+      "status": "COMPLETED",
+      "schema": "SCBI_CDP_MART",
+      "stage_path": "@~/parquet_migration/cnf__agg_digital_portal_events_ytd/",
+      "rows_unloaded": 21151239,
+      "output_bytes": 4388164495,
+      "migrated_for_cube": "standalone_table",
+      "completed_at": "2026-09-16T21:44:22.439380",
+      "gcs_path": "gs://scbi-ducklake-myanalyticsproduct/scbi_cdp_mart/cnf__agg_digital_portal_events_ytd/",
+      "referencing_cubes": [
+        "standalone_table"
+      ]
+    },
+    "CNF__FACT_MEMBER_MONTHLY_FEES": {
+      "status": "COMPLETED",
+      "schema": "SCBI_CDP_MART",
+      "stage_path": "@~/parquet_migration/cnf__fact_member_monthly_fees/",
+      "rows_unloaded": 9046478,
+      "output_bytes": 1112358690,
+      "migrated_for_cube": "remaining_2024_2025",
+      "completed_at": "2026-09-16T22:14:28.511827",
+      "gcs_path": "gs://scbi-ducklake-myanalyticsproduct/scbi_cdp_mart/cnf__fact_member_monthly_fees/",
+      "referencing_cubes": [
+        "remaining_2024_2025"
+      ]
+    },
+    "CNF__FACT_MEMBER_INVESTMENT_AUM": {
+      "status": "COMPLETED",
+      "schema": "SCBI_CDP_MART",
+      "stage_path": "@~/parquet_migration/cnf__fact_member_investment_aum/",
+      "rows_unloaded": 10936981,
+      "output_bytes": 1789143125,
+      "migrated_for_cube": "remaining_2024_2025",
+      "completed_at": "2026-09-16T22:20:24.193262",
+      "gcs_path": "gs://scbi-ducklake-myanalyticsproduct/scbi_cdp_mart/cnf__fact_member_investment_aum/",
+      "referencing_cubes": [
+        "remaining_2024_2025"
+      ]
+    },
+    "CNF__FACT_MEMBER_INVESTMENT_AUA": {
+      "status": "COMPLETED",
+      "schema": "SCBI_CDP_MART",
+      "stage_path": "@~/parquet_migration/cnf__fact_member_investment_aua/",
+      "rows_unloaded": 29209326,
+      "output_bytes": 4243363018,
+      "migrated_for_cube": "remaining_2024_2025",
+      "completed_at": "2026-09-16T22:29:49.129166",
+      "gcs_path": "gs://scbi-ducklake-myanalyticsproduct/scbi_cdp_mart/cnf__fact_member_investment_aua/",
+      "referencing_cubes": [
+        "remaining_2024_2025"
+      ]
+    },
+    "CNF__FACT_DIGITAL_PORTAL_EVENTS": {
+      "status": "COMPLETED",
+      "schema": "SCBI_CDP_MART",
+      "stage_path": "@~/parquet_migration/cnf__fact_digital_portal_events/",
+      "rows_unloaded": 39406740,
+      "output_bytes": 5097494945,
+      "migrated_for_cube": "remaining_2024_2025",
+      "completed_at": "2026-09-16T22:50:27.287974",
+      "gcs_path": "gs://scbi-ducklake-myanalyticsproduct/scbi_cdp_mart/cnf__fact_digital_portal_events/",
+      "referencing_cubes": [
+        "remaining_2024_2025"
+      ]
+    },
+    "CNF__FACT_MEMBER_BASE_CONTRIBUTION": {
+      "status": "COMPLETED",
+      "schema": "SCBI_CDP_MART",
+      "stage_path": "@~/parquet_migration/cnf__fact_member_base_contribution/",
+      "rows_unloaded": 32718571,
+      "output_bytes": 4249607808,
+      "migrated_for_cube": "remaining_2024_2025",
+      "completed_at": "2026-09-16T23:14:28.431712",
+      "gcs_path": "gs://scbi-ducklake-myanalyticsproduct/scbi_cdp_mart/cnf__fact_member_base_contribution/",
+      "referencing_cubes": [
+        "remaining_2024_2025"
+      ]
+    },
+    "CNF__FACT_MEMBER_SEGMENTATION": {
+      "status": "COMPLETED",
+      "schema": "SCBI_CDP_MART",
+      "stage_path": "@~/parquet_migration/cnf__fact_member_segmentation/",
+      "rows_unloaded": 32501586,
+      "output_bytes": 5662828550,
+      "migrated_for_cube": "remaining_2024_2025",
+      "completed_at": "2026-09-16T23:34:51.190173",
+      "gcs_path": "gs://scbi-ducklake-myanalyticsproduct/scbi_cdp_mart/cnf__fact_member_segmentation/",
+      "referencing_cubes": [
+        "remaining_2024_2025"
+      ]
+    },
+    "CNF__FACT_MEMBER_BASE_RISK_PREMIUM": {
+      "status": "COMPLETED",
+      "schema": "SCBI_CDP_MART",
+      "stage_path": "@~/parquet_migration/cnf__fact_member_base_risk_premium/",
+      "rows_unloaded": 35489903,
+      "output_bytes": 4823749532,
+      "migrated_for_cube": "remaining_2024_2025",
+      "completed_at": "2026-09-17T00:01:50.062739",
+      "gcs_path": "gs://scbi-ducklake-myanalyticsproduct/scbi_cdp_mart/cnf__fact_member_base_risk_premium/",
+      "referencing_cubes": [
+        "remaining_2024_2025"
+      ]
+    },
+    "CNF__FACT_MEMBER_TRANSACTIONS": {
+      "status": "COMPLETED",
+      "schema": "SCBI_CDP_MART",
+      "stage_path": "@~/parquet_migration/cnf__fact_member_transactions/",
+      "rows_unloaded": 156873683,
+      "output_bytes": 8865226732,
+      "migrated_for_cube": "remaining_2024_2025",
+      "completed_at": "2026-09-17T00:25:18.644578",
+      "gcs_path": "gs://scbi-ducklake-myanalyticsproduct/scbi_cdp_mart/cnf__fact_member_transactions/",
+      "referencing_cubes": [
+        "remaining_2024_2025"
+      ]
+    },
+    "CNF__AGG_CONSOLIDATED_MEMBER_MEASURES_MONTHLY": {
+      "status": "COMPLETED",
+      "schema": "SCBI_CDP_MART",
+      "stage_path": "@~/parquet_migration/cnf__agg_consolidated_member_measures_monthly/",
+      "gcs_path": "gs://scbi-ducklake-myanalyticsproduct/scbi_cdp_mart/cnf__agg_consolidated_member_measures_monthly/",
+      "rows_unloaded": 212496332,
+      "migrated_for_cube": "remaining_2024_2025",
+      "completed_at": "2026-09-17T05:34:12.651146",
+      "referencing_cubes": [
+        "fund_analytics_monthly_metrics"
+      ]
+    }
+  },
+  "cubes": {
+    "member_monthly": {
+      "total_tables": 20,
+      "completed_tables": 20,
+      "percent_complete": 100.0,
+      "is_ready": true,
+      "updated_at": "2026-09-17T05:34:12.651146"
+    },
+    "assetflows_member_monthly": {
+      "total_tables": 20,
+      "completed_tables": 20,
+      "percent_complete": 100.0,
+      "is_ready": true,
+      "updated_at": "2026-09-17T05:34:12.651146"
+    },
+    "member_monthly_investment": {
+      "total_tables": 15,
+      "completed_tables": 15,
+      "percent_complete": 100.0,
+      "is_ready": true,
+      "updated_at": "2026-09-17T05:34:12.651146"
+    },
+    "digital_portal": {
+      "total_tables": 20,
+      "completed_tables": 20,
+      "percent_complete": 100.0,
+      "is_ready": true,
+      "updated_at": "2026-09-17T05:34:12.651146"
+    },
+    "digital_portal_events": {
+      "total_tables": 18,
+      "completed_tables": 18,
+      "percent_complete": 100.0,
+      "is_ready": true,
+      "updated_at": "2026-09-17T05:34:12.651146"
+    },
+    "fund_analytics_monthly_metrics": {
+      "total_tables": 21,
+      "completed_tables": 21,
+      "percent_complete": 100.0,
+      "is_ready": true,
+      "updated_at": "2026-09-17T05:34:12.651146"
+    },
+    "member_transactions": {
+      "total_tables": 17,
+      "completed_tables": 17,
+      "percent_complete": 100.0,
+      "is_ready": true,
+      "updated_at": "2026-09-17T05:34:12.651146"
+    },
+    "digital_portal_registrations": {
+      "total_tables": 19,
+      "completed_tables": 19,
+      "percent_complete": 100.0,
+      "is_ready": true,
+      "updated_at": "2026-09-17T05:34:12.651146"
+    },
+    "aggregated_digital_portal_registrations": {
+      "total_tables": 19,
+      "completed_tables": 19,
+      "percent_complete": 100.0,
+      "is_ready": true,
+      "updated_at": "2026-09-17T05:34:12.651146"
+    },
+    "annuity_quotation": {
+      "total_tables": 8,
+      "completed_tables": 8,
+      "percent_complete": 100.0,
+      "is_ready": true,
+      "updated_at": "2026-09-17T05:34:12.651146"
+    },
+    "in_fund_exit_member_monthly": {
+      "total_tables": 9,
+      "completed_tables": 9,
+      "percent_complete": 100.0,
+      "is_ready": true,
+      "updated_at": "2026-09-17T05:34:12.651146"
+    },
+    "investments_fundamental": {
+      "total_tables": 6,
+      "completed_tables": 6,
+      "percent_complete": 100.0,
+      "is_ready": true,
+      "updated_at": "2026-09-17T05:34:12.651146"
+    }
+  }
+}

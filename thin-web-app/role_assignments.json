@@ -1,0 +1,8 @@
+{
+  "charltonsmithfde@gmail.com": {
+    "role": "ROLE_EXECUTIVE_ALL",
+    "can_view_pii": true,
+    "groups": ["sys_admin"],
+    "note": "System owner. Holds every role and every access surface by decision of 2026-09-20."
+  }
+}

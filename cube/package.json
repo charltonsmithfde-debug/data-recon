@@ -1,0 +1,19 @@
+{
+  "name": "scbi-cube-semantic-layer",
+  "version": "1.0.0",
+  "description": "Enterprise Cube.js Semantic Layer for Sanlam Corporate BI over DuckLake and DuckDB",
+  "main": "cube.js",
+  "scripts": {
+    "dev": "cubejs-server",
+    "start": "cubejs-server"
+  },
+  "dependencies": {
+    "@cubejs-backend/server": "^0.35.0",
+    "@cubejs-backend/duckdb-driver": "^0.35.0",
+    "@cubejs-backend/postgres-driver": "^0.35.0"
+  },
+  "devDependencies": {
+    "@cubejs-backend/server-core": "^0.35.0"
+  },
+  "private": true
+}
