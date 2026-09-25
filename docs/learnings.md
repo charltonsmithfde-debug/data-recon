@@ -31,3 +31,8 @@
 **What to do differently:**
 1. Enforce POPIA redaction at the dimension definition level (`compilePiiDimensionSql`) as well as in `queryRewrite` so shared dimension joins remain safe across all analytical roles.
 
+## 2026-09-25 — V2-3.1-dual-delivery-infra
+**Component:** `version-two/infra/` & `version-two/cube/cube.js` (Dual Delivery Topologies: Cloud Run REST + GCE VM SQL API)
+**What happened:** Under the Single Artifact Principle (ADR-0004), a single container image (`scbi-cube:2.0`) serves both Cloud Run REST API (port `4000`) and GCE VM SQL API (port `5432`). Adding `startCubeSqlServer` and `executeSqlApiQuery` directly into `version-two/cube/cube.js` alongside `startCubeHttpServer` allows the identical runtime to boot in REST-only, SQL-only (`--serve-sql`), or dual-delivery (`--serve` with `CUBEJS_PG_SQL_PORT=5432`) mode while enforcing `checkSqlAuth` scrypt verification and blocking direct catalog/storage bypass queries.
+**What to do differently:**
+1. Always route SQL API queries (`executeSqlApiQuery`) through `modelIndex.loadDomainCubes()` and `securityHooks.queryRewrite` so SQL API consumers (Metabase, Power BI DirectQuery) are subject to the exact same RBAC and POPIA redaction rules as REST API consumers.

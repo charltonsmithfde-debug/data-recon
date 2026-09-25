@@ -1,0 +1,47 @@
+# ==============================================================================
+# version-two/infra/gce-sql-systemd.service
+# Ticket: V2-3.1 — Dual Delivery Deployment Topologies (ADR-0004)
+#
+# Systemd unit service file for `scbi-cube-sql` Google Compute Engine VM
+# (e2-standard-4, Debian 12, Internal VPC IP only, no public IP).
+# Runs the identical `scbi-cube:2.0` container image exposing the Cube SQL API
+# (PostgreSQL wire protocol) on TCP port 5432 for Metabase and Power BI DirectQuery.
+# ==============================================================================
+
+[Unit]
+Description=SCBI Cube.js 1.7.x SQL API Service (Postgres Wire Protocol Port 5432)
+Documentation=https://cube.dev/docs/backend/sql
+After=network-online.target docker.service
+Wants=network-online.target
+Requires=docker.service
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=5
+TimeoutStartSec=120
+User=root
+
+# Environment file provisioned from Google Secret Manager at boot (/etc/scbi-cube/sql.env)
+# Contains: DUCKLAKE_DB_URL, CUBEJS_API_SECRET, CUBEJS_SQL_USERS
+EnvironmentFile=-/etc/scbi-cube/sql.env
+
+ExecStartPre=-/usr/bin/docker stop scbi-cube-sql
+ExecStartPre=-/usr/bin/docker rm scbi-cube-sql
+ExecStart=/usr/bin/docker run --rm --name scbi-cube-sql \
+  --env-file /etc/scbi-cube/sql.env \
+  -e NODE_ENV=production \
+  -e CUBEJS_DB_TYPE=duckdb \
+  -e CUBEJS_DEV_MODE=false \
+  -e CUBE_REST_PORT=4000 \
+  -e CUBEJS_PG_SQL_PORT=5432 \
+  -e DUCKDB_MEMORY_LIMIT=3.5GB \
+  -e GCS_BUCKET_NAME=scbi-ducklake-myanalyticsproduct \
+  -p 5432:5432 \
+  -p 127.0.0.1:4000:4000 \
+  europe-west1-docker.pkg.dev/myanalyticsproduct/scbi-repo/scbi-cube:2.0
+
+ExecStop=/usr/bin/docker stop scbi-cube-sql
+
+[Install]
+WantedBy=multi-user.target

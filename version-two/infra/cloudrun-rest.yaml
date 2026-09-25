@@ -1,0 +1,77 @@
+# ==============================================================================
+# version-two/infra/cloudrun-rest.yaml
+# Ticket: V2-3.1 — Dual Delivery Deployment Topologies (ADR-0004)
+#
+# Google Cloud Run Service Manifest for Cube.js 1.7.x REST API (Port 4000).
+# Consumed by the Thin Web Portal API Gateway over HTTPS with signed HS256 JWTs.
+# ==============================================================================
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: scbi-cube
+  labels:
+    app: scbi-cube
+    tier: semantic-layer
+    version: v2-0
+  annotations:
+    run.googleapis.com/ingress: internal-and-cloud-load-balancing
+spec:
+  template:
+    metadata:
+      annotations:
+        autoscaling.knative.dev/minScale: "1"
+        autoscaling.knative.dev/maxScale: "10"
+        run.googleapis.com/vpc-access-connector: projects/myanalyticsproduct/locations/europe-west1/connectors/scbi-vpc-connector
+        run.googleapis.com/vpc-access-egress: private-ranges-only
+        run.googleapis.com/cpu-throttling: "false"
+    spec:
+      containerConcurrency: 80
+      timeoutSeconds: 300
+      serviceAccountName: scbi-cube-sa@myanalyticsproduct.iam.gserviceaccount.com
+      containers:
+        - name: scbi-cube-rest
+          image: europe-west1-docker.pkg.dev/myanalyticsproduct/scbi-repo/scbi-cube:2.0
+          ports:
+            - name: http1
+              containerPort: 4000
+          resources:
+            limits:
+              cpu: "2"
+              memory: 4Gi
+          env:
+            - name: NODE_ENV
+              value: "production"
+            - name: CUBEJS_DB_TYPE
+              value: "duckdb"
+            - name: CUBEJS_DEV_MODE
+              value: "false"
+            - name: CUBEJS_REST_API
+              value: "true"
+            - name: CUBE_REST_PORT
+              value: "4000"
+            - name: DUCKDB_MEMORY_LIMIT
+              value: "3.5GB"
+            - name: GCS_BUCKET_NAME
+              value: "scbi-ducklake-myanalyticsproduct"
+            - name: DUCKLAKE_DB_URL
+              valueFrom:
+                secretKeyRef:
+                  name: scbi-ducklake-db-url
+                  key: latest
+            - name: CUBEJS_API_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: scbi-cube-api-secret
+                  key: latest
+          startupProbe:
+            httpGet:
+              path: /readyz
+              port: 4000
+            initialDelaySeconds: 2
+            periodSeconds: 5
+            failureThreshold: 6
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 4000
+            periodSeconds: 15

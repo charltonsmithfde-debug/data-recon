@@ -51,9 +51,9 @@ V2-1.2 + V2-2.1 ──► V2-4.2 (concurrency-acid-suite)
 ### Milestone 3 — Dual Delivery Infrastructure & Consumer Integration
 | # | Story / Ticket | Status | Blocked On | Touches |
 |---|---|---|---|---|
-| 7 | V2-3.1 Dual Delivery Deployment Topologies (Cloud Run REST + GCE VM SQL API) | **TODO** | — | `version-two/infra/Dockerfile`, `version-two/infra/cloudrun-rest.yaml`, `version-two/infra/gce-sql-systemd.service` |
-| 8 | V2-3.2 Thin Web Portal Decoupled API Gateway | **TODO** | V2-3.1 | `version-two/portal/server.py`, `version-two/portal/auth.py` |
-| 9 | V2-3.3 Downstream BI DirectQuery & Metabase Rewiring | **TODO** | V2-3.1 | `version-two/metabase/setup.py`, `docs/METABASE_CUBE_SQL.md` |
+| 7 | V2-3.1 Dual Delivery Deployment Topologies (Cloud Run REST + GCE VM SQL API) | **DONE** | — | `version-two/infra/Dockerfile`, `version-two/infra/cloudrun-rest.yaml`, `version-two/infra/gce-sql-systemd.service` |
+| 8 | V2-3.2 Thin Web Portal Decoupled API Gateway | **TODO** | — | `version-two/portal/server.py`, `version-two/portal/auth.py` |
+| 9 | V2-3.3 Downstream BI DirectQuery & Metabase Rewiring | **TODO** | — | `version-two/metabase/setup.py`, `docs/METABASE_CUBE_SQL.md` |
 
 ### Milestone 4 — Parity, ACID Concurrency & Verification Harness
 | # | Story / Ticket | Status | Blocked On | Touches |

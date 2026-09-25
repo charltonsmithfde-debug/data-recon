@@ -2,18 +2,18 @@
   "project": {
     "name": "data-recon: Unified ACID Lakehouse & Semantic Metric Layer (DuckLake + Cube.js)",
     "repo": "data-recon",
-    "percent_done": 54.5,
+    "percent_done": 63.6,
     "metrics": {
       "total": 11,
-      "todo": 5,
+      "todo": 4,
       "planning": 0,
       "implementing": 0,
       "validating": 0,
       "reviewing": 0,
-      "shipped": 6,
+      "shipped": 7,
       "blocked": 0
     },
-    "updated_at": "2026-09-25T18:43:54.888818+00:00"
+    "updated_at": "2026-09-25T19:34:54.033768+00:00"
   },
   "documents": [
     {
@@ -181,16 +181,16 @@
       "id": "V2-3.1",
       "title": "V2-3.1 Dual Delivery Deployment Topologies (Cloud Run REST + GCE VM SQL API)",
       "phase": "Milestone 3 \u2014 Dual Delivery Infrastructure & Consumer Integration",
-      "status": "todo",
-      "raw_status": "**TODO**",
+      "status": "shipped",
+      "raw_status": "**DONE**",
       "blocked_on": [],
       "touches": "`version-two/infra/Dockerfile`, `version-two/infra/cloudrun-rest.yaml`, `version-two/infra/gce-sql-systemd.service`",
       "criteria": [],
-      "has_plan": false,
+      "has_plan": true,
       "has_ticket_doc": true,
       "links": {
         "spec": "docs/prd.md",
-        "plan": null,
+        "plan": "docs/plans/V2-3.1-plan.md",
         "ticket": "docs/tickets/V2-3.1-dual-delivery-infra.md",
         "execution_plan": "docs/roadmap.md"
       }
@@ -201,9 +201,7 @@
       "phase": "Milestone 3 \u2014 Dual Delivery Infrastructure & Consumer Integration",
       "status": "todo",
       "raw_status": "**TODO**",
-      "blocked_on": [
-        "V2-3.1"
-      ],
+      "blocked_on": [],
       "touches": "`version-two/portal/server.py`, `version-two/portal/auth.py`",
       "criteria": [],
       "has_plan": false,
@@ -221,9 +219,7 @@
       "phase": "Milestone 3 \u2014 Dual Delivery Infrastructure & Consumer Integration",
       "status": "todo",
       "raw_status": "**TODO**",
-      "blocked_on": [
-        "V2-3.1"
-      ],
+      "blocked_on": [],
       "touches": "`version-two/metabase/setup.py`, `docs/METABASE_CUBE_SQL.md`",
       "criteria": [],
       "has_plan": false,

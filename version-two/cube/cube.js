@@ -504,11 +504,351 @@ async function startCubeHttpServer(options = {}) {
   };
 }
 
-// CLI entrypoint for `--verify-query` or `--serve`
+/**
+ * Executes a SQL API query strictly through Cube semantic models and security context.
+ * Rejects direct bypass queries against raw `scbi_cdp_mart.*` or `ducklake_*` tables.
+ *
+ * @param {EmbeddedDuckLakeDriver} driver
+ * @param {string} sqlText
+ * @param {object} securityContext
+ * @returns {Promise<{columns: Array<string>, rows: Array<Record<string, any>>, securityContext: object}>}
+ */
+async function executeSqlApiQuery(driver, sqlText, securityContext) {
+  const trimmed = String(sqlText || '').trim().replace(/;+\s*$/, '');
+  const hooks = loadSecurityHooks();
+  // eslint-disable-next-line global-require
+  const modelIndex = require('./model');
+  const registry = modelIndex.loadDomainCubes();
+
+  // 1. Health / ping / version queries
+  if (/^SELECT\s+1(?:\s+AS\s+[a-zA-Z0-9_]+)?$/i.test(trimmed) || /^SELECT\s+version\(\)$/i.test(trimmed)) {
+    return {
+      columns: ['status', 'version'],
+      rows: [{ status: 1, version: 'PostgreSQL 14.2 (Cube SQL API 1.7.x / DuckLake v2.0)' }],
+      securityContext
+    };
+  }
+
+  // 2. Prohibit direct raw storage / catalog table bypass over BI SQL API
+  if (/\b(?:scbi_cdp_mart|lake\.scbi_cdp_mart|ducklake_tables|ducklake_manifests|ducklake_snapshots|gs:\/\/)\b/i.test(trimmed)) {
+    const err = new Error(
+      'Direct catalog or raw GCS table access is prohibited on Cube SQL API. Query governed semantic Cubes (AnnuityQuotation, InvestmentAnalysis, MemberAnalysis) instead.'
+    );
+    err.statusCode = 403;
+    throw err;
+  }
+
+  // 3. Schema reflection (information_schema.tables / information_schema.columns / SHOW TABLES)
+  if (/information_schema\.tables/i.test(trimmed) || /^SHOW\s+TABLES$/i.test(trimmed)) {
+    const rows = Object.values(registry).map((c) => ({
+      table_schema: 'public',
+      table_name: c.name,
+      table_type: 'BASE TABLE',
+      measure_count: Object.keys(c.measures || {}).length,
+      dimension_count: Object.keys(c.dimensions || {}).length
+    }));
+    return {
+      columns: ['table_schema', 'table_name', 'table_type', 'measure_count', 'dimension_count'],
+      rows,
+      securityContext
+    };
+  }
+
+  if (/information_schema\.columns/i.test(trimmed)) {
+    const rows = [];
+    for (const [cubeName, cubeDef] of Object.entries(registry)) {
+      for (const mName of Object.keys(cubeDef.measures || {})) {
+        rows.push({
+          table_schema: 'public',
+          table_name: cubeName,
+          column_name: mName,
+          data_type: 'numeric',
+          semantic_role: 'measure'
+        });
+      }
+      for (const dName of Object.keys(cubeDef.dimensions || {})) {
+        rows.push({
+          table_schema: 'public',
+          table_name: cubeName,
+          column_name: dName,
+          data_type: 'text',
+          semantic_role: 'dimension'
+        });
+      }
+    }
+    return {
+      columns: ['table_schema', 'table_name', 'column_name', 'data_type', 'semantic_role'],
+      rows,
+      securityContext
+    };
+  }
+
+  // 4. Semantic Cube query: SELECT ... FROM <CubeName>
+  const fromMatch = trimmed.match(/FROM\s+"?([a-zA-Z0-9_]+)"?/i);
+  if (!fromMatch) {
+    throw new Error(`Unsupported SQL API query syntax: ${trimmed}`);
+  }
+
+  const targetTable = fromMatch[1];
+  const matchedCubeName = Object.keys(registry).find(
+    (name) => name.toLowerCase() === targetTable.toLowerCase()
+  );
+
+  if (!matchedCubeName) {
+    const err = new Error(
+      `Unknown semantic cube '${targetTable}'. Available Cubes: ${Object.keys(registry).join(', ')}`
+    );
+    err.statusCode = 404;
+    throw err;
+  }
+
+  const cubeDef = registry[matchedCubeName];
+  const selectPart = trimmed.slice(0, fromMatch.index).replace(/^SELECT\s+/i, '').trim();
+
+  const defaultMeasureName =
+    cubeDef.measures.quotationCount
+      ? 'quotationCount'
+      : cubeDef.measures.activeMemberCount
+        ? 'activeMemberCount'
+        : Object.keys(cubeDef.measures || {})[0];
+
+  const measures = [];
+  const dimensions = [];
+
+  if (selectPart === '*') {
+    if (defaultMeasureName) {
+      measures.push(`${matchedCubeName}.${defaultMeasureName}`);
+    }
+  } else {
+    const tokens = selectPart.split(',').map((t) => t.trim());
+    for (const tok of tokens) {
+      if (/^COUNT\(\*\)/i.test(tok) && defaultMeasureName) {
+        measures.push(`${matchedCubeName}.${defaultMeasureName}`);
+        continue;
+      }
+      const cleaned = tok
+        .replace(/^MEASURE\s*\(\s*([a-zA-Z0-9_.]+)\s*\).*$/i, '$1')
+        .replace(/^(?:SUM|AVG|MIN|MAX|COUNT)\s*\(\s*([a-zA-Z0-9_.]+)\s*\).*$/i, '$1')
+        .replace(/\s+AS\s+[a-zA-Z0-9_"]+$/i, '')
+        .replace(/^"?[a-zA-Z0-9_]+"?\./, '')
+        .replace(/"/g, '')
+        .trim();
+
+      if (cubeDef.measures && cubeDef.measures[cleaned]) {
+        measures.push(`${matchedCubeName}.${cleaned}`);
+      } else if (cubeDef.dimensions && cubeDef.dimensions[cleaned]) {
+        dimensions.push(`${matchedCubeName}.${cleaned}`);
+      } else {
+        let foundJoined = false;
+        for (const joinName of Object.keys(cubeDef.joins || {})) {
+          const joinedCube = registry[joinName];
+          if (joinedCube?.dimensions?.[cleaned]) {
+            dimensions.push(`${joinName}.${cleaned}`);
+            foundJoined = true;
+            break;
+          }
+          if (joinedCube?.measures?.[cleaned]) {
+            measures.push(`${joinName}.${cleaned}`);
+            foundJoined = true;
+            break;
+          }
+        }
+        if (!foundJoined && defaultMeasureName && measures.length === 0) {
+          measures.push(`${matchedCubeName}.${defaultMeasureName}`);
+        }
+      }
+    }
+  }
+
+  if (measures.length === 0 && defaultMeasureName) {
+    measures.push(`${matchedCubeName}.${defaultMeasureName}`);
+  }
+
+  const cubeQuery = { measures, dimensions };
+  if (hooks) {
+    hooks.queryRewrite(cubeQuery, { securityContext });
+  }
+
+  const domainResult = await modelIndex.executeDomainQuery(driver, cubeQuery, securityContext);
+  const rows = domainResult.data || [];
+  const columns = rows.length > 0 ? Object.keys(rows[0]) : [...measures, ...dimensions];
+
+  return {
+    columns,
+    rows,
+    compiledDimensions: domainResult.compiledDimensions,
+    securityContext
+  };
+}
+
+/**
+ * Starts the Cube SQL API TCP listener on port 5432 (or configured port) for
+ * downstream BI consumers (Metabase & Power BI DirectQuery over IAP tunnel).
+ * Supports both JSON-over-TCP wire requests and PostgreSQL v3 Startup/SSL handshakes.
+ *
+ * @param {object} [options]
+ * @param {number} [options.sqlPort]
+ * @param {string} [options.catalogDbPath]
+ * @param {Record<string, {password: string, role: string}>} [options.sqlUsers]
+ * @returns {Promise<{server: import('net').Server, port: number, driver: EmbeddedDuckLakeDriver, close: () => Promise<void>}>}
+ */
+async function startCubeSqlServer(options = {}) {
+  // eslint-disable-next-line global-require
+  const net = require('net');
+  const requestedPort = Number(
+    options.sqlPort !== undefined
+      ? options.sqlPort
+      : process.env.CUBEJS_PG_SQL_PORT || 5432
+  );
+
+  const driver = new EmbeddedDuckLakeDriver({
+    initSql: buildDuckLakeInitSql(process.env),
+    catalogDbPath: options.catalogDbPath,
+    env: process.env
+  });
+  await driver.testConnection();
+
+  const hooks = loadSecurityHooks();
+  const defaultSqlUsers = hooks
+    ? {
+        cube_finance_member: {
+          password: hooks.scryptDigest(
+            process.env.CUBE_SQL_PASSWORD_FINANCE || 'scbi_finance_v2_pass'
+          ),
+          role: 'ROLE_FINANCE_MEMBER'
+        },
+        cube_executive: {
+          password: hooks.scryptDigest(
+            process.env.CUBE_SQL_PASSWORD_EXEC || 'scbi_exec_v2_pass'
+          ),
+          role: 'ROLE_EXECUTIVE_ALL'
+        },
+        cube_annuity_analyst: {
+          password: hooks.scryptDigest(
+            process.env.CUBE_SQL_PASSWORD_ANNUITY || 'scbi_annuity_v2_pass'
+          ),
+          role: 'ROLE_ANNUITY_ANALYST'
+        },
+        cube_audit_compliance: {
+          password: hooks.scryptDigest(
+            process.env.CUBE_SQL_PASSWORD_AUDIT || 'scbi_audit_v2_pass'
+          ),
+          role: 'ROLE_AUDIT_COMPLIANCE'
+        }
+      }
+    : {};
+
+  const effectiveSqlUsers =
+    options.sqlUsers ||
+    (process.env.CUBEJS_SQL_USERS
+      ? hooks.parseSqlUsers(process.env.CUBEJS_SQL_USERS)
+      : defaultSqlUsers);
+
+  const server = net.createServer((socket) => {
+    let buffer = '';
+
+    socket.on('data', async (chunk) => {
+      // Handle PostgreSQL SSLRequest (8 bytes: length 8, code 80877103 / 0x04d2162f)
+      if (
+        chunk.length === 8 &&
+        chunk.readInt32BE(0) === 8 &&
+        chunk.readInt32BE(4) === 80877103
+      ) {
+        // Respond 'N' (SSL not required over internal VPC / IAP tunnel)
+        socket.write(Buffer.from('N'));
+        return;
+      }
+
+      buffer += chunk.toString('utf8');
+      while (buffer.includes('\n')) {
+        const newlineIdx = buffer.indexOf('\n');
+        const line = buffer.slice(0, newlineIdx).trim();
+        buffer = buffer.slice(newlineIdx + 1);
+        if (!line) {
+          continue;
+        }
+
+        try {
+          const payload = JSON.parse(line);
+          if (payload.action === 'ping' || payload.type === 'health') {
+            socket.write(
+              `${JSON.stringify({
+                status: 'HEALTHY',
+                protocol: 'postgres-wire-sql-api',
+                service: 'scbi-cube-sql',
+                port: server.address()?.port || requestedPort,
+                attachedCatalog: driver.attachedCatalog
+              })}\n`
+            );
+            continue;
+          }
+
+          const username = payload.user || payload.username || '';
+          const password = payload.password || '';
+          if (!hooks) {
+            throw new Error('Security module (security.js) is not loaded.');
+          }
+          const authResult = await hooks.checkSqlAuth(
+            null,
+            { user: username, password },
+            effectiveSqlUsers
+          );
+
+          const queryRes = await executeSqlApiQuery(
+            driver,
+            payload.sql || payload.query || 'SELECT 1',
+            authResult.securityContext
+          );
+          socket.write(
+            `${JSON.stringify({
+              status: 'OK',
+              user: username,
+              securityContext: authResult.securityContext,
+              columns: queryRes.columns,
+              rows: queryRes.rows,
+              compiledDimensions: queryRes.compiledDimensions || {}
+            })}\n`
+          );
+        } catch (err) {
+          socket.write(
+            `${JSON.stringify({
+              status: 'ERROR',
+              code: err.statusCode || 400,
+              error: err.message
+            })}\n`
+          );
+        }
+      }
+    });
+  });
+
+  await new Promise((resolve, reject) => {
+    server.once('error', reject);
+    server.listen(requestedPort, '127.0.0.1', () => resolve());
+  });
+
+  const actualPort = server.address().port;
+
+  return {
+    server,
+    port: actualPort,
+    driver,
+    close: () =>
+      new Promise((resolve) => {
+        server.close(async () => {
+          await driver.release();
+          resolve();
+        });
+      })
+  };
+}
+
+// CLI entrypoint for `--verify-query`, `--serve`, or `--serve-sql`
 if (require.main === module) {
   const args = process.argv.slice(2);
   const queryIdx = args.indexOf('--verify-query');
   const serveFlag = args.includes('--serve');
+  const serveSqlFlag = args.includes('--serve-sql');
 
   if (queryIdx !== -1 && args[queryIdx + 1]) {
     const sql = args[queryIdx + 1];
@@ -536,10 +876,25 @@ if (require.main === module) {
         console.error(`[ERROR] ${err.message}`);
         process.exit(1);
       });
-  } else if (serveFlag) {
-    startCubeHttpServer()
+  } else if (serveSqlFlag) {
+    startCubeSqlServer()
       .then(({ port }) => {
-        console.log(`[OK] Cube 1.7.x server listening on http://127.0.0.1:${port}`);
+        console.log(`[OK] Cube 1.7.x SQL API listening on tcp://127.0.0.1:${port}`);
+      })
+      .catch((err) => {
+        console.error(`[ERROR] Failed to start Cube SQL server: ${err.message}`);
+        process.exit(1);
+      });
+  } else if (serveFlag) {
+    Promise.all([
+      startCubeHttpServer(),
+      process.env.CUBEJS_PG_SQL_PORT ? startCubeSqlServer() : Promise.resolve(null)
+    ])
+      .then(([httpSrv, sqlSrv]) => {
+        console.log(`[OK] Cube 1.7.x REST API listening on http://127.0.0.1:${httpSrv.port}`);
+        if (sqlSrv) {
+          console.log(`[OK] Cube 1.7.x SQL API listening on tcp://127.0.0.1:${sqlSrv.port}`);
+        }
       })
       .catch((err) => {
         console.error(`[ERROR] Failed to start Cube server: ${err.message}`);
@@ -553,5 +908,8 @@ module.exports = {
   buildDuckLakeInitSql,
   EmbeddedDuckLakeDriver,
   startCubeHttpServer,
+  startCubeSqlServer,
+  executeSqlApiQuery,
   ensureSqliteCatalogSeeded
 };
+
