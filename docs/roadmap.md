@@ -44,8 +44,8 @@ V2-1.2 + V2-2.1 ──► V2-4.2 (concurrency-acid-suite)
 ### Milestone 2 — Unified Semantic Engine & Governance (Cube.js 1.7.x)
 | # | Story / Ticket | Status | Blocked On | Touches |
 |---|---|---|---|---|
-| 4 | V2-2.1 Cube.js 1.7.x Core Engine with Embedded DuckDB & DuckLake Extension | **TODO** | — | `version-two/cube/package.json`, `version-two/cube/cube.js` |
-| 5 | V2-2.2 Server-Enforced RBAC & Dynamic POPIA Masking Security Context | **TODO** | V2-2.1 | `version-two/cube/security.js`, `thin-web-app/role_assignments.json` |
+| 4 | V2-2.1 Cube.js 1.7.x Core Engine with Embedded DuckDB & DuckLake Extension | **DONE** | — | `version-two/cube/package.json`, `version-two/cube/cube.js` |
+| 5 | V2-2.2 Server-Enforced RBAC & Dynamic POPIA Masking Security Context | **TODO** | — | `version-two/cube/security.js`, `thin-web-app/role_assignments.json` |
 | 6 | V2-2.3 Semantic Domain Cube Models & Multi-Table Join Graphs | **TODO** | V2-2.1, V2-2.2 | `version-two/cube/model/*.js` |
 
 ### Milestone 3 — Dual Delivery Infrastructure & Consumer Integration

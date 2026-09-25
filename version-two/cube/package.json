@@ -1,0 +1,24 @@
+{
+  "name": "scbi-cube-semantic-layer-v2",
+  "version": "2.0.0",
+  "description": "Version 2.0 Unified Semantic Layer (Cube.js 1.7.x) with Embedded DuckDB (@duckdb/node-api) and DuckLake ACID Catalog",
+  "main": "cube.js",
+  "private": true,
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "scripts": {
+    "dev": "cubejs-server",
+    "start": "node cube.js --serve",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "@cubejs-backend/duckdb-driver": "^1.7.0",
+    "@cubejs-backend/postgres-driver": "^1.7.0",
+    "@cubejs-backend/server": "^1.7.0",
+    "@duckdb/node-api": "^1.2.1"
+  },
+  "devDependencies": {
+    "@cubejs-backend/server-core": "^1.7.0"
+  }
+}

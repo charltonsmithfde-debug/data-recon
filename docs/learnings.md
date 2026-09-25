@@ -13,3 +13,9 @@
 **What to do differently:**
 1. Keep `DUCKLAKE_DB_URL` standardized on port `5433` for local dev in `.env.example` and verify port separation in automated contract tests (`test_v2_1_3_local_dev_harness.py`).
 
+## 2026-09-25 — V2-2.1-cube-semantic-engine
+**Component:** `version-two/cube/` (Cube.js 1.7.x Core Engine & Embedded DuckLake Driver)
+**What happened:** In local/CI environments without live Cloud SQL connectivity or pre-cached C++ native bindings, Node.js v26's built-in `node:sqlite` (`DatabaseSync`) enables `EmbeddedDuckLakeDriver` to deterministically resolve `lake.<schema>.<table>` queries against the DuckLake catalog (`ducklake_tables`, `ducklake_manifests`, `ducklake_snapshots`) while using `@duckdb/node-api` in-process in production containers.
+**What to do differently:**
+1. Store temporary fallback SQLite catalog files in `os.tmpdir()` rather than `version-two/ducklake/` so CLI dry-runs (`node version-two/cube/cube.js --verify-query ...`) never leave untracked files in the repository tree.
+
