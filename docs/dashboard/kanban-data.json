@@ -2,18 +2,18 @@
   "project": {
     "name": "data-recon: Unified ACID Lakehouse & Semantic Metric Layer (DuckLake + Cube.js)",
     "repo": "data-recon",
-    "percent_done": 0.0,
+    "percent_done": 54.5,
     "metrics": {
       "total": 11,
-      "todo": 10,
-      "planning": 1,
+      "todo": 5,
+      "planning": 0,
       "implementing": 0,
       "validating": 0,
       "reviewing": 0,
-      "shipped": 0,
+      "shipped": 6,
       "blocked": 0
     },
-    "updated_at": "2026-09-25T16:36:28.112845+00:00"
+    "updated_at": "2026-09-25T18:43:54.888818+00:00"
   },
   "documents": [
     {
@@ -73,16 +73,16 @@
       "id": "V2-1.1",
       "title": "V2-1.1 Initialize DuckLake PostgreSQL Metadata Catalog",
       "phase": "Milestone 1 \u2014 ACID Lakehouse Catalog & Storage Foundation",
-      "status": "planning",
-      "raw_status": "**PRIMING**",
+      "status": "shipped",
+      "raw_status": "**DONE**",
       "blocked_on": [],
       "touches": "`version-two/ducklake/init_catalog.py`, `version-two/ducklake/schema.sql`",
       "criteria": [],
-      "has_plan": false,
+      "has_plan": true,
       "has_ticket_doc": true,
       "links": {
         "spec": "docs/prd.md",
-        "plan": null,
+        "plan": "docs/plans/V2-1.1-plan.md",
         "ticket": "docs/tickets/V2-1.1-ducklake-catalog-init.md",
         "execution_plan": "docs/roadmap.md"
       }
@@ -91,18 +91,16 @@
       "id": "V2-1.2",
       "title": "V2-1.2 Atomic Staging & Snapshot Commit Pipeline",
       "phase": "Milestone 1 \u2014 ACID Lakehouse Catalog & Storage Foundation",
-      "status": "todo",
-      "raw_status": "**TODO**",
-      "blocked_on": [
-        "V2-1.1"
-      ],
+      "status": "shipped",
+      "raw_status": "**DONE**",
+      "blocked_on": [],
       "touches": "`version-two/ducklake/reload_pipeline.py`, Snowflake/GCS stage",
       "criteria": [],
-      "has_plan": false,
+      "has_plan": true,
       "has_ticket_doc": true,
       "links": {
         "spec": "docs/prd.md",
-        "plan": null,
+        "plan": "docs/plans/V2-1.2-plan.md",
         "ticket": "docs/tickets/V2-1.2-atomic-reload-pipeline.md",
         "execution_plan": "docs/roadmap.md"
       }
@@ -111,18 +109,16 @@
       "id": "V2-1.3",
       "title": "V2-1.3 Local Development Environment & GCS ADC Harness",
       "phase": "Milestone 1 \u2014 ACID Lakehouse Catalog & Storage Foundation",
-      "status": "todo",
-      "raw_status": "**TODO**",
-      "blocked_on": [
-        "V2-1.1"
-      ],
+      "status": "shipped",
+      "raw_status": "**DONE**",
+      "blocked_on": [],
       "touches": "`version-two/infra/docker-compose.dev.yml`, `version-two/infra/.env.example`",
       "criteria": [],
-      "has_plan": false,
+      "has_plan": true,
       "has_ticket_doc": true,
       "links": {
         "spec": "docs/prd.md",
-        "plan": null,
+        "plan": "docs/plans/V2-1.3-plan.md",
         "ticket": "docs/tickets/V2-1.3-local-dev-harness.md",
         "execution_plan": "docs/roadmap.md"
       }
@@ -131,19 +127,16 @@
       "id": "V2-2.1",
       "title": "V2-2.1 Cube.js 1.7.x Core Engine with Embedded DuckDB & DuckLake Extension",
       "phase": "Milestone 2 \u2014 Unified Semantic Engine & Governance (Cube.js 1.7.x)",
-      "status": "todo",
-      "raw_status": "**TODO**",
-      "blocked_on": [
-        "V2-1.1",
-        "V2-1.3"
-      ],
+      "status": "shipped",
+      "raw_status": "**DONE**",
+      "blocked_on": [],
       "touches": "`version-two/cube/package.json`, `version-two/cube/cube.js`",
       "criteria": [],
-      "has_plan": false,
+      "has_plan": true,
       "has_ticket_doc": true,
       "links": {
         "spec": "docs/prd.md",
-        "plan": null,
+        "plan": "docs/plans/V2-2.1-plan.md",
         "ticket": "docs/tickets/V2-2.1-cube-semantic-engine.md",
         "execution_plan": "docs/roadmap.md"
       }
@@ -152,18 +145,16 @@
       "id": "V2-2.2",
       "title": "V2-2.2 Server-Enforced RBAC & Dynamic POPIA Masking Security Context",
       "phase": "Milestone 2 \u2014 Unified Semantic Engine & Governance (Cube.js 1.7.x)",
-      "status": "todo",
-      "raw_status": "**TODO**",
-      "blocked_on": [
-        "V2-2.1"
-      ],
+      "status": "shipped",
+      "raw_status": "**DONE**",
+      "blocked_on": [],
       "touches": "`version-two/cube/security.js`, `thin-web-app/role_assignments.json`",
       "criteria": [],
-      "has_plan": false,
+      "has_plan": true,
       "has_ticket_doc": true,
       "links": {
         "spec": "docs/prd.md",
-        "plan": null,
+        "plan": "docs/plans/V2-2.2-plan.md",
         "ticket": "docs/tickets/V2-2.2-cube-security-context.md",
         "execution_plan": "docs/roadmap.md"
       }
@@ -172,19 +163,16 @@
       "id": "V2-2.3",
       "title": "V2-2.3 Semantic Domain Cube Models & Multi-Table Join Graphs",
       "phase": "Milestone 2 \u2014 Unified Semantic Engine & Governance (Cube.js 1.7.x)",
-      "status": "todo",
-      "raw_status": "**TODO**",
-      "blocked_on": [
-        "V2-2.1",
-        "V2-2.2"
-      ],
+      "status": "shipped",
+      "raw_status": "**DONE**",
+      "blocked_on": [],
       "touches": "`version-two/cube/model/*.js`",
       "criteria": [],
-      "has_plan": false,
+      "has_plan": true,
       "has_ticket_doc": true,
       "links": {
         "spec": "docs/prd.md",
-        "plan": null,
+        "plan": "docs/plans/V2-2.3-plan.md",
         "ticket": "docs/tickets/V2-2.3-semantic-domain-cubes.md",
         "execution_plan": "docs/roadmap.md"
       }
@@ -195,10 +183,7 @@
       "phase": "Milestone 3 \u2014 Dual Delivery Infrastructure & Consumer Integration",
       "status": "todo",
       "raw_status": "**TODO**",
-      "blocked_on": [
-        "V2-2.1",
-        "V2-2.3"
-      ],
+      "blocked_on": [],
       "touches": "`version-two/infra/Dockerfile`, `version-two/infra/cloudrun-rest.yaml`, `version-two/infra/gce-sql-systemd.service`",
       "criteria": [],
       "has_plan": false,
@@ -217,7 +202,6 @@
       "status": "todo",
       "raw_status": "**TODO**",
       "blocked_on": [
-        "V2-2.2",
         "V2-3.1"
       ],
       "touches": "`version-two/portal/server.py`, `version-two/portal/auth.py`",
@@ -258,7 +242,6 @@
       "status": "todo",
       "raw_status": "**TODO**",
       "blocked_on": [
-        "V2-2.3",
         "V2-3.1"
       ],
       "touches": "`version-two/tests/test_metric_parity.py`",
@@ -278,10 +261,7 @@
       "phase": "Milestone 4 \u2014 Parity, ACID Concurrency & Verification Harness",
       "status": "todo",
       "raw_status": "**TODO**",
-      "blocked_on": [
-        "V2-1.2",
-        "V2-2.1"
-      ],
+      "blocked_on": [],
       "touches": "`version-two/tests/test_concurrency_acid.py`",
       "criteria": [],
       "has_plan": false,

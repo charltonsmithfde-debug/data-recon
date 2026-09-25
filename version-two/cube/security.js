@@ -112,8 +112,12 @@ const ROLE_PERMISSIONS = {
 const SHARED_DIMENSIONS = [
   'SharedDimensions',
   'DimDate',
+  'dim_date',
   'DimFund',
   'DimScheme',
+  'dim_scheme',
+  'DimMember',
+  'dim_member',
   'DimClient',
   'DimEmployer',
   'DimPaypoint',

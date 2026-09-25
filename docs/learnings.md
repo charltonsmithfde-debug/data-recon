@@ -25,3 +25,9 @@
 **What to do differently:**
 1. Always compute `canViewPii` as `Boolean(ROLE_PERMISSIONS[role].canViewPii && claims.canViewPii)` so a non-PII role can never self-escalate PII visibility even if a forged or misconfigured claim asserts `canViewPii: true`.
 
+## 2026-09-25 — V2-2.3-semantic-domain-cubes
+**Component:** `version-two/cube/model/` (Semantic Domain Cube Models & Join Graphs)
+**What happened:** Domain analysts (`ROLE_ANNUITY_ANALYST`, `ROLE_INVESTMENT_ANALYST`) need to join fact cubes (`AnnuityQuotation`, `InvestmentAnalysis`) with `DimMember`, `DimScheme`, and `DimDate` to slice metrics by demographic age brackets and scheme types without bypassing POPIA redaction. Including `DimMember`/`dim_member`, `DimScheme`/`dim_scheme`, and `DimDate`/`dim_date` in `SHARED_DIMENSIONS` while wrapping `id_number`, `member_id`, and `memberNk` in `compilePiiDimensionSql` allows cross-domain demographic slicing while guaranteeing PII fields remain salted SHA-256 hashes for non-PII roles.
+**What to do differently:**
+1. Enforce POPIA redaction at the dimension definition level (`compilePiiDimensionSql`) as well as in `queryRewrite` so shared dimension joins remain safe across all analytical roles.
+

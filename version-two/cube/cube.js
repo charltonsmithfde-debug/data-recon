@@ -418,6 +418,20 @@ async function startCubeHttpServer(options = {}) {
       return;
     }
 
+    if (req.method === 'GET' && reqUrl.pathname === '/cubejs-api/v1/meta') {
+      try {
+        // eslint-disable-next-line global-require
+        const modelIndex = require('./model');
+        const validation = modelIndex.validateDomainCubes();
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ status: 'OK', cubes: validation.cubes }));
+      } catch (err) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: err.message }));
+      }
+      return;
+    }
+
     if (req.method === 'POST' && reqUrl.pathname === '/cubejs-api/v1/load') {
       let body = '';
       req.on('data', (chunk) => {
@@ -437,13 +451,23 @@ async function startCubeHttpServer(options = {}) {
           const parsed = JSON.parse(body || '{}');
           const rawQuery = parsed.query || parsed;
           const rewritten = hooks.queryRewrite(rawQuery, { securityContext });
+
+          let domainResult = null;
+          const modelIndexPath = path.join(CUBE_DIR, 'model', 'index.js');
+          if (fs.existsSync(modelIndexPath)) {
+            // eslint-disable-next-line global-require
+            const modelIndex = require(modelIndexPath);
+            domainResult = await modelIndex.executeDomainQuery(driver, rawQuery, securityContext);
+          }
+
           res.writeHead(200, { 'Content-Type': 'application/json' });
           res.end(
             JSON.stringify({
               query: rewritten,
               securityContext: rewritten.__securityContext,
-              compiledDimensionSql: rewritten.__compiledDimensionSql,
-              data: []
+              compiledDimensionSql:
+                domainResult?.compiledDimensions || rewritten.__compiledDimensionSql,
+              data: domainResult?.data || []
             })
           );
         } catch (err) {

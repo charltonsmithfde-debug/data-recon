@@ -46,17 +46,17 @@ V2-1.2 + V2-2.1 ──► V2-4.2 (concurrency-acid-suite)
 |---|---|---|---|---|
 | 4 | V2-2.1 Cube.js 1.7.x Core Engine with Embedded DuckDB & DuckLake Extension | **DONE** | — | `version-two/cube/package.json`, `version-two/cube/cube.js` |
 | 5 | V2-2.2 Server-Enforced RBAC & Dynamic POPIA Masking Security Context | **DONE** | — | `version-two/cube/security.js`, `thin-web-app/role_assignments.json` |
-| 6 | V2-2.3 Semantic Domain Cube Models & Multi-Table Join Graphs | **TODO** | — | `version-two/cube/model/*.js` |
+| 6 | V2-2.3 Semantic Domain Cube Models & Multi-Table Join Graphs | **DONE** | — | `version-two/cube/model/*.js` |
 
 ### Milestone 3 — Dual Delivery Infrastructure & Consumer Integration
 | # | Story / Ticket | Status | Blocked On | Touches |
 |---|---|---|---|---|
-| 7 | V2-3.1 Dual Delivery Deployment Topologies (Cloud Run REST + GCE VM SQL API) | **TODO** | V2-2.1, V2-2.3 | `version-two/infra/Dockerfile`, `version-two/infra/cloudrun-rest.yaml`, `version-two/infra/gce-sql-systemd.service` |
-| 8 | V2-3.2 Thin Web Portal Decoupled API Gateway | **TODO** | V2-2.2, V2-3.1 | `version-two/portal/server.py`, `version-two/portal/auth.py` |
+| 7 | V2-3.1 Dual Delivery Deployment Topologies (Cloud Run REST + GCE VM SQL API) | **TODO** | — | `version-two/infra/Dockerfile`, `version-two/infra/cloudrun-rest.yaml`, `version-two/infra/gce-sql-systemd.service` |
+| 8 | V2-3.2 Thin Web Portal Decoupled API Gateway | **TODO** | V2-3.1 | `version-two/portal/server.py`, `version-two/portal/auth.py` |
 | 9 | V2-3.3 Downstream BI DirectQuery & Metabase Rewiring | **TODO** | V2-3.1 | `version-two/metabase/setup.py`, `docs/METABASE_CUBE_SQL.md` |
 
 ### Milestone 4 — Parity, ACID Concurrency & Verification Harness
 | # | Story / Ticket | Status | Blocked On | Touches |
 |---|---|---|---|---|
-| 10 | V2-4.1 Automated Metric Parity Reconciliation Suite | **TODO** | V2-2.3, V2-3.1 | `version-two/tests/test_metric_parity.py` |
-| 11 | V2-4.2 Concurrency & Zero-Torn-Reads Verification Harness | **TODO** | V2-2.1 | `version-two/tests/test_concurrency_acid.py` |
+| 10 | V2-4.1 Automated Metric Parity Reconciliation Suite | **TODO** | V2-3.1 | `version-two/tests/test_metric_parity.py` |
+| 11 | V2-4.2 Concurrency & Zero-Torn-Reads Verification Harness | **TODO** | — | `version-two/tests/test_concurrency_acid.py` |
