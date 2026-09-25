@@ -1,9 +1,13 @@
+---
+Context Pack: none
+---
+
 # PRD — Version 2.0: Unified ACID Lakehouse & Semantic Metric Layer (DuckLake + Cube.js)
 
 | | |
 |---|---|
 | **Document ID** | PRD-V2-DUCKLAKE-CUBE |
-| **Status** | In Review (Gate 1 Checkpoint) |
+| **Status** | Approved (Gate 1 Passed) |
 | **Author** | SC BI Engineering & Platform Architecture |
 | **Date** | 2026-09-25 |
 | **Source Material** | [`docs/version-two-clarify.md`](./version-two-clarify.md), [`thin-web-app/PRD_ARCHITECTURE_REALIGNMENT.md`](../thin-web-app/PRD_ARCHITECTURE_REALIGNMENT.md), [`docs/adr/0001-ducklake-or-parquet.md`](./adr/0001-ducklake-or-parquet.md) |

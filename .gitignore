@@ -14,5 +14,8 @@ node_modules/
 
 # Local state / logs
 *.log
+*.db
 .env
 .env.*
+!.env.example
+

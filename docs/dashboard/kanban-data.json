@@ -1,19 +1,19 @@
 {
   "project": {
-    "name": "data-recon: Portal Architecture Realignment",
+    "name": "data-recon: Unified ACID Lakehouse & Semantic Metric Layer (DuckLake + Cube.js)",
     "repo": "data-recon",
-    "percent_done": 21.2,
+    "percent_done": 0.0,
     "metrics": {
-      "total": 33,
-      "todo": 25,
-      "planning": 0,
-      "implementing": 1,
+      "total": 11,
+      "todo": 10,
+      "planning": 1,
+      "implementing": 0,
       "validating": 0,
       "reviewing": 0,
-      "shipped": 7,
+      "shipped": 0,
       "blocked": 0
     },
-    "updated_at": "2026-09-25T08:31:18.242732+00:00"
+    "updated_at": "2026-09-25T16:36:28.112845+00:00"
   },
   "documents": [
     {
@@ -22,13 +22,13 @@
       "type": "prd"
     },
     {
-      "title": "PRD Realignment (V1)",
-      "path": "thin-web-app/PRD_ARCHITECTURE_REALIGNMENT.md",
-      "type": "prd"
+      "title": "Architecture Blueprint (V2)",
+      "path": "docs/architecture.md",
+      "type": "architecture"
     },
     {
-      "title": "Execution Plan",
-      "path": "docs/EXECUTION_PLAN.md",
+      "title": "V2 Roadmap",
+      "path": "docs/roadmap.md",
       "type": "plan"
     },
     {
@@ -60,667 +60,237 @@
       "title": "ADR 0003 \u2014 One roster for what a person sees and what they reach",
       "filename": "0003-access-model-and-role-roster.md",
       "rel_path": "docs/adr/0003-access-model-and-role-roster.md"
+    },
+    {
+      "id": "0004-dual-delivery-topologies",
+      "title": "ADR 0004 \u2014 Dual Delivery Topologies from a Single Container Image",
+      "filename": "0004-dual-delivery-topologies.md",
+      "rel_path": "docs/adr/0004-dual-delivery-topologies.md"
     }
   ],
   "tickets": [
     {
-      "id": "US-6.0",
-      "title": "US-6.0 Stop asserting \"live\"",
-      "phase": "Phase 0 \u2014 Stop the bleeding",
-      "status": "shipped",
-      "raw_status": "**DONE** 09-19",
+      "id": "V2-1.1",
+      "title": "V2-1.1 Initialize DuckLake PostgreSQL Metadata Catalog",
+      "phase": "Milestone 1 \u2014 ACID Lakehouse Catalog & Storage Foundation",
+      "status": "planning",
+      "raw_status": "**PRIMING**",
       "blocked_on": [],
-      "touches": "`server.py`, banner",
+      "touches": "`version-two/ducklake/init_catalog.py`, `version-two/ducklake/schema.sql`",
       "criteria": [],
       "has_plan": false,
-      "has_ticket_doc": false,
+      "has_ticket_doc": true,
       "links": {
-        "spec": "thin-web-app/PRD_ARCHITECTURE_REALIGNMENT.md",
+        "spec": "docs/prd.md",
         "plan": null,
-        "ticket": null,
-        "execution_plan": "docs/EXECUTION_PLAN.md"
+        "ticket": "docs/tickets/V2-1.1-ducklake-catalog-init.md",
+        "execution_plan": "docs/roadmap.md"
       }
     },
     {
-      "id": "US-1.2",
-      "title": "US-1.2 Role from identity",
-      "phase": "Phase 0 \u2014 Stop the bleeding",
-      "status": "shipped",
-      "raw_status": "**DONE** 09-19",
-      "blocked_on": [],
-      "touches": "`resolve_identity()`, 6 call sites",
-      "criteria": [],
-      "has_plan": false,
-      "has_ticket_doc": false,
-      "links": {
-        "spec": "thin-web-app/PRD_ARCHITECTURE_REALIGNMENT.md",
-        "plan": null,
-        "ticket": null,
-        "execution_plan": "docs/EXECUTION_PLAN.md"
-      }
-    },
-    {
-      "id": "US-2.2",
-      "title": "US-2.2 No credential literals",
-      "phase": "Phase 0 \u2014 Stop the bleeding",
-      "status": "shipped",
-      "raw_status": "**DONE** 09-19",
-      "blocked_on": [],
-      "touches": "18 hits / 13 files",
-      "criteria": [],
-      "has_plan": false,
-      "has_ticket_doc": false,
-      "links": {
-        "spec": "thin-web-app/PRD_ARCHITECTURE_REALIGNMENT.md",
-        "plan": null,
-        "ticket": null,
-        "execution_plan": "docs/EXECUTION_PLAN.md"
-      }
-    },
-    {
-      "id": "US-2.1",
-      "title": "**US-2.1 Rotate every exposed credential**",
-      "phase": "Phase 0 \u2014 Stop the bleeding",
-      "status": "implementing",
-      "raw_status": "**NEXT**",
-      "blocked_on": [
-        "\ud83d\udfe0 **the user's authorisation** \u2014 outward-facing and takes the dashboards down; `gcloud` itself is available"
-      ],
-      "touches": "Cloud Run `scbi-cube`, Secret Manager (**not enabled**), `MIGRATION_PLAN.md`, PRD prose",
-      "criteria": [],
-      "has_plan": false,
-      "has_ticket_doc": false,
-      "links": {
-        "spec": "thin-web-app/PRD_ARCHITECTURE_REALIGNMENT.md",
-        "plan": null,
-        "ticket": null,
-        "execution_plan": "docs/EXECUTION_PLAN.md"
-      }
-    },
-    {
-      "id": "US-1.1",
-      "title": "US-1.1 Authenticate before serving anything",
-      "phase": "Phase 1 \u2014 Trust boundary",
-      "status": "shipped",
-      "raw_status": "**DONE (code)** 09-20",
-      "blocked_on": [
-        "criterion 1 only: \ud83d\udd34 **the user** \u2014 Cloud Run behind IAP"
-      ],
-      "touches": "`verify_iap_assertion()` \u2014 real JWKS signature check",
-      "criteria": [],
-      "has_plan": false,
-      "has_ticket_doc": false,
-      "links": {
-        "spec": "thin-web-app/PRD_ARCHITECTURE_REALIGNMENT.md",
-        "plan": null,
-        "ticket": null,
-        "execution_plan": "docs/EXECUTION_PLAN.md"
-      }
-    },
-    {
-      "id": "US-1.4",
-      "title": "US-1.4 Close the RBAC allowlist gap",
-      "phase": "Phase 1 \u2014 Trust boundary",
-      "status": "shipped",
-      "raw_status": "**DONE** 09-20",
-      "blocked_on": [],
-      "touches": "`cube.js` allowlists + startup assertion",
-      "criteria": [],
-      "has_plan": false,
-      "has_ticket_doc": false,
-      "links": {
-        "spec": "thin-web-app/PRD_ARCHITECTURE_REALIGNMENT.md",
-        "plan": null,
-        "ticket": null,
-        "execution_plan": "docs/EXECUTION_PLAN.md"
-      }
-    },
-    {
-      "id": "US-1.3",
-      "title": "US-1.3 Make Cube reject unverified callers",
-      "phase": "Phase 1 \u2014 Trust boundary",
-      "status": "shipped",
-      "raw_status": "**DONE (code)** 09-20",
-      "blocked_on": [
-        "criterion 2 only: \ud83d\udd34 **the user** \u2014 remove `allUsers` from `scbi-cube` **and `scbi-metabase`**"
-      ],
-      "touches": "`cube/cube.js` `checkSqlAuth` \u2014 real scrypt verification",
-      "criteria": [],
-      "has_plan": false,
-      "has_ticket_doc": false,
-      "links": {
-        "spec": "thin-web-app/PRD_ARCHITECTURE_REALIGNMENT.md",
-        "plan": null,
-        "ticket": null,
-        "execution_plan": "docs/EXECUTION_PLAN.md"
-      }
-    },
-    {
-      "id": "US-2.3",
-      "title": "US-2.3 Prefer keyless access",
-      "phase": "Phase 1 \u2014 Trust boundary",
+      "id": "V2-1.2",
+      "title": "V2-1.2 Atomic Staging & Snapshot Commit Pipeline",
+      "phase": "Milestone 1 \u2014 ACID Lakehouse Catalog & Storage Foundation",
       "status": "todo",
-      "raw_status": "OPEN",
+      "raw_status": "**TODO**",
       "blocked_on": [
-        "US-2.1"
+        "V2-1.1"
       ],
-      "touches": "removes the GCS HMAC pair outright",
+      "touches": "`version-two/ducklake/reload_pipeline.py`, Snowflake/GCS stage",
       "criteria": [],
       "has_plan": false,
-      "has_ticket_doc": false,
+      "has_ticket_doc": true,
       "links": {
-        "spec": "thin-web-app/PRD_ARCHITECTURE_REALIGNMENT.md",
+        "spec": "docs/prd.md",
         "plan": null,
-        "ticket": null,
-        "execution_plan": "docs/EXECUTION_PLAN.md"
+        "ticket": "docs/tickets/V2-1.2-atomic-reload-pipeline.md",
+        "execution_plan": "docs/roadmap.md"
       }
     },
     {
-      "id": "US-3.0",
-      "title": "**US-3.0 Upgrade Cube 0.35.x \u2192 1.7.x**",
-      "phase": "Phase 2 \u2014 Cube upgrade and catalog *(unblocks everything structural)*",
+      "id": "V2-1.3",
+      "title": "V2-1.3 Local Development Environment & GCS ADC Harness",
+      "phase": "Milestone 1 \u2014 ACID Lakehouse Catalog & Storage Foundation",
       "status": "todo",
-      "raw_status": "OPEN",
+      "raw_status": "**TODO**",
       "blocked_on": [
-        "US-1.3"
+        "V2-1.1"
       ],
-      "touches": "`package.json`, lockfile, `Dockerfile`, `cube.js:137`",
+      "touches": "`version-two/infra/docker-compose.dev.yml`, `version-two/infra/.env.example`",
       "criteria": [],
       "has_plan": false,
-      "has_ticket_doc": false,
+      "has_ticket_doc": true,
       "links": {
-        "spec": "thin-web-app/PRD_ARCHITECTURE_REALIGNMENT.md",
+        "spec": "docs/prd.md",
         "plan": null,
-        "ticket": null,
-        "execution_plan": "docs/EXECUTION_PLAN.md"
+        "ticket": "docs/tickets/V2-1.3-local-dev-harness.md",
+        "execution_plan": "docs/roadmap.md"
       }
     },
     {
-      "id": "US-3.1",
-      "title": "US-3.1 DuckLake implementation (Option A)",
-      "phase": "Phase 2 \u2014 Cube upgrade and catalog *(unblocks everything structural)*",
+      "id": "V2-2.1",
+      "title": "V2-2.1 Cube.js 1.7.x Core Engine with Embedded DuckDB & DuckLake Extension",
+      "phase": "Milestone 2 \u2014 Unified Semantic Engine & Governance (Cube.js 1.7.x)",
       "status": "todo",
-      "raw_status": "OPEN",
+      "raw_status": "**TODO**",
       "blocked_on": [
-        "**US-3.0**",
-        "US-2.1"
+        "V2-1.1",
+        "V2-1.3"
       ],
-      "touches": "`initSql`, catalog schema, reload script",
+      "touches": "`version-two/cube/package.json`, `version-two/cube/cube.js`",
       "criteria": [],
       "has_plan": false,
-      "has_ticket_doc": false,
+      "has_ticket_doc": true,
       "links": {
-        "spec": "thin-web-app/PRD_ARCHITECTURE_REALIGNMENT.md",
+        "spec": "docs/prd.md",
         "plan": null,
-        "ticket": null,
-        "execution_plan": "docs/EXECUTION_PLAN.md"
+        "ticket": "docs/tickets/V2-2.1-cube-semantic-engine.md",
+        "execution_plan": "docs/roadmap.md"
       }
     },
     {
-      "id": "US-4.1",
-      "title": "US-4.1 Lakehouse views from a manifest",
-      "phase": "Phase 2 \u2014 Cube upgrade and catalog *(unblocks everything structural)*",
+      "id": "V2-2.2",
+      "title": "V2-2.2 Server-Enforced RBAC & Dynamic POPIA Masking Security Context",
+      "phase": "Milestone 2 \u2014 Unified Semantic Engine & Governance (Cube.js 1.7.x)",
       "status": "todo",
-      "raw_status": "OPEN",
+      "raw_status": "**TODO**",
       "blocked_on": [
-        "US-3.1"
+        "V2-2.1"
       ],
-      "touches": "`scripts/migration_state.json` driven",
+      "touches": "`version-two/cube/security.js`, `thin-web-app/role_assignments.json`",
       "criteria": [],
       "has_plan": false,
-      "has_ticket_doc": false,
+      "has_ticket_doc": true,
       "links": {
-        "spec": "thin-web-app/PRD_ARCHITECTURE_REALIGNMENT.md",
+        "spec": "docs/prd.md",
         "plan": null,
-        "ticket": null,
-        "execution_plan": "docs/EXECUTION_PLAN.md"
+        "ticket": "docs/tickets/V2-2.2-cube-security-context.md",
+        "execution_plan": "docs/roadmap.md"
       }
     },
     {
-      "id": "US-3.2",
-      "title": "US-3.2 Make the telemetry cockpit truthful",
-      "phase": "Phase 2 \u2014 Cube upgrade and catalog *(unblocks everything structural)*",
+      "id": "V2-2.3",
+      "title": "V2-2.3 Semantic Domain Cube Models & Multi-Table Join Graphs",
+      "phase": "Milestone 2 \u2014 Unified Semantic Engine & Governance (Cube.js 1.7.x)",
       "status": "todo",
-      "raw_status": "OPEN",
+      "raw_status": "**TODO**",
       "blocked_on": [
-        "US-3.1"
+        "V2-2.1",
+        "V2-2.2"
       ],
-      "touches": "`web/telemetry_engine.py:217-229`",
+      "touches": "`version-two/cube/model/*.js`",
       "criteria": [],
       "has_plan": false,
-      "has_ticket_doc": false,
+      "has_ticket_doc": true,
       "links": {
-        "spec": "thin-web-app/PRD_ARCHITECTURE_REALIGNMENT.md",
+        "spec": "docs/prd.md",
         "plan": null,
-        "ticket": null,
-        "execution_plan": "docs/EXECUTION_PLAN.md"
+        "ticket": "docs/tickets/V2-2.3-semantic-domain-cubes.md",
+        "execution_plan": "docs/roadmap.md"
       }
     },
     {
-      "id": "US-4.2",
-      "title": "US-4.2 Fix the broken dimension bindings",
-      "phase": "Phase 3 \u2014 Semantic foundation",
+      "id": "V2-3.1",
+      "title": "V2-3.1 Dual Delivery Deployment Topologies (Cloud Run REST + GCE VM SQL API)",
+      "phase": "Milestone 3 \u2014 Dual Delivery Infrastructure & Consumer Integration",
       "status": "todo",
-      "raw_status": "OPEN",
+      "raw_status": "**TODO**",
       "blocked_on": [
-        "US-4.1"
+        "V2-2.1",
+        "V2-2.3"
       ],
-      "touches": "`SharedDimensions.js`",
+      "touches": "`version-two/infra/Dockerfile`, `version-two/infra/cloudrun-rest.yaml`, `version-two/infra/gce-sql-systemd.service`",
       "criteria": [],
       "has_plan": false,
-      "has_ticket_doc": false,
+      "has_ticket_doc": true,
       "links": {
-        "spec": "thin-web-app/PRD_ARCHITECTURE_REALIGNMENT.md",
+        "spec": "docs/prd.md",
         "plan": null,
-        "ticket": null,
-        "execution_plan": "docs/EXECUTION_PLAN.md"
+        "ticket": "docs/tickets/V2-3.1-dual-delivery-infra.md",
+        "execution_plan": "docs/roadmap.md"
       }
     },
     {
-      "id": "US-4.3",
-      "title": "US-4.3 Build `FundAnalyticsMonthlyMetrics`",
-      "phase": "Phase 3 \u2014 Semantic foundation",
+      "id": "V2-3.2",
+      "title": "V2-3.2 Thin Web Portal Decoupled API Gateway",
+      "phase": "Milestone 3 \u2014 Dual Delivery Infrastructure & Consumer Integration",
       "status": "todo",
-      "raw_status": "OPEN",
+      "raw_status": "**TODO**",
       "blocked_on": [
-        "US-4.2"
+        "V2-2.2",
+        "V2-3.1"
       ],
-      "touches": "new cube",
+      "touches": "`version-two/portal/server.py`, `version-two/portal/auth.py`",
       "criteria": [],
       "has_plan": false,
-      "has_ticket_doc": false,
+      "has_ticket_doc": true,
       "links": {
-        "spec": "thin-web-app/PRD_ARCHITECTURE_REALIGNMENT.md",
+        "spec": "docs/prd.md",
         "plan": null,
-        "ticket": null,
-        "execution_plan": "docs/EXECUTION_PLAN.md"
+        "ticket": "docs/tickets/V2-3.2-portal-api-gateway.md",
+        "execution_plan": "docs/roadmap.md"
       }
     },
     {
-      "id": "US-4.4",
-      "title": "US-4.4 Build `MemberSegmentation`",
-      "phase": "Phase 3 \u2014 Semantic foundation",
+      "id": "V2-3.3",
+      "title": "V2-3.3 Downstream BI DirectQuery & Metabase Rewiring",
+      "phase": "Milestone 3 \u2014 Dual Delivery Infrastructure & Consumer Integration",
       "status": "todo",
-      "raw_status": "OPEN",
+      "raw_status": "**TODO**",
       "blocked_on": [
-        "US-4.2"
+        "V2-3.1"
       ],
-      "touches": "new cube",
+      "touches": "`version-two/metabase/setup.py`, `docs/METABASE_CUBE_SQL.md`",
       "criteria": [],
       "has_plan": false,
-      "has_ticket_doc": false,
+      "has_ticket_doc": true,
       "links": {
-        "spec": "thin-web-app/PRD_ARCHITECTURE_REALIGNMENT.md",
+        "spec": "docs/prd.md",
         "plan": null,
-        "ticket": null,
-        "execution_plan": "docs/EXECUTION_PLAN.md"
+        "ticket": "docs/tickets/V2-3.3-downstream-bi-rewire.md",
+        "execution_plan": "docs/roadmap.md"
       }
     },
     {
-      "id": "US-4.5",
-      "title": "US-4.5 Define or delete remaining allowlisted cubes",
-      "phase": "Phase 3 \u2014 Semantic foundation",
+      "id": "V2-4.1",
+      "title": "V2-4.1 Automated Metric Parity Reconciliation Suite",
+      "phase": "Milestone 4 \u2014 Parity, ACID Concurrency & Verification Harness",
       "status": "todo",
-      "raw_status": "OPEN",
+      "raw_status": "**TODO**",
       "blocked_on": [
-        "US-4.3",
-        "US-4.4"
+        "V2-2.3",
+        "V2-3.1"
       ],
-      "touches": "allowlist",
+      "touches": "`version-two/tests/test_metric_parity.py`",
       "criteria": [],
       "has_plan": false,
-      "has_ticket_doc": false,
+      "has_ticket_doc": true,
       "links": {
-        "spec": "thin-web-app/PRD_ARCHITECTURE_REALIGNMENT.md",
+        "spec": "docs/prd.md",
         "plan": null,
-        "ticket": null,
-        "execution_plan": "docs/EXECUTION_PLAN.md"
+        "ticket": "docs/tickets/V2-4.1-parity-recon-suite.md",
+        "execution_plan": "docs/roadmap.md"
       }
     },
     {
-      "id": "US-7.1",
-      "title": "US-7.1 Independent ground truth",
-      "phase": "Phase 4 \u2014 Make the proof harness real *before* the dashboard work leans on it",
+      "id": "V2-4.2",
+      "title": "V2-4.2 Concurrency & Zero-Torn-Reads Verification Harness",
+      "phase": "Milestone 4 \u2014 Parity, ACID Concurrency & Verification Harness",
       "status": "todo",
-      "raw_status": "OPEN",
+      "raw_status": "**TODO**",
       "blocked_on": [
-        "US-4.2"
+        "V2-1.2",
+        "V2-2.1"
       ],
-      "touches": "recon oracle",
+      "touches": "`version-two/tests/test_concurrency_acid.py`",
       "criteria": [],
       "has_plan": false,
-      "has_ticket_doc": false,
+      "has_ticket_doc": true,
       "links": {
-        "spec": "thin-web-app/PRD_ARCHITECTURE_REALIGNMENT.md",
+        "spec": "docs/prd.md",
         "plan": null,
-        "ticket": null,
-        "execution_plan": "docs/EXECUTION_PLAN.md"
-      }
-    },
-    {
-      "id": "US-7.3",
-      "title": "US-7.3 Browser verification",
-      "phase": "Phase 4 \u2014 Make the proof harness real *before* the dashboard work leans on it",
-      "status": "todo",
-      "raw_status": "OPEN",
-      "blocked_on": [
-        "\u2014 (install Playwright)"
-      ],
-      "touches": "retires the US-6.0 static proxy",
-      "criteria": [],
-      "has_plan": false,
-      "has_ticket_doc": false,
-      "links": {
-        "spec": "thin-web-app/PRD_ARCHITECTURE_REALIGNMENT.md",
-        "plan": null,
-        "ticket": null,
-        "execution_plan": "docs/EXECUTION_PLAN.md"
-      }
-    },
-    {
-      "id": "US-5.1",
-      "title": "US-5.1 Cube-derived slicer options",
-      "phase": "Phase 5 \u2014 Cascading filters",
-      "status": "todo",
-      "raw_status": "OPEN",
-      "blocked_on": [
-        "US-4.5",
-        "US-7.1"
-      ],
-      "touches": "slicer handler",
-      "criteria": [],
-      "has_plan": false,
-      "has_ticket_doc": false,
-      "links": {
-        "spec": "thin-web-app/PRD_ARCHITECTURE_REALIGNMENT.md",
-        "plan": null,
-        "ticket": null,
-        "execution_plan": "docs/EXECUTION_PLAN.md"
-      }
-    },
-    {
-      "id": "US-5.2",
-      "title": "US-5.2 Bidirectional narrowing",
-      "phase": "Phase 5 \u2014 Cascading filters",
-      "status": "todo",
-      "raw_status": "OPEN",
-      "blocked_on": [
-        "US-5.1"
-      ],
-      "touches": "",
-      "criteria": [],
-      "has_plan": false,
-      "has_ticket_doc": false,
-      "links": {
-        "spec": "thin-web-app/PRD_ARCHITECTURE_REALIGNMENT.md",
-        "plan": null,
-        "ticket": null,
-        "execution_plan": "docs/EXECUTION_PLAN.md"
-      }
-    },
-    {
-      "id": "US-5.3",
-      "title": "US-5.3 Invalid-selection recovery",
-      "phase": "Phase 5 \u2014 Cascading filters",
-      "status": "todo",
-      "raw_status": "OPEN",
-      "blocked_on": [
-        "US-5.1"
-      ],
-      "touches": "",
-      "criteria": [],
-      "has_plan": false,
-      "has_ticket_doc": false,
-      "links": {
-        "spec": "thin-web-app/PRD_ARCHITECTURE_REALIGNMENT.md",
-        "plan": null,
-        "ticket": null,
-        "execution_plan": "docs/EXECUTION_PLAN.md"
-      }
-    },
-    {
-      "id": "US-5.4",
-      "title": "US-5.4 Request hygiene",
-      "phase": "Phase 5 \u2014 Cascading filters",
-      "status": "todo",
-      "raw_status": "OPEN",
-      "blocked_on": [
-        "US-5.1"
-      ],
-      "touches": "",
-      "criteria": [],
-      "has_plan": false,
-      "has_ticket_doc": false,
-      "links": {
-        "spec": "thin-web-app/PRD_ARCHITECTURE_REALIGNMENT.md",
-        "plan": null,
-        "ticket": null,
-        "execution_plan": "docs/EXECUTION_PLAN.md"
-      }
-    },
-    {
-      "id": "US-6.1",
-      "title": "US-6.1 Headline KPI cards from Cube",
-      "phase": "Phase 6 \u2014 Dashboard 1 de-fabrication",
-      "status": "todo",
-      "raw_status": "OPEN",
-      "blocked_on": [
-        "US-5.1",
-        "US-7.1"
-      ],
-      "touches": "",
-      "criteria": [],
-      "has_plan": false,
-      "has_ticket_doc": false,
-      "links": {
-        "spec": "thin-web-app/PRD_ARCHITECTURE_REALIGNMENT.md",
-        "plan": null,
-        "ticket": null,
-        "execution_plan": "docs/EXECUTION_PLAN.md"
-      }
-    },
-    {
-      "id": "US-6.2",
-      "title": "US-6.2 Pages 1\u20133 from Cube",
-      "phase": "Phase 6 \u2014 Dashboard 1 de-fabrication",
-      "status": "todo",
-      "raw_status": "OPEN",
-      "blocked_on": [
-        "US-6.1"
-      ],
-      "touches": "",
-      "criteria": [],
-      "has_plan": false,
-      "has_ticket_doc": false,
-      "links": {
-        "spec": "thin-web-app/PRD_ARCHITECTURE_REALIGNMENT.md",
-        "plan": null,
-        "ticket": null,
-        "execution_plan": "docs/EXECUTION_PLAN.md"
-      }
-    },
-    {
-      "id": "US-6.3",
-      "title": "US-6.3 Page 4 Contributions from Cube",
-      "phase": "Phase 6 \u2014 Dashboard 1 de-fabrication",
-      "status": "todo",
-      "raw_status": "OPEN",
-      "blocked_on": [
-        "US-6.1"
-      ],
-      "touches": "",
-      "criteria": [],
-      "has_plan": false,
-      "has_ticket_doc": false,
-      "links": {
-        "spec": "thin-web-app/PRD_ARCHITECTURE_REALIGNMENT.md",
-        "plan": null,
-        "ticket": null,
-        "execution_plan": "docs/EXECUTION_PLAN.md"
-      }
-    },
-    {
-      "id": "US-6.4",
-      "title": "US-6.4 Page 5 Products & Risk from Cube",
-      "phase": "Phase 6 \u2014 Dashboard 1 de-fabrication",
-      "status": "todo",
-      "raw_status": "OPEN",
-      "blocked_on": [
-        "US-6.1"
-      ],
-      "touches": "",
-      "criteria": [],
-      "has_plan": false,
-      "has_ticket_doc": false,
-      "links": {
-        "spec": "thin-web-app/PRD_ARCHITECTURE_REALIGNMENT.md",
-        "plan": null,
-        "ticket": null,
-        "execution_plan": "docs/EXECUTION_PLAN.md"
-      }
-    },
-    {
-      "id": "US-6.5",
-      "title": "US-6.5 Filter state persists across tabs",
-      "phase": "Phase 6 \u2014 Dashboard 1 de-fabrication",
-      "status": "todo",
-      "raw_status": "OPEN",
-      "blocked_on": [
-        "US-6.2"
-      ],
-      "touches": "",
-      "criteria": [],
-      "has_plan": false,
-      "has_ticket_doc": false,
-      "links": {
-        "spec": "thin-web-app/PRD_ARCHITECTURE_REALIGNMENT.md",
-        "plan": null,
-        "ticket": null,
-        "execution_plan": "docs/EXECUTION_PLAN.md"
-      }
-    },
-    {
-      "id": "US-6.6",
-      "title": "US-6.6 Remove silent fallbacks everywhere",
-      "phase": "Phase 6 \u2014 Dashboard 1 de-fabrication",
-      "status": "todo",
-      "raw_status": "OPEN",
-      "blocked_on": [
-        "US-6.1\u20266.4"
-      ],
-      "touches": "every handler",
-      "criteria": [],
-      "has_plan": false,
-      "has_ticket_doc": false,
-      "links": {
-        "spec": "thin-web-app/PRD_ARCHITECTURE_REALIGNMENT.md",
-        "plan": null,
-        "ticket": null,
-        "execution_plan": "docs/EXECUTION_PLAN.md"
-      }
-    },
-    {
-      "id": "US-7.2",
-      "title": "US-7.2 Mutation check",
-      "phase": "Phase 7 \u2014 Close the proof loop",
-      "status": "todo",
-      "raw_status": "OPEN",
-      "blocked_on": [
-        "US-7.1"
-      ],
-      "touches": "",
-      "criteria": [],
-      "has_plan": false,
-      "has_ticket_doc": false,
-      "links": {
-        "spec": "thin-web-app/PRD_ARCHITECTURE_REALIGNMENT.md",
-        "plan": null,
-        "ticket": null,
-        "execution_plan": "docs/EXECUTION_PLAN.md"
-      }
-    },
-    {
-      "id": "US-7.4",
-      "title": "US-7.4 CI gate",
-      "phase": "Phase 7 \u2014 Close the proof loop",
-      "status": "todo",
-      "raw_status": "OPEN",
-      "blocked_on": [
-        "US-7.2",
-        "US-4.2"
-      ],
-      "touches": "secret sweep, conformance, no-literals, recon, mutation",
-      "criteria": [],
-      "has_plan": false,
-      "has_ticket_doc": false,
-      "links": {
-        "spec": "thin-web-app/PRD_ARCHITECTURE_REALIGNMENT.md",
-        "plan": null,
-        "ticket": null,
-        "execution_plan": "docs/EXECUTION_PLAN.md"
-      }
-    },
-    {
-      "id": "US-8.1",
-      "title": "US-8.1 Deploy the thin app",
-      "phase": "Phase 8 \u2014 Consolidate",
-      "status": "todo",
-      "raw_status": "OPEN",
-      "blocked_on": [
-        "US-1.1",
-        "US-7.4"
-      ],
-      "touches": "`thin-web-app/Dockerfile`, Cloud Run `scbi-thin-web` behind IAP",
-      "criteria": [],
-      "has_plan": false,
-      "has_ticket_doc": false,
-      "links": {
-        "spec": "thin-web-app/PRD_ARCHITECTURE_REALIGNMENT.md",
-        "plan": null,
-        "ticket": null,
-        "execution_plan": "docs/EXECUTION_PLAN.md"
-      }
-    },
-    {
-      "id": "US-8.2",
-      "title": "US-8.2 Retire `data-recon/web/`",
-      "phase": "Phase 8 \u2014 Consolidate",
-      "status": "todo",
-      "raw_status": "OPEN",
-      "blocked_on": [
-        "US-8.1",
-        "US-3.2"
-      ],
-      "touches": "",
-      "criteria": [],
-      "has_plan": false,
-      "has_ticket_doc": false,
-      "links": {
-        "spec": "thin-web-app/PRD_ARCHITECTURE_REALIGNMENT.md",
-        "plan": null,
-        "ticket": null,
-        "execution_plan": "docs/EXECUTION_PLAN.md"
-      }
-    },
-    {
-      "id": "US-8.3",
-      "title": "**US-8.3 Serve Metabase and Power BI over the Cube SQL API**",
-      "phase": "Phase 8 \u2014 Consolidate",
-      "status": "shipped",
-      "raw_status": "**DONE (code + deployed)** 09-20",
-      "blocked_on": [
-        "login unproven \u2014 the VM runs and Cube SQL is listening",
-        "but no BI client has authenticated yet"
-      ],
-      "touches": "`cube/cube.js`, `cube/Dockerfile`, 3 new `cube/` scripts, `metabase/`, `docs/METABASE_CUBE_SQL.md`",
-      "criteria": [],
-      "has_plan": false,
-      "has_ticket_doc": false,
-      "links": {
-        "spec": "thin-web-app/PRD_ARCHITECTURE_REALIGNMENT.md",
-        "plan": null,
-        "ticket": null,
-        "execution_plan": "docs/EXECUTION_PLAN.md"
+        "ticket": "docs/tickets/V2-4.2-concurrency-acid-suite.md",
+        "execution_plan": "docs/roadmap.md"
       }
     }
   ]

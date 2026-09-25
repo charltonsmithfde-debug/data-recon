@@ -1,5 +1,4 @@
 import os
-import sys
 import re
 import json
 from datetime import datetime, timezone
@@ -90,14 +89,11 @@ def parse_adrs():
                 })
     return adrs
 
-ROADMAP_PATH = os.path.join(DOCS_DIR, "roadmap.md")
-
 def parse_execution_plan(criteria_map, adrs):
-    plan_source = ROADMAP_PATH if os.path.exists(ROADMAP_PATH) else EXECUTION_PLAN_PATH
-    if not os.path.exists(plan_source):
+    if not os.path.exists(EXECUTION_PLAN_PATH):
         return []
 
-    with open(plan_source, "r", encoding="utf-8", errors="replace") as f:
+    with open(EXECUTION_PLAN_PATH, "r", encoding="utf-8", errors="replace") as f:
         content = f.read()
 
     lines = content.splitlines()
@@ -107,7 +103,7 @@ def parse_execution_plan(criteria_map, adrs):
     table_pattern = re.compile(r'\|\s*([^\s|]+)\s*\|\s*([^|]+?)\s*\|\s*([^|]+?)\s*\|\s*([^|]+?)\s*\|\s*([^|]+?)\s*\|')
 
     for line in lines:
-        if line.startswith("### Phase ") or line.startswith("### Milestone "):
+        if line.startswith("### Phase "):
             current_phase = line.replace("###", "").strip()
             continue
 
@@ -117,7 +113,7 @@ def parse_execution_plan(criteria_map, adrs):
             if "Story" in story_raw or "---" in story_raw:
                 continue
 
-            id_match = re.search(r'((?:V2-|US-)[\d\.]+)', story_raw)
+            id_match = re.search(r'(US-[\d\.]+)', story_raw)
             if not id_match:
                 continue
             story_id = id_match.group(1)
@@ -126,17 +122,17 @@ def parse_execution_plan(criteria_map, adrs):
             # Normalize status
             norm_status = "todo"
             status_clean = status_raw.upper()
-            if "DONE" in status_clean or "SHIP" in status_clean and "READY" not in status_clean:
+            if "DONE" in status_clean:
                 norm_status = "shipped"
-            elif "NEXT" in status_clean or "IN PROGRESS" in status_clean or "IMPLEMENT" in status_clean:
+            elif "NEXT" in status_clean or "IN PROGRESS" in status_clean:
                 norm_status = "implementing"
             elif "BLOCKED" in status_clean:
                 norm_status = "blocked_dep"
-            elif "PLAN" in status_clean or "PRIM" in status_clean:
+            elif "PLAN" in status_clean:
                 norm_status = "planning"
             elif "VALIDAT" in status_clean:
                 norm_status = "validating"
-            elif "REVIEW" in status_clean or "READY" in status_clean:
+            elif "REVIEW" in status_clean:
                 norm_status = "reviewing"
             else:
                 norm_status = "todo"
@@ -146,9 +142,8 @@ def parse_execution_plan(criteria_map, adrs):
             has_plan = os.path.exists(plan_file)
 
             # Check for linked ticket doc
-            ticket_files = [f for f in os.listdir(TICKETS_DIR) if f.startswith(story_id) and f.endswith(".md")] if os.path.exists(TICKETS_DIR) else []
-            has_ticket_doc = len(ticket_files) > 0
-            ticket_rel_path = f"docs/tickets/{ticket_files[0]}" if has_ticket_doc else None
+            ticket_file = os.path.join(TICKETS_DIR, f"{story_id}.md")
+            has_ticket_doc = os.path.exists(ticket_file)
 
             # Criteria from PRD
             crit_info = criteria_map.get(story_id, {"criteria": []})
@@ -170,10 +165,10 @@ def parse_execution_plan(criteria_map, adrs):
                 "has_plan": has_plan,
                 "has_ticket_doc": has_ticket_doc,
                 "links": {
-                    "spec": "docs/prd.md",
+                    "spec": "thin-web-app/PRD_ARCHITECTURE_REALIGNMENT.md",
                     "plan": f"docs/plans/{story_id}-plan.md" if has_plan else None,
-                    "ticket": ticket_rel_path,
-                    "execution_plan": "docs/roadmap.md" if os.path.exists(ROADMAP_PATH) else "docs/EXECUTION_PLAN.md"
+                    "ticket": f"docs/tickets/{story_id}.md" if has_ticket_doc else None,
+                    "execution_plan": "docs/EXECUTION_PLAN.md"
                 }
             })
 
@@ -208,7 +203,7 @@ def build_kanban_data():
 
     data = {
         "project": {
-            "name": "data-recon: Unified ACID Lakehouse & Semantic Metric Layer (DuckLake + Cube.js)",
+            "name": "data-recon: Portal Architecture Realignment",
             "repo": "data-recon",
             "percent_done": percent_done,
             "metrics": counts,
@@ -216,8 +211,8 @@ def build_kanban_data():
         },
         "documents": [
             {"title": "PRD V2 (ACID Lakehouse & Semantic Layer)", "path": "docs/prd.md", "type": "prd"},
-            {"title": "Architecture Blueprint (V2)", "path": "docs/architecture.md", "type": "architecture"},
-            {"title": "V2 Roadmap", "path": "docs/roadmap.md", "type": "plan"},
+            {"title": "PRD Realignment (V1)", "path": "thin-web-app/PRD_ARCHITECTURE_REALIGNMENT.md", "type": "prd"},
+            {"title": "Execution Plan", "path": "docs/EXECUTION_PLAN.md", "type": "plan"},
             {"title": "Replica Architecture Guide", "path": "docs/PBI_TO_DUCKLAKE_REPLICA_GUIDE.md", "type": "architecture"},
             {"title": "User Manual", "path": "docs/USER_MANUAL.md", "type": "manual"}
         ],

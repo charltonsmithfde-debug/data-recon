@@ -1,0 +1,20 @@
+{
+  "name": "de-workflow-pipeline",
+  "version": "1.0.0",
+  "description": "DE Workflow Pipeline: Autonomous end-to-end SDLC inner & outer loop with interactive gates, automated Kanban synchronization, and ticket lifecycle management.",
+  "author": "Antigravity DE",
+  "skills": [
+    "de-architecture",
+    "de-close-loop",
+    "de-idea-prd",
+    "de-implement",
+    "de-plan-ticket",
+    "de-prime-pipeline",
+    "de-review-changes",
+    "de-run-full-workflow",
+    "de-ship-ticket",
+    "de-slice-roadmap",
+    "de-validate",
+    "_context-packs"
+  ]
+}
