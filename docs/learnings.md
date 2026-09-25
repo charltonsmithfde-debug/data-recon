@@ -42,3 +42,9 @@
 **What happened:** Replacing the legacy `thin-web-app/server.py` with `version-two/portal/auth.py` and `version-two/portal/server.py` decoupled IAP identity extraction (`X-Goog-Authenticated-User-Email`), server-side `role_assignments.json` role lookup, and RFC 7518 HS256 JWT minting from HTTP routing, while replacing synthetic `handle_member_analysis_query` constants with live Cube REST API (`/cubejs-api/v1/load`) calls.
 **What to do differently:**
 1. Never accept `role` or `can_view_pii` from client query parameters or request bodies; derive JWT claims exclusively from `resolve_verified_identity(headers)` backed by `role_assignments.json`.
+
+## 2026-09-25 — V2-3.3-downstream-bi-rewire
+**Component:** `version-two/metabase/` & `docs/METABASE_CUBE_SQL.md` (Downstream BI DirectQuery & Metabase Rewiring)
+**What happened:** Rewiring Metabase and Power BI DirectQuery exclusively to `scbi-cube-sql:5432` required enforcing a programmatic storage-bypass guard (`validate_no_storage_bypass`) that rejects any connection targeting port `5433` (`ducklake_catalog`), raw GCS paths, or embedded DuckDB files, while verifying PostgreSQL wire `SSLRequest` negotiation and `information_schema.tables` reflection over TCP port `5432`.
+**What to do differently:**
+1. Validate BI datasource configurations in CI with `validate_no_storage_bypass()` and verify over TCP socket that direct `scbi_cdp_mart.*` queries are rejected with `403` by `executeSqlApiQuery`.

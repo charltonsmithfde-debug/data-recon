@@ -2,18 +2,18 @@
   "project": {
     "name": "data-recon: Unified ACID Lakehouse & Semantic Metric Layer (DuckLake + Cube.js)",
     "repo": "data-recon",
-    "percent_done": 72.7,
+    "percent_done": 81.8,
     "metrics": {
       "total": 11,
-      "todo": 3,
+      "todo": 2,
       "planning": 0,
       "implementing": 0,
       "validating": 0,
       "reviewing": 0,
-      "shipped": 8,
+      "shipped": 9,
       "blocked": 0
     },
-    "updated_at": "2026-09-25T20:57:32.504999+00:00"
+    "updated_at": "2026-09-25T22:50:12.569503+00:00"
   },
   "documents": [
     {
@@ -217,16 +217,16 @@
       "id": "V2-3.3",
       "title": "V2-3.3 Downstream BI DirectQuery & Metabase Rewiring",
       "phase": "Milestone 3 \u2014 Dual Delivery Infrastructure & Consumer Integration",
-      "status": "todo",
-      "raw_status": "**TODO**",
+      "status": "shipped",
+      "raw_status": "**DONE**",
       "blocked_on": [],
       "touches": "`version-two/metabase/setup.py`, `docs/METABASE_CUBE_SQL.md`",
       "criteria": [],
-      "has_plan": false,
+      "has_plan": true,
       "has_ticket_doc": true,
       "links": {
         "spec": "docs/prd.md",
-        "plan": null,
+        "plan": "docs/plans/V2-3.3-plan.md",
         "ticket": "docs/tickets/V2-3.3-downstream-bi-rewire.md",
         "execution_plan": "docs/roadmap.md"
       }
@@ -237,9 +237,7 @@
       "phase": "Milestone 4 \u2014 Parity, ACID Concurrency & Verification Harness",
       "status": "todo",
       "raw_status": "**TODO**",
-      "blocked_on": [
-        "V2-3.1"
-      ],
+      "blocked_on": [],
       "touches": "`version-two/tests/test_metric_parity.py`",
       "criteria": [],
       "has_plan": false,

@@ -53,10 +53,10 @@ V2-1.2 + V2-2.1 ──► V2-4.2 (concurrency-acid-suite)
 |---|---|---|---|---|
 | 7 | V2-3.1 Dual Delivery Deployment Topologies (Cloud Run REST + GCE VM SQL API) | **DONE** | — | `version-two/infra/Dockerfile`, `version-two/infra/cloudrun-rest.yaml`, `version-two/infra/gce-sql-systemd.service` |
 | 8 | V2-3.2 Thin Web Portal Decoupled API Gateway | **DONE** | — | `version-two/portal/server.py`, `version-two/portal/auth.py` |
-| 9 | V2-3.3 Downstream BI DirectQuery & Metabase Rewiring | **TODO** | — | `version-two/metabase/setup.py`, `docs/METABASE_CUBE_SQL.md` |
+| 9 | V2-3.3 Downstream BI DirectQuery & Metabase Rewiring | **DONE** | — | `version-two/metabase/setup.py`, `docs/METABASE_CUBE_SQL.md` |
 
 ### Milestone 4 — Parity, ACID Concurrency & Verification Harness
 | # | Story / Ticket | Status | Blocked On | Touches |
 |---|---|---|---|---|
-| 10 | V2-4.1 Automated Metric Parity Reconciliation Suite | **TODO** | V2-3.1 | `version-two/tests/test_metric_parity.py` |
+| 10 | V2-4.1 Automated Metric Parity Reconciliation Suite | **TODO** | — | `version-two/tests/test_metric_parity.py` |
 | 11 | V2-4.2 Concurrency & Zero-Torn-Reads Verification Harness | **TODO** | — | `version-two/tests/test_concurrency_acid.py` |
