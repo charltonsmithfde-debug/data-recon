@@ -36,3 +36,9 @@
 **What happened:** Under the Single Artifact Principle (ADR-0004), a single container image (`scbi-cube:2.0`) serves both Cloud Run REST API (port `4000`) and GCE VM SQL API (port `5432`). Adding `startCubeSqlServer` and `executeSqlApiQuery` directly into `version-two/cube/cube.js` alongside `startCubeHttpServer` allows the identical runtime to boot in REST-only, SQL-only (`--serve-sql`), or dual-delivery (`--serve` with `CUBEJS_PG_SQL_PORT=5432`) mode while enforcing `checkSqlAuth` scrypt verification and blocking direct catalog/storage bypass queries.
 **What to do differently:**
 1. Always route SQL API queries (`executeSqlApiQuery`) through `modelIndex.loadDomainCubes()` and `securityHooks.queryRewrite` so SQL API consumers (Metabase, Power BI DirectQuery) are subject to the exact same RBAC and POPIA redaction rules as REST API consumers.
+
+## 2026-09-25 — V2-3.2-portal-api-gateway
+**Component:** `version-two/portal/` (Thin Web Portal Decoupled API Gateway)
+**What happened:** Replacing the legacy `thin-web-app/server.py` with `version-two/portal/auth.py` and `version-two/portal/server.py` decoupled IAP identity extraction (`X-Goog-Authenticated-User-Email`), server-side `role_assignments.json` role lookup, and RFC 7518 HS256 JWT minting from HTTP routing, while replacing synthetic `handle_member_analysis_query` constants with live Cube REST API (`/cubejs-api/v1/load`) calls.
+**What to do differently:**
+1. Never accept `role` or `can_view_pii` from client query parameters or request bodies; derive JWT claims exclusively from `resolve_verified_identity(headers)` backed by `role_assignments.json`.

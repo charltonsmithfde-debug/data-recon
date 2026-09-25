@@ -2,18 +2,18 @@
   "project": {
     "name": "data-recon: Unified ACID Lakehouse & Semantic Metric Layer (DuckLake + Cube.js)",
     "repo": "data-recon",
-    "percent_done": 63.6,
+    "percent_done": 72.7,
     "metrics": {
       "total": 11,
-      "todo": 4,
+      "todo": 3,
       "planning": 0,
       "implementing": 0,
       "validating": 0,
       "reviewing": 0,
-      "shipped": 7,
+      "shipped": 8,
       "blocked": 0
     },
-    "updated_at": "2026-09-25T19:34:54.033768+00:00"
+    "updated_at": "2026-09-25T20:57:32.504999+00:00"
   },
   "documents": [
     {
@@ -199,16 +199,16 @@
       "id": "V2-3.2",
       "title": "V2-3.2 Thin Web Portal Decoupled API Gateway",
       "phase": "Milestone 3 \u2014 Dual Delivery Infrastructure & Consumer Integration",
-      "status": "todo",
-      "raw_status": "**TODO**",
+      "status": "shipped",
+      "raw_status": "**DONE**",
       "blocked_on": [],
       "touches": "`version-two/portal/server.py`, `version-two/portal/auth.py`",
       "criteria": [],
-      "has_plan": false,
+      "has_plan": true,
       "has_ticket_doc": true,
       "links": {
         "spec": "docs/prd.md",
-        "plan": null,
+        "plan": "docs/plans/V2-3.2-plan.md",
         "ticket": "docs/tickets/V2-3.2-portal-api-gateway.md",
         "execution_plan": "docs/roadmap.md"
       }
