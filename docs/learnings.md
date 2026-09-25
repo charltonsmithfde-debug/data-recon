@@ -19,3 +19,9 @@
 **What to do differently:**
 1. Store temporary fallback SQLite catalog files in `os.tmpdir()` rather than `version-two/ducklake/` so CLI dry-runs (`node version-two/cube/cube.js --verify-query ...`) never leave untracked files in the repository tree.
 
+## 2026-09-25 — V2-2.2-cube-security-context
+**Component:** `version-two/cube/security.js` (RBAC & Dynamic POPIA Masking Security Context)
+**What happened:** `thin-web-app/role_assignments.json` is validated by `scripts/access/manage_access.py check` (ADR-0003) using V1 role identifiers (`ROLE_EXECUTIVE_ALL`, `ROLE_FINANCE_MEMBER`, `ROLE_INVESTMENTS`, `ROLE_ANNUITY`, `ROLE_DIGITAL_OPERATIONS`), while V2 PRD §5.2 introduces `ROLE_INVESTMENT_ANALYST`, `ROLE_ANNUITY_ANALYST`, `ROLE_MEMBER_OPERATIONS`, and `ROLE_AUDIT_COMPLIANCE`. Supporting both sets in `ROLE_PERMISSIONS` inside `security.js` preserves backward compatibility with `manage_access.py` while enforcing V2 domain cube boundaries and capping `canViewPii` strictly by `ROLE_PERMISSIONS[role].canViewPii`.
+**What to do differently:**
+1. Always compute `canViewPii` as `Boolean(ROLE_PERMISSIONS[role].canViewPii && claims.canViewPii)` so a non-PII role can never self-escalate PII visibility even if a forged or misconfigured claim asserts `canViewPii: true`.
+

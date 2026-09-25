@@ -45,8 +45,8 @@ V2-1.2 + V2-2.1 ──► V2-4.2 (concurrency-acid-suite)
 | # | Story / Ticket | Status | Blocked On | Touches |
 |---|---|---|---|---|
 | 4 | V2-2.1 Cube.js 1.7.x Core Engine with Embedded DuckDB & DuckLake Extension | **DONE** | — | `version-two/cube/package.json`, `version-two/cube/cube.js` |
-| 5 | V2-2.2 Server-Enforced RBAC & Dynamic POPIA Masking Security Context | **TODO** | — | `version-two/cube/security.js`, `thin-web-app/role_assignments.json` |
-| 6 | V2-2.3 Semantic Domain Cube Models & Multi-Table Join Graphs | **TODO** | V2-2.1, V2-2.2 | `version-two/cube/model/*.js` |
+| 5 | V2-2.2 Server-Enforced RBAC & Dynamic POPIA Masking Security Context | **DONE** | — | `version-two/cube/security.js`, `thin-web-app/role_assignments.json` |
+| 6 | V2-2.3 Semantic Domain Cube Models & Multi-Table Join Graphs | **TODO** | — | `version-two/cube/model/*.js` |
 
 ### Milestone 3 — Dual Delivery Infrastructure & Consumer Integration
 | # | Story / Ticket | Status | Blocked On | Touches |

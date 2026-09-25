@@ -418,6 +418,43 @@ async function startCubeHttpServer(options = {}) {
       return;
     }
 
+    if (req.method === 'POST' && reqUrl.pathname === '/cubejs-api/v1/load') {
+      let body = '';
+      req.on('data', (chunk) => {
+        body += chunk;
+      });
+      req.on('end', async () => {
+        try {
+          const hooks = loadSecurityHooks();
+          if (!hooks) {
+            throw new Error('Security module (security.js) is not loaded.');
+          }
+          const securityContext = await hooks.checkAuth(
+            req,
+            req.headers.authorization || req.headers.Authorization,
+            options.apiSecret
+          );
+          const parsed = JSON.parse(body || '{}');
+          const rawQuery = parsed.query || parsed;
+          const rewritten = hooks.queryRewrite(rawQuery, { securityContext });
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(
+            JSON.stringify({
+              query: rewritten,
+              securityContext: rewritten.__securityContext,
+              compiledDimensionSql: rewritten.__compiledDimensionSql,
+              data: []
+            })
+          );
+        } catch (err) {
+          const code = Number(err.statusCode || err.httpStatus || 403);
+          res.writeHead(code, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: err.message, status: code }));
+        }
+      });
+      return;
+    }
+
     res.writeHead(404, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({ error: 'Not Found' }));
   });
