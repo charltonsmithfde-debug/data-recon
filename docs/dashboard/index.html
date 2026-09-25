@@ -1,0 +1,1071 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>data-recon Kanban • Software Delivery Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0c1012;
+      --bg-panel: #13191c;
+      --bg-card: #182226;
+      --bg-card-hover: #1f2b30;
+      --border: #243338;
+      --border-subtle: #1b262a;
+      
+      --text: #e6edee;
+      --text-muted: #8ca2a6;
+      --text-dim: #54686c;
+
+      --accent: #22d3ee;
+      --accent-glow: rgba(34, 211, 238, 0.15);
+      
+      --status-todo: #64748b;
+      --status-todo-bg: rgba(100, 116, 139, 0.15);
+      
+      --status-plan: #a855f7;
+      --status-plan-bg: rgba(168, 85, 247, 0.15);
+      
+      --status-doing: #38bdf8;
+      --status-doing-bg: rgba(56, 189, 248, 0.15);
+      
+      --status-valid: #f59e0b;
+      --status-valid-bg: rgba(245, 158, 11, 0.15);
+      
+      --status-ready: #10b981;
+      --status-ready-bg: rgba(16, 185, 129, 0.15);
+      
+      --status-done: #059669;
+      --status-done-bg: rgba(5, 150, 105, 0.18);
+      
+      --status-blocked: #f43f5e;
+      --status-blocked-bg: rgba(244, 63, 94, 0.15);
+
+      --font-display: 'Bricolage Grotesque', sans-serif;
+      --font-body: 'Plus Jakarta Sans', sans-serif;
+      --font-mono: 'IBM Plex Mono', monospace;
+      
+      --radius: 10px;
+      --shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    }
+
+    [data-theme="light"] {
+      --bg: #f8fafc;
+      --bg-panel: #f1f5f9;
+      --bg-card: #ffffff;
+      --bg-card-hover: #f8fafc;
+      --border: #e2e8f0;
+      --border-subtle: #f1f5f9;
+      --text: #0f172a;
+      --text-muted: #475569;
+      --text-dim: #94a3b8;
+      --accent: #0284c7;
+      --accent-glow: rgba(2, 132, 199, 0.1);
+      --shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 13px;
+      line-height: 1.5;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Header */
+    header {
+      background: var(--bg-panel);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 24px;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(12px);
+    }
+    .header-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 12px;
+    }
+    .brand-area {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .brand-logo {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #06b6d4, #3b82f6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-weight: 800;
+      color: #fff;
+      font-size: 16px;
+      box-shadow: 0 2px 10px rgba(6, 182, 212, 0.3);
+    }
+    .brand-title h1 {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .brand-badge {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 500;
+      background: var(--accent-glow);
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      border-radius: 4px;
+      padding: 2px 6px;
+    }
+    
+    .stats-bar {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .progress-box {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 220px;
+    }
+    .progress-labels {
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+    .progress-track {
+      height: 7px;
+      background: var(--border);
+      border-radius: 99px;
+      overflow: hidden;
+      position: relative;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #06b6d4, #10b981);
+      width: 0%;
+      transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 12px;
+      font-weight: 500;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+    .btn:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--accent);
+    }
+    .btn-accent {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #0c1012;
+      font-weight: 600;
+    }
+    .btn-accent:hover {
+      filter: brightness(1.1);
+    }
+
+    /* Document Chips Hub */
+    .doc-hub {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      padding-top: 8px;
+      border-top: 1px solid var(--border-subtle);
+    }
+    .doc-hub-label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-dim);
+      margin-right: 4px;
+    }
+    .doc-chip {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.15s;
+    }
+    .doc-chip:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+      background: var(--bg-card-hover);
+    }
+
+    /* Subheader Filters */
+    .controls-bar {
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .phase-filters {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 2px;
+    }
+    .filter-pill {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 500;
+      padding: 4px 10px;
+      border-radius: 99px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s;
+    }
+    .filter-pill:hover, .filter-pill.active {
+      background: var(--accent-glow);
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+    .search-box {
+      position: relative;
+      min-width: 220px;
+    }
+    .search-input {
+      width: 100%;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-size: 12px;
+      padding: 6px 12px;
+      border-radius: 6px;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .search-input:focus {
+      border-color: var(--accent);
+    }
+
+    /* Board Columns */
+    .board-container {
+      padding: 20px 24px;
+      overflow-x: auto;
+      min-height: calc(100vh - 160px);
+    }
+    .columns-row {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(270px, 1fr));
+      gap: 16px;
+      align-items: start;
+    }
+    .kanban-col {
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      display: flex;
+      flex-direction: column;
+      max-height: calc(100vh - 200px);
+    }
+    .col-header {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .col-title {
+      font-family: var(--font-display);
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .col-badge {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 99px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+    }
+    .col-cards {
+      padding: 12px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      flex: 1;
+    }
+
+    /* Ticket Card */
+    .ticket-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      cursor: pointer;
+      transition: transform 0.12s ease, border-color 0.12s ease, box-shadow 0.12s ease;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      position: relative;
+    }
+    .ticket-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--accent);
+      box-shadow: var(--shadow);
+    }
+    .ticket-card.selected {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px var(--accent);
+    }
+
+    .card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+    .ticket-id {
+      font-family: var(--font-mono);
+      font-weight: 600;
+      font-size: 11px;
+      color: var(--accent);
+    }
+    .phase-tag {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      padding: 2px 5px;
+      border-radius: 4px;
+      background: var(--bg-panel);
+      color: var(--text-muted);
+      border: 1px solid var(--border-subtle);
+    }
+    .ticket-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.4;
+      margin-bottom: 8px;
+    }
+    .touches-tag {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-dim);
+      background: var(--bg-panel);
+      padding: 3px 6px;
+      border-radius: 4px;
+      display: block;
+      margin-bottom: 8px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid var(--border-subtle);
+      padding-top: 8px;
+      margin-top: 4px;
+    }
+    .link-icons {
+      display: flex;
+      gap: 6px;
+    }
+    .chip-link {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      background: var(--bg-panel);
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      padding: 1px 5px;
+      border-radius: 3px;
+      text-decoration: none;
+    }
+    .chip-link:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+    .dep-badge {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--status-blocked);
+      background: var(--status-blocked-bg);
+      border: 1px solid rgba(244, 63, 94, 0.3);
+      padding: 1px 5px;
+      border-radius: 3px;
+    }
+
+    /* Detail Drawer */
+    .drawer-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 100;
+      display: none;
+    }
+    .drawer-overlay.open {
+      display: block;
+    }
+    .drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 480px;
+      max-width: 90vw;
+      background: var(--bg-panel);
+      border-left: 1px solid var(--border);
+      z-index: 101;
+      padding: 24px;
+      overflow-y: auto;
+      transform: translateX(100%);
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      box-shadow: -10px 0 30px rgba(0, 0, 0, 0.5);
+    }
+    .drawer.open {
+      transform: translateX(0);
+    }
+    .drawer-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 14px;
+    }
+    .drawer-close {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 20px;
+      cursor: pointer;
+      line-height: 1;
+      padding: 4px;
+    }
+    .drawer-close:hover {
+      color: var(--text);
+    }
+    .drawer-section {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px;
+    }
+    .drawer-section h3 {
+      font-family: var(--font-display);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 8px;
+    }
+    .criteria-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .criteria-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--text);
+      line-height: 1.4;
+    }
+    .criteria-bullet {
+      color: var(--accent);
+      font-weight: bold;
+    }
+    .status-setters {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+    .status-btn {
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 4px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .status-btn.active {
+      background: var(--accent-glow);
+      color: var(--accent);
+      border-color: var(--accent);
+      font-weight: 600;
+    }
+    .cli-box {
+      background: #000;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 8px 12px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: #38bdf8;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(4px);
+      z-index: 110;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .modal-overlay.open {
+      display: flex;
+    }
+    .modal-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      width: 600px;
+      max-width: 95vw;
+      max-height: 85vh;
+      overflow-y: auto;
+      padding: 24px;
+      box-shadow: var(--shadow);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="header-top">
+      <div class="brand-area">
+        <div class="brand-logo">DR</div>
+        <div class="brand-title">
+          <h1 id="project-title">data-recon <span class="brand-badge">de-* pipeline</span></h1>
+        </div>
+      </div>
+
+      <div class="stats-bar">
+        <div class="progress-box">
+          <div class="progress-labels">
+            <span id="metric-summary">0 / 0 Shipped</span>
+            <span id="metric-percent">0%</span>
+          </div>
+          <div class="progress-track">
+            <div class="progress-fill" id="progress-bar"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button class="btn" id="btn-refresh" title="Reload state from kanban-data.json">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2v6h-6M3 12a9 9 0 0 1 15-6.7L21 8M3 22v-6h6M21 12a9 9 0 0 1-15 6.7L3 16"/></svg>
+          Sync
+        </button>
+        <button class="btn" id="btn-theme" title="Toggle dark/light theme">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72 1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Document Hub -->
+    <div class="doc-hub">
+      <span class="doc-hub-label">DOCS:</span>
+      <a class="doc-chip" href="file:///c:/Users/G988557/Documents/Code/antigravity/data-recon/thin-web-app/PRD_ARCHITECTURE_REALIGNMENT.md" target="_blank" title="PRD Realignment">
+        <span>📄</span> PRD Spec
+      </a>
+      <a class="doc-chip" href="file:///c:/Users/G988557/Documents/Code/antigravity/data-recon/docs/EXECUTION_PLAN.md" target="_blank" title="Execution Plan">
+        <span>📋</span> Execution Plan
+      </a>
+      <a class="doc-chip" href="file:///c:/Users/G988557/Documents/Code/antigravity/data-recon/docs/PBI_TO_DUCKLAKE_REPLICA_GUIDE.md" target="_blank" title="Replica Architecture Blueprint">
+        <span>📐</span> Replica Architecture
+      </a>
+      <button class="doc-chip" id="btn-open-adrs" style="cursor:pointer;" title="View Architecture Decision Records">
+        <span>🏛️</span> ADRs (<span id="adr-count">0</span>)
+      </button>
+      <a class="doc-chip" href="file:///c:/Users/G988557/Documents/Code/antigravity/data-recon/docs/USER_MANUAL.md" target="_blank" title="User Manual">
+        <span>📖</span> Manual
+      </a>
+    </div>
+  </header>
+
+  <!-- Controls & Phase Filters -->
+  <div class="controls-bar">
+    <div class="phase-filters" id="phase-filters">
+      <button class="filter-pill active" data-phase="ALL">All Phases</button>
+    </div>
+    <div class="search-box">
+      <input type="text" class="search-input" id="search-input" placeholder="Search ticket or keyword...">
+    </div>
+  </div>
+
+  <!-- Kanban Board -->
+  <main class="board-container">
+    <div class="columns-row">
+      <!-- 1. Backlog / Todo -->
+      <div class="kanban-col" data-col="todo">
+        <div class="col-header">
+          <div class="col-title" style="color:var(--status-todo);">
+            <span>Backlog</span>
+            <span class="col-badge" id="count-todo">0</span>
+          </div>
+        </div>
+        <div class="col-cards" id="cards-todo"></div>
+      </div>
+
+      <!-- 2. Planning & Priming -->
+      <div class="kanban-col" data-col="planning">
+        <div class="col-header">
+          <div class="col-title" style="color:var(--status-plan);">
+            <span>Plan & Prime</span>
+            <span class="col-badge" id="count-planning">0</span>
+          </div>
+        </div>
+        <div class="col-cards" id="cards-planning"></div>
+      </div>
+
+      <!-- 3. Implementing -->
+      <div class="kanban-col" data-col="implementing">
+        <div class="col-header">
+          <div class="col-title" style="color:var(--status-doing);">
+            <span>Implementing</span>
+            <span class="col-badge" id="count-implementing">0</span>
+          </div>
+        </div>
+        <div class="col-cards" id="cards-implementing"></div>
+      </div>
+
+      <!-- 4. Validating & Review -->
+      <div class="kanban-col" data-col="validating">
+        <div class="col-header">
+          <div class="col-title" style="color:var(--status-valid);">
+            <span>Validation</span>
+            <span class="col-badge" id="count-validating">0</span>
+          </div>
+        </div>
+        <div class="col-cards" id="cards-validating"></div>
+      </div>
+
+      <!-- 5. Shipped -->
+      <div class="kanban-col" data-col="shipped">
+        <div class="col-header">
+          <div class="col-title" style="color:var(--status-done);">
+            <span>Shipped</span>
+            <span class="col-badge" id="count-shipped">0</span>
+          </div>
+        </div>
+        <div class="col-cards" id="cards-shipped"></div>
+      </div>
+
+      <!-- 6. Blocked -->
+      <div class="kanban-col" data-col="blocked">
+        <div class="col-header">
+          <div class="col-title" style="color:var(--status-blocked);">
+            <span>Blocked / Waiting</span>
+            <span class="col-badge" id="count-blocked">0</span>
+          </div>
+        </div>
+        <div class="col-cards" id="cards-blocked"></div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Detail Drawer -->
+  <div class="drawer-overlay" id="drawer-overlay"></div>
+  <aside class="drawer" id="drawer">
+    <div class="drawer-header">
+      <div>
+        <div class="ticket-id" id="drawer-id">US-0.0</div>
+        <h2 style="font-size:16px; margin-top:4px;" id="drawer-title">Story Title</h2>
+        <span class="phase-tag" id="drawer-phase" style="margin-top:6px; display:inline-block;">Phase</span>
+      </div>
+      <button class="drawer-close" id="drawer-close">&times;</button>
+    </div>
+
+    <!-- Status Override -->
+    <div class="drawer-section">
+      <h3>Pipeline Status</h3>
+      <div class="status-setters" id="drawer-status-setters">
+        <button class="status-btn" data-st="todo">Todo</button>
+        <button class="status-btn" data-st="planning">Planning</button>
+        <button class="status-btn" data-st="implementing">Implementing</button>
+        <button class="status-btn" data-st="validating">Validating</button>
+        <button class="status-btn" data-st="shipped">Shipped</button>
+        <button class="status-btn" data-st="blocked_dep">Blocked</button>
+      </div>
+    </div>
+
+    <!-- Quick Run Helper -->
+    <div class="drawer-section">
+      <h3>Inner Loop Command</h3>
+      <div class="cli-box" id="drawer-cmd">de-plan-ticket US-0.0</div>
+    </div>
+
+    <!-- Acceptance Criteria -->
+    <div class="drawer-section">
+      <h3>Acceptance Criteria</h3>
+      <ul class="criteria-list" id="drawer-criteria">
+        <li class="criteria-item"><span class="criteria-bullet">•</span> No criteria extracted.</li>
+      </ul>
+    </div>
+
+    <!-- Touches -->
+    <div class="drawer-section">
+      <h3>Impact / Touches</h3>
+      <p style="font-family:var(--font-mono); font-size:11px; color:var(--text-muted);" id="drawer-touches">—</p>
+    </div>
+
+    <!-- Links -->
+    <div class="drawer-section">
+      <h3>Traceability Links</h3>
+      <div style="display:flex; flex-direction:column; gap:6px;" id="drawer-links">
+        <!-- Links dynamically generated -->
+      </div>
+    </div>
+  </aside>
+
+  <!-- ADR Modal -->
+  <div class="modal-overlay" id="adr-modal">
+    <div class="modal-card">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; border-bottom:1px solid var(--border); padding-bottom:10px;">
+        <h2 style="font-family:var(--font-display); font-size:18px;">Architecture Decision Records (ADRs)</h2>
+        <button class="drawer-close" id="adr-close">&times;</button>
+      </div>
+      <div id="adr-list" style="display:flex; flex-direction:column; gap:10px;"></div>
+    </div>
+  </div>
+
+  <!-- Inline snapshot seed: updated automatically by sync_kanban.py -->
+  <script id="kanban-seed">window.__KANBAN_DATA__ = {"project": {"name": "data-recon: Portal Architecture Realignment", "repo": "data-recon", "percent_done": 21.2, "metrics": {"total": 33, "todo": 25, "planning": 0, "implementing": 1, "validating": 0, "reviewing": 0, "shipped": 7, "blocked": 0}, "updated_at": "2026-09-25T08:31:18.242732+00:00"}, "documents": [{"title": "PRD V2 (ACID Lakehouse & Semantic Layer)", "path": "docs/prd.md", "type": "prd"}, {"title": "PRD Realignment (V1)", "path": "thin-web-app/PRD_ARCHITECTURE_REALIGNMENT.md", "type": "prd"}, {"title": "Execution Plan", "path": "docs/EXECUTION_PLAN.md", "type": "plan"}, {"title": "Replica Architecture Guide", "path": "docs/PBI_TO_DUCKLAKE_REPLICA_GUIDE.md", "type": "architecture"}, {"title": "User Manual", "path": "docs/USER_MANUAL.md", "type": "manual"}], "adrs": [{"id": "0001-ducklake-or-parquet", "title": "ADR 0001 \u2014 Adopt DuckLake as the lakehouse catalog, or retire it", "filename": "0001-ducklake-or-parquet.md", "rel_path": "docs/adr/0001-ducklake-or-parquet.md"}, {"id": "0002-outstanding-decisions", "title": "ADR 0002 \u2014 The six outstanding decisions gating EPIC 1, 4, 5 and 6", "filename": "0002-outstanding-decisions.md", "rel_path": "docs/adr/0002-outstanding-decisions.md"}, {"id": "0003-access-model-and-role-roster", "title": "ADR 0003 \u2014 One roster for what a person sees and what they reach", "filename": "0003-access-model-and-role-roster.md", "rel_path": "docs/adr/0003-access-model-and-role-roster.md"}], "tickets": [{"id": "US-6.0", "title": "US-6.0 Stop asserting \"live\"", "phase": "Phase 0 \u2014 Stop the bleeding", "status": "shipped", "raw_status": "**DONE** 09-19", "blocked_on": [], "touches": "`server.py`, banner", "criteria": [], "has_plan": false, "has_ticket_doc": false, "links": {"spec": "thin-web-app/PRD_ARCHITECTURE_REALIGNMENT.md", "plan": null, "ticket": null, "execution_plan": "docs/EXECUTION_PLAN.md"}}, {"id": "US-1.2", "title": "US-1.2 Role from identity", "phase": "Phase 0 \u2014 Stop the bleeding", "status": "shipped", "raw_status": "**DONE** 09-19", "blocked_on": [], "touches": "`resolve_identity()`, 6 call sites", "criteria": [], "has_plan": false, "has_ticket_doc": false, "links": {"spec": "thin-web-app/PRD_ARCHITECTURE_REALIGNMENT.md", "plan": null, "ticket": null, "execution_plan": "docs/EXECUTION_PLAN.md"}}, {"id": "US-2.2", "title": "US-2.2 No credential literals", "phase": "Phase 0 \u2014 Stop the bleeding", "status": "shipped", "raw_status": "**DONE** 09-19", "blocked_on": [], "touches": "18 hits / 13 files", "criteria": [], "has_plan": false, "has_ticket_doc": false, "links": {"spec": "thin-web-app/PRD_ARCHITECTURE_REALIGNMENT.md", "plan": null, "ticket": null, "execution_plan": "docs/EXECUTION_PLAN.md"}}, {"id": "US-2.1", "title": "**US-2.1 Rotate every exposed credential**", "phase": "Phase 0 \u2014 Stop the bleeding", "status": "implementing", "raw_status": "**NEXT**", "blocked_on": ["\ud83d\udfe0 **the user's authorisation** \u2014 outward-facing and takes the dashboards down; `gcloud` itself is available"], "touches": "Cloud Run `scbi-cube`, Secret Manager (**not enabled**), `MIGRATION_PLAN.md`, PRD prose", "criteria": [], "has_plan": false, "has_ticket_doc": false, "links": {"spec": "thin-web-app/PRD_ARCHITECTURE_REALIGNMENT.md", "plan": null, "ticket": null, "execution_plan": "docs/EXECUTION_PLAN.md"}}, {"id": "US-1.1", "title": "US-1.1 Authenticate before serving anything", "phase": "Phase 1 \u2014 Trust boundary", "status": "shipped", "raw_status": "**DONE (code)** 09-20", "blocked_on": ["criterion 1 only: \ud83d\udd34 **the user** \u2014 Cloud Run behind IAP"], "touches": "`verify_iap_assertion()` \u2014 real JWKS signature check", "criteria": [], "has_plan": false, "has_ticket_doc": false, "links": {"spec": "thin-web-app/PRD_ARCHITECTURE_REALIGNMENT.md", "plan": null, "ticket": null, "execution_plan": "docs/EXECUTION_PLAN.md"}}, {"id": "US-1.4", "title": "US-1.4 Close the RBAC allowlist gap", "phase": "Phase 1 \u2014 Trust boundary", "status": "shipped", "raw_status": "**DONE** 09-20", "blocked_on": [], "touches": "`cube.js` allowlists + startup assertion", "criteria": [], "has_plan": false, "has_ticket_doc": false, "links": {"spec": "thin-web-app/PRD_ARCHITECTURE_REALIGNMENT.md", "plan": null, "ticket": null, "execution_plan": "docs/EXECUTION_PLAN.md"}}, {"id": "US-1.3", "title": "US-1.3 Make Cube reject unverified callers", "phase": "Phase 1 \u2014 Trust boundary", "status": "shipped", "raw_status": "**DONE (code)** 09-20", "blocked_on": ["criterion 2 only: \ud83d\udd34 **the user** \u2014 remove `allUsers` from `scbi-cube` **and `scbi-metabase`**"], "touches": "`cube/cube.js` `checkSqlAuth` \u2014 real scrypt verification", "criteria": [], "has_plan": false, "has_ticket_doc": false, "links": {"spec": "thin-web-app/PRD_ARCHITECTURE_REALIGNMENT.md", "plan": null, "ticket": null, "execution_plan": "docs/EXECUTION_PLAN.md"}}, {"id": "US-2.3", "title": "US-2.3 Prefer keyless access", "phase": "Phase 1 \u2014 Trust boundary", "status": "todo", "raw_status": "OPEN", "blocked_on": ["US-2.1"], "touches": "removes the GCS HMAC pair outright", "criteria": [], "has_plan": false, "has_ticket_doc": false, "links": {"spec": "thin-web-app/PRD_ARCHITECTURE_REALIGNMENT.md", "plan": null, "ticket": null, "execution_plan": "docs/EXECUTION_PLAN.md"}}, {"id": "US-3.0", "title": "**US-3.0 Upgrade Cube 0.35.x \u2192 1.7.x**", "phase": "Phase 2 \u2014 Cube upgrade and catalog *(unblocks everything structural)*", "status": "todo", "raw_status": "OPEN", "blocked_on": ["US-1.3"], "touches": "`package.json`, lockfile, `Dockerfile`, `cube.js:137`", "criteria": [], "has_plan": false, "has_ticket_doc": false, "links": {"spec": "thin-web-app/PRD_ARCHITECTURE_REALIGNMENT.md", "plan": null, "ticket": null, "execution_plan": "docs/EXECUTION_PLAN.md"}}, {"id": "US-3.1", "title": "US-3.1 DuckLake implementation (Option A)", "phase": "Phase 2 \u2014 Cube upgrade and catalog *(unblocks everything structural)*", "status": "todo", "raw_status": "OPEN", "blocked_on": ["**US-3.0**", "US-2.1"], "touches": "`initSql`, catalog schema, reload script", "criteria": [], "has_plan": false, "has_ticket_doc": false, "links": {"spec": "thin-web-app/PRD_ARCHITECTURE_REALIGNMENT.md", "plan": null, "ticket": null, "execution_plan": "docs/EXECUTION_PLAN.md"}}, {"id": "US-4.1", "title": "US-4.1 Lakehouse views from a manifest", "phase": "Phase 2 \u2014 Cube upgrade and catalog *(unblocks everything structural)*", "status": "todo", "raw_status": "OPEN", "blocked_on": ["US-3.1"], "touches": "`scripts/migration_state.json` driven", "criteria": [], "has_plan": false, "has_ticket_doc": false, "links": {"spec": "thin-web-app/PRD_ARCHITECTURE_REALIGNMENT.md", "plan": null, "ticket": null, "execution_plan": "docs/EXECUTION_PLAN.md"}}, {"id": "US-3.2", "title": "US-3.2 Make the telemetry cockpit truthful", "phase": "Phase 2 \u2014 Cube upgrade and catalog *(unblocks everything structural)*", "status": "todo", "raw_status": "OPEN", "blocked_on": ["US-3.1"], "touches": "`web/telemetry_engine.py:217-229`", "criteria": [], "has_plan": false, "has_ticket_doc": false, "links": {"spec": "thin-web-app/PRD_ARCHITECTURE_REALIGNMENT.md", "plan": null, "ticket": null, "execution_plan": "docs/EXECUTION_PLAN.md"}}, {"id": "US-4.2", "title": "US-4.2 Fix the broken dimension bindings", "phase": "Phase 3 \u2014 Semantic foundation", "status": "todo", "raw_status": "OPEN", "blocked_on": ["US-4.1"], "touches": "`SharedDimensions.js`", "criteria": [], "has_plan": false, "has_ticket_doc": false, "links": {"spec": "thin-web-app/PRD_ARCHITECTURE_REALIGNMENT.md", "plan": null, "ticket": null, "execution_plan": "docs/EXECUTION_PLAN.md"}}, {"id": "US-4.3", "title": "US-4.3 Build `FundAnalyticsMonthlyMetrics`", "phase": "Phase 3 \u2014 Semantic foundation", "status": "todo", "raw_status": "OPEN", "blocked_on": ["US-4.2"], "touches": "new cube", "criteria": [], "has_plan": false, "has_ticket_doc": false, "links": {"spec": "thin-web-app/PRD_ARCHITECTURE_REALIGNMENT.md", "plan": null, "ticket": null, "execution_plan": "docs/EXECUTION_PLAN.md"}}, {"id": "US-4.4", "title": "US-4.4 Build `MemberSegmentation`", "phase": "Phase 3 \u2014 Semantic foundation", "status": "todo", "raw_status": "OPEN", "blocked_on": ["US-4.2"], "touches": "new cube", "criteria": [], "has_plan": false, "has_ticket_doc": false, "links": {"spec": "thin-web-app/PRD_ARCHITECTURE_REALIGNMENT.md", "plan": null, "ticket": null, "execution_plan": "docs/EXECUTION_PLAN.md"}}, {"id": "US-4.5", "title": "US-4.5 Define or delete remaining allowlisted cubes", "phase": "Phase 3 \u2014 Semantic foundation", "status": "todo", "raw_status": "OPEN", "blocked_on": ["US-4.3", "US-4.4"], "touches": "allowlist", "criteria": [], "has_plan": false, "has_ticket_doc": false, "links": {"spec": "thin-web-app/PRD_ARCHITECTURE_REALIGNMENT.md", "plan": null, "ticket": null, "execution_plan": "docs/EXECUTION_PLAN.md"}}, {"id": "US-7.1", "title": "US-7.1 Independent ground truth", "phase": "Phase 4 \u2014 Make the proof harness real *before* the dashboard work leans on it", "status": "todo", "raw_status": "OPEN", "blocked_on": ["US-4.2"], "touches": "recon oracle", "criteria": [], "has_plan": false, "has_ticket_doc": false, "links": {"spec": "thin-web-app/PRD_ARCHITECTURE_REALIGNMENT.md", "plan": null, "ticket": null, "execution_plan": "docs/EXECUTION_PLAN.md"}}, {"id": "US-7.3", "title": "US-7.3 Browser verification", "phase": "Phase 4 \u2014 Make the proof harness real *before* the dashboard work leans on it", "status": "todo", "raw_status": "OPEN", "blocked_on": ["\u2014 (install Playwright)"], "touches": "retires the US-6.0 static proxy", "criteria": [], "has_plan": false, "has_ticket_doc": false, "links": {"spec": "thin-web-app/PRD_ARCHITECTURE_REALIGNMENT.md", "plan": null, "ticket": null, "execution_plan": "docs/EXECUTION_PLAN.md"}}, {"id": "US-5.1", "title": "US-5.1 Cube-derived slicer options", "phase": "Phase 5 \u2014 Cascading filters", "status": "todo", "raw_status": "OPEN", "blocked_on": ["US-4.5", "US-7.1"], "touches": "slicer handler", "criteria": [], "has_plan": false, "has_ticket_doc": false, "links": {"spec": "thin-web-app/PRD_ARCHITECTURE_REALIGNMENT.md", "plan": null, "ticket": null, "execution_plan": "docs/EXECUTION_PLAN.md"}}, {"id": "US-5.2", "title": "US-5.2 Bidirectional narrowing", "phase": "Phase 5 \u2014 Cascading filters", "status": "todo", "raw_status": "OPEN", "blocked_on": ["US-5.1"], "touches": "", "criteria": [], "has_plan": false, "has_ticket_doc": false, "links": {"spec": "thin-web-app/PRD_ARCHITECTURE_REALIGNMENT.md", "plan": null, "ticket": null, "execution_plan": "docs/EXECUTION_PLAN.md"}}, {"id": "US-5.3", "title": "US-5.3 Invalid-selection recovery", "phase": "Phase 5 \u2014 Cascading filters", "status": "todo", "raw_status": "OPEN", "blocked_on": ["US-5.1"], "touches": "", "criteria": [], "has_plan": false, "has_ticket_doc": false, "links": {"spec": "thin-web-app/PRD_ARCHITECTURE_REALIGNMENT.md", "plan": null, "ticket": null, "execution_plan": "docs/EXECUTION_PLAN.md"}}, {"id": "US-5.4", "title": "US-5.4 Request hygiene", "phase": "Phase 5 \u2014 Cascading filters", "status": "todo", "raw_status": "OPEN", "blocked_on": ["US-5.1"], "touches": "", "criteria": [], "has_plan": false, "has_ticket_doc": false, "links": {"spec": "thin-web-app/PRD_ARCHITECTURE_REALIGNMENT.md", "plan": null, "ticket": null, "execution_plan": "docs/EXECUTION_PLAN.md"}}, {"id": "US-6.1", "title": "US-6.1 Headline KPI cards from Cube", "phase": "Phase 6 \u2014 Dashboard 1 de-fabrication", "status": "todo", "raw_status": "OPEN", "blocked_on": ["US-5.1", "US-7.1"], "touches": "", "criteria": [], "has_plan": false, "has_ticket_doc": false, "links": {"spec": "thin-web-app/PRD_ARCHITECTURE_REALIGNMENT.md", "plan": null, "ticket": null, "execution_plan": "docs/EXECUTION_PLAN.md"}}, {"id": "US-6.2", "title": "US-6.2 Pages 1\u20133 from Cube", "phase": "Phase 6 \u2014 Dashboard 1 de-fabrication", "status": "todo", "raw_status": "OPEN", "blocked_on": ["US-6.1"], "touches": "", "criteria": [], "has_plan": false, "has_ticket_doc": false, "links": {"spec": "thin-web-app/PRD_ARCHITECTURE_REALIGNMENT.md", "plan": null, "ticket": null, "execution_plan": "docs/EXECUTION_PLAN.md"}}, {"id": "US-6.3", "title": "US-6.3 Page 4 Contributions from Cube", "phase": "Phase 6 \u2014 Dashboard 1 de-fabrication", "status": "todo", "raw_status": "OPEN", "blocked_on": ["US-6.1"], "touches": "", "criteria": [], "has_plan": false, "has_ticket_doc": false, "links": {"spec": "thin-web-app/PRD_ARCHITECTURE_REALIGNMENT.md", "plan": null, "ticket": null, "execution_plan": "docs/EXECUTION_PLAN.md"}}, {"id": "US-6.4", "title": "US-6.4 Page 5 Products & Risk from Cube", "phase": "Phase 6 \u2014 Dashboard 1 de-fabrication", "status": "todo", "raw_status": "OPEN", "blocked_on": ["US-6.1"], "touches": "", "criteria": [], "has_plan": false, "has_ticket_doc": false, "links": {"spec": "thin-web-app/PRD_ARCHITECTURE_REALIGNMENT.md", "plan": null, "ticket": null, "execution_plan": "docs/EXECUTION_PLAN.md"}}, {"id": "US-6.5", "title": "US-6.5 Filter state persists across tabs", "phase": "Phase 6 \u2014 Dashboard 1 de-fabrication", "status": "todo", "raw_status": "OPEN", "blocked_on": ["US-6.2"], "touches": "", "criteria": [], "has_plan": false, "has_ticket_doc": false, "links": {"spec": "thin-web-app/PRD_ARCHITECTURE_REALIGNMENT.md", "plan": null, "ticket": null, "execution_plan": "docs/EXECUTION_PLAN.md"}}, {"id": "US-6.6", "title": "US-6.6 Remove silent fallbacks everywhere", "phase": "Phase 6 \u2014 Dashboard 1 de-fabrication", "status": "todo", "raw_status": "OPEN", "blocked_on": ["US-6.1\u20266.4"], "touches": "every handler", "criteria": [], "has_plan": false, "has_ticket_doc": false, "links": {"spec": "thin-web-app/PRD_ARCHITECTURE_REALIGNMENT.md", "plan": null, "ticket": null, "execution_plan": "docs/EXECUTION_PLAN.md"}}, {"id": "US-7.2", "title": "US-7.2 Mutation check", "phase": "Phase 7 \u2014 Close the proof loop", "status": "todo", "raw_status": "OPEN", "blocked_on": ["US-7.1"], "touches": "", "criteria": [], "has_plan": false, "has_ticket_doc": false, "links": {"spec": "thin-web-app/PRD_ARCHITECTURE_REALIGNMENT.md", "plan": null, "ticket": null, "execution_plan": "docs/EXECUTION_PLAN.md"}}, {"id": "US-7.4", "title": "US-7.4 CI gate", "phase": "Phase 7 \u2014 Close the proof loop", "status": "todo", "raw_status": "OPEN", "blocked_on": ["US-7.2", "US-4.2"], "touches": "secret sweep, conformance, no-literals, recon, mutation", "criteria": [], "has_plan": false, "has_ticket_doc": false, "links": {"spec": "thin-web-app/PRD_ARCHITECTURE_REALIGNMENT.md", "plan": null, "ticket": null, "execution_plan": "docs/EXECUTION_PLAN.md"}}, {"id": "US-8.1", "title": "US-8.1 Deploy the thin app", "phase": "Phase 8 \u2014 Consolidate", "status": "todo", "raw_status": "OPEN", "blocked_on": ["US-1.1", "US-7.4"], "touches": "`thin-web-app/Dockerfile`, Cloud Run `scbi-thin-web` behind IAP", "criteria": [], "has_plan": false, "has_ticket_doc": false, "links": {"spec": "thin-web-app/PRD_ARCHITECTURE_REALIGNMENT.md", "plan": null, "ticket": null, "execution_plan": "docs/EXECUTION_PLAN.md"}}, {"id": "US-8.2", "title": "US-8.2 Retire `data-recon/web/`", "phase": "Phase 8 \u2014 Consolidate", "status": "todo", "raw_status": "OPEN", "blocked_on": ["US-8.1", "US-3.2"], "touches": "", "criteria": [], "has_plan": false, "has_ticket_doc": false, "links": {"spec": "thin-web-app/PRD_ARCHITECTURE_REALIGNMENT.md", "plan": null, "ticket": null, "execution_plan": "docs/EXECUTION_PLAN.md"}}, {"id": "US-8.3", "title": "**US-8.3 Serve Metabase and Power BI over the Cube SQL API**", "phase": "Phase 8 \u2014 Consolidate", "status": "shipped", "raw_status": "**DONE (code + deployed)** 09-20", "blocked_on": ["login unproven \u2014 the VM runs and Cube SQL is listening", "but no BI client has authenticated yet"], "touches": "`cube/cube.js`, `cube/Dockerfile`, 3 new `cube/` scripts, `metabase/`, `docs/METABASE_CUBE_SQL.md`", "criteria": [], "has_plan": false, "has_ticket_doc": false, "links": {"spec": "thin-web-app/PRD_ARCHITECTURE_REALIGNMENT.md", "plan": null, "ticket": null, "execution_plan": "docs/EXECUTION_PLAN.md"}}]};</script>
+
+  <script>
+    (function() {
+      "use strict";
+
+      var DATA = window.__KANBAN_DATA__ || null;
+      var activePhase = "ALL";
+      var searchQuery = "";
+      var selectedTicketId = null;
+
+      var LS_KEY = "data-recon:status-overrides";
+      var overrides = {};
+      try { overrides = JSON.parse(localStorage.getItem(LS_KEY) || "{}"); } catch(e) { overrides = {}; }
+
+      function init() {
+        if (!DATA) {
+          // Attempt fetch for live web servers
+          fetch('./kanban-data.json')
+            .then(function(res) { return res.json(); })
+            .then(function(json) {
+              DATA = json;
+              renderAll();
+            })
+            .catch(function(err) {
+              console.warn("Could not fetch kanban-data.json, waiting for seed data:", err);
+            });
+        } else {
+          renderAll();
+        }
+        setupEventListeners();
+      }
+
+      function getTicketStatus(ticket) {
+        if (overrides[ticket.id]) return overrides[ticket.id];
+        return ticket.status;
+      }
+
+      function renderAll() {
+        if (!DATA) return;
+        renderHeader();
+        renderPhaseFilters();
+        renderBoard();
+        renderADRs();
+      }
+
+      function renderHeader() {
+        var proj = DATA.project;
+        var total = DATA.tickets.length;
+        var shipped = 0;
+        DATA.tickets.forEach(function(t) {
+          if (getTicketStatus(t) === "shipped") shipped++;
+        });
+        var pct = total > 0 ? Math.round((shipped / total) * 100) : 0;
+
+        document.getElementById("project-title").innerHTML = proj.name + ' <span class="brand-badge">de-* pipeline</span>';
+        document.getElementById("metric-summary").textContent = shipped + " / " + total + " Shipped";
+        document.getElementById("metric-percent").textContent = pct + "%";
+        document.getElementById("progress-fill") || (document.getElementById("progress-bar").style.width = pct + "%");
+        document.getElementById("adr-count").textContent = DATA.adrs ? DATA.adrs.length : 0;
+      }
+
+      function renderPhaseFilters() {
+        var phases = {};
+        DATA.tickets.forEach(function(t) {
+          if (t.phase) phases[t.phase] = (phases[t.phase] || 0) + 1;
+        });
+
+        var container = document.getElementById("phase-filters");
+        container.innerHTML = '<button class="filter-pill ' + (activePhase === "ALL" ? "active" : "") + '" data-phase="ALL">All Phases (' + DATA.tickets.length + ')</button>';
+        
+        Object.keys(phases).forEach(function(ph) {
+          var btn = document.createElement("button");
+          btn.className = "filter-pill" + (activePhase === ph ? " active" : "");
+          btn.dataset.phase = ph;
+          btn.textContent = ph + " (" + phases[ph] + ")";
+          btn.addEventListener("click", function() {
+            activePhase = ph;
+            renderPhaseFilters();
+            renderBoard();
+          });
+          container.appendChild(btn);
+        });
+
+        container.querySelector('[data-phase="ALL"]').addEventListener("click", function() {
+          activePhase = "ALL";
+          renderPhaseFilters();
+          renderBoard();
+        });
+      }
+
+      function renderBoard() {
+        var cols = {
+          todo: document.getElementById("cards-todo"),
+          planning: document.getElementById("cards-planning"),
+          implementing: document.getElementById("cards-implementing"),
+          validating: document.getElementById("cards-validating"),
+          shipped: document.getElementById("cards-shipped"),
+          blocked: document.getElementById("cards-blocked")
+        };
+
+        var counts = { todo: 0, planning: 0, implementing: 0, validating: 0, shipped: 0, blocked: 0 };
+        Object.keys(cols).forEach(function(k) { cols[k].innerHTML = ""; });
+
+        var filtered = DATA.tickets.filter(function(t) {
+          if (activePhase !== "ALL" && t.phase !== activePhase) return false;
+          if (searchQuery) {
+            var q = searchQuery.toLowerCase();
+            return t.id.toLowerCase().includes(q) || t.title.toLowerCase().includes(q) || (t.touches && t.touches.toLowerCase().includes(q));
+          }
+          return true;
+        });
+
+        filtered.forEach(function(t) {
+          var st = getTicketStatus(t);
+          var colKey = "todo";
+          if (st === "planning" || st === "priming") colKey = "planning";
+          else if (st === "implementing") colKey = "implementing";
+          else if (st === "validating" || st === "reviewing" || st === "ready_to_ship") colKey = "validating";
+          else if (st === "shipped") colKey = "shipped";
+          else if (st.startsWith("blocked")) colKey = "blocked";
+
+          counts[colKey]++;
+
+          var card = document.createElement("div");
+          card.className = "ticket-card" + (selectedTicketId === t.id ? " selected" : "");
+          
+          var hasBlocker = t.blocked_on && t.blocked_on.length > 0;
+          var blockerHtml = hasBlocker ? '<span class="dep-badge">Blocked on: ' + t.blocked_on.join(", ") + '</span>' : '';
+
+          var planChip = t.has_plan ? '<span class="chip-link">Plan</span>' : '';
+          var critCount = t.criteria ? t.criteria.length : 0;
+          var critBadge = critCount > 0 ? '<span class="chip-link">' + critCount + ' AC</span>' : '';
+
+          card.innerHTML = 
+            '<div class="card-top">' +
+              '<span class="ticket-id">' + t.id + '</span>' +
+              '<span class="phase-tag">' + (t.phase ? t.phase.split("—")[0].trim() : "") + '</span>' +
+            '</div>' +
+            '<div class="ticket-title">' + escapeHtml(t.title) + '</div>' +
+            (t.touches ? '<div class="touches-tag" title="' + escapeHtml(t.touches) + '">' + escapeHtml(t.touches) + '</div>' : '') +
+            '<div class="card-footer">' +
+              '<div class="link-icons">' + planChip + critBadge + '</div>' +
+              blockerHtml +
+            '</div>';
+
+          card.addEventListener("click", function() {
+            openDrawer(t);
+          });
+
+          cols[colKey].appendChild(card);
+        });
+
+        // Update counts
+        document.getElementById("count-todo").textContent = counts.todo;
+        document.getElementById("count-planning").textContent = counts.planning;
+        document.getElementById("count-implementing").textContent = counts.implementing;
+        document.getElementById("count-validating").textContent = counts.validating;
+        document.getElementById("count-shipped").textContent = counts.shipped;
+        document.getElementById("count-blocked").textContent = counts.blocked;
+      }
+
+      function openDrawer(t) {
+        selectedTicketId = t.id;
+        document.getElementById("drawer-id").textContent = t.id;
+        document.getElementById("drawer-title").textContent = t.title;
+        document.getElementById("drawer-phase").textContent = t.phase || "General";
+        document.getElementById("drawer-touches").textContent = t.touches || "—";
+        document.getElementById("drawer-cmd").textContent = "de-plan-ticket " + t.id;
+
+        // Render Criteria
+        var critUl = document.getElementById("drawer-criteria");
+        critUl.innerHTML = "";
+        if (t.criteria && t.criteria.length > 0) {
+          t.criteria.forEach(function(c) {
+            var li = document.createElement("li");
+            li.className = "criteria-item";
+            li.innerHTML = '<span class="criteria-bullet">✓</span> ' + escapeHtml(c);
+            critUl.appendChild(li);
+          });
+        } else {
+          critUl.innerHTML = '<li class="criteria-item"><span class="criteria-bullet">•</span> Refer to PRD Realignment for full criteria.</li>';
+        }
+
+        // Status setter buttons
+        var currentSt = getTicketStatus(t);
+        var setters = document.querySelectorAll("#drawer-status-setters .status-btn");
+        setters.forEach(function(btn) {
+          btn.classList.toggle("active", btn.dataset.st === currentSt);
+          btn.onclick = function() {
+            overrides[t.id] = btn.dataset.st;
+            try { localStorage.setItem(LS_KEY, JSON.stringify(overrides)); } catch(e) {}
+            openDrawer(t);
+            renderHeader();
+            renderBoard();
+          };
+        });
+
+        // Traceability Links
+        var linksBox = document.getElementById("drawer-links");
+        linksBox.innerHTML = 
+          '<a class="doc-chip" href="file:///c:/Users/G988557/Documents/Code/antigravity/data-recon/thin-web-app/PRD_ARCHITECTURE_REALIGNMENT.md" target="_blank">📄 Spec: PRD_ARCHITECTURE_REALIGNMENT.md</a>' +
+          '<a class="doc-chip" href="file:///c:/Users/G988557/Documents/Code/antigravity/data-recon/docs/EXECUTION_PLAN.md" target="_blank">📋 Execution Plan Ledger</a>' +
+          (t.has_plan ? '<a class="doc-chip" href="file:///c:/Users/G988557/Documents/Code/antigravity/data-recon/docs/plans/' + t.id + '-plan.md" target="_blank">📝 Implementation Plan</a>' : '<span style="font-size:11px; color:var(--text-dim);">No plan drafted yet (run de-plan-ticket)</span>');
+
+        document.getElementById("drawer-overlay").classList.add("open");
+        document.getElementById("drawer").classList.add("open");
+      }
+
+      function closeDrawer() {
+        document.getElementById("drawer-overlay").classList.remove("open");
+        document.getElementById("drawer").classList.remove("open");
+        selectedTicketId = null;
+        renderBoard();
+      }
+
+      function renderADRs() {
+        var list = document.getElementById("adr-list");
+        list.innerHTML = "";
+        if (!DATA.adrs) return;
+        DATA.adrs.forEach(function(adr) {
+          var item = document.createElement("a");
+          item.className = "doc-chip";
+          item.style.padding = "10px 14px";
+          item.style.fontSize = "12px";
+          item.href = "file:///c:/Users/G988557/Documents/Code/antigravity/data-recon/" + adr.rel_path;
+          item.target = "_blank";
+          item.innerHTML = '<strong>' + escapeHtml(adr.id) + '</strong>: ' + escapeHtml(adr.title);
+          list.appendChild(item);
+        });
+      }
+
+      function setupEventListeners() {
+        document.getElementById("search-input").addEventListener("input", function(e) {
+          searchQuery = e.target.value.trim();
+          renderBoard();
+        });
+
+        document.getElementById("drawer-close").addEventListener("click", closeDrawer);
+        document.getElementById("drawer-overlay").addEventListener("click", closeDrawer);
+
+        document.getElementById("btn-open-adrs").addEventListener("click", function() {
+          document.getElementById("adr-modal").classList.add("open");
+        });
+        document.getElementById("adr-close").addEventListener("click", function() {
+          document.getElementById("adr-modal").classList.remove("open");
+        });
+        document.getElementById("adr-modal").addEventListener("click", function(e) {
+          if (e.target === this) this.classList.remove("open");
+        });
+
+        document.getElementById("btn-refresh").addEventListener("click", function() {
+          fetch('./kanban-data.json?t=' + Date.now())
+            .then(function(res) { return res.json(); })
+            .then(function(json) {
+              DATA = json;
+              renderAll();
+            })
+            .catch(function(e) { alert("Synced to local state."); });
+        });
+
+        document.getElementById("btn-theme").addEventListener("click", function() {
+          var current = document.documentElement.getAttribute("data-theme");
+          var next = current === "light" ? "dark" : "light";
+          document.documentElement.setAttribute("data-theme", next);
+        });
+      }
+
+      function escapeHtml(str) {
+        if (!str) return "";
+        return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+      }
+
+      window.addEventListener("DOMContentLoaded", init);
+    })();
+  </script>
+</body>
+</html>

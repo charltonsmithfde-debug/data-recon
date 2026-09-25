@@ -1,0 +1,39 @@
+{
+  "kanban-auto-sync": {
+    "PostToolUse": [
+      {
+        "matcher": "write_to_file|replace_file_content|multi_replace_file_content",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python -c \"import os, subprocess, sys; p = 'scripts/sync_kanban.py' if os.path.exists('scripts/sync_kanban.py') else '../scripts/sync_kanban.py'; subprocess.run([sys.executable, p])\"",
+            "timeout": 20
+          }
+        ]
+      }
+    ]
+  },
+  "ship-gate-safety": {
+    "PreToolUse": [
+      {
+        "matcher": "run_command",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python -c \"import os, subprocess, sys; p = 'scripts/gate_check.py' if os.path.exists('scripts/gate_check.py') else '../scripts/gate_check.py'; sys.exit(subprocess.run([sys.executable, p]).returncode)\"",
+            "timeout": 15
+          }
+        ]
+      }
+    ]
+  },
+  "workflow-stop-check": {
+    "Stop": [
+      {
+        "type": "command",
+        "command": "python -c \"import os, subprocess, sys; p = 'scripts/check_workflow_state.py' if os.path.exists('scripts/check_workflow_state.py') else '../scripts/check_workflow_state.py'; sys.exit(subprocess.run([sys.executable, p]).returncode)\"",
+        "timeout": 15
+      }
+    ]
+  }
+}
