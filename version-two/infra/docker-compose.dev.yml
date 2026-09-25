@@ -1,0 +1,30 @@
+version: "3.9"
+
+# ============================================================================
+# DuckLake + Cube.js Local Development Stack (Ticket V2-1.3)
+# Mirrors Production Cloud SQL PostgreSQL 16 Catalog on Port 5433
+# ============================================================================
+
+services:
+  ducklake-catalog-db:
+    image: postgres:16-alpine
+    container_name: scbi-ducklake-catalog-dev
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:5433:5432"
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-ducklake_catalog}
+      POSTGRES_USER: ${POSTGRES_USER:-ducklake_dev}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-local_dev_only}
+    volumes:
+      - ducklake_pgdata:/var/lib/postgresql/data
+      - ../ducklake/schema.sql:/docker-entrypoint-initdb.d/01_schema.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER:-ducklake_dev} -d $${POSTGRES_DB:-ducklake_catalog}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  ducklake_pgdata:
+    driver: local
