@@ -37,10 +37,13 @@ class CatalogConnection:
             clean_path = self.db_url.replace("sqlite:///", "") if "sqlite:///" in self.db_url else self.db_url
             if clean_path != ":memory:":
                 os.makedirs(os.path.dirname(os.path.abspath(clean_path)), exist_ok=True)
-            self._conn = sqlite3.connect(clean_path)
+            self._conn = sqlite3.connect(clean_path, timeout=30.0)
             self._conn.row_factory = sqlite3.Row
-            # Enable foreign keys in SQLite
+            # Enable foreign keys, WAL mode, and busy timeout for lock-free concurrent reads
             self._conn.execute("PRAGMA foreign_keys = ON;")
+            self._conn.execute("PRAGMA journal_mode = WAL;")
+            self._conn.execute("PRAGMA synchronous = NORMAL;")
+            self._conn.execute("PRAGMA busy_timeout = 30000;")
         else:
             try:
                 import psycopg2

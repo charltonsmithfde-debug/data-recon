@@ -58,5 +58,5 @@ V2-1.2 + V2-2.1 ──► V2-4.2 (concurrency-acid-suite)
 ### Milestone 4 — Parity, ACID Concurrency & Verification Harness
 | # | Story / Ticket | Status | Blocked On | Touches |
 |---|---|---|---|---|
-| 10 | V2-4.1 Automated Metric Parity Reconciliation Suite | **TODO** | — | `version-two/tests/test_metric_parity.py` |
-| 11 | V2-4.2 Concurrency & Zero-Torn-Reads Verification Harness | **TODO** | — | `version-two/tests/test_concurrency_acid.py` |
+| 10 | V2-4.1 Automated Metric Parity Reconciliation Suite | **DONE** | — | `version-two/tests/test_metric_parity.py` |
+| 11 | V2-4.2 Concurrency & Zero-Torn-Reads Verification Harness | **DONE** | — | `version-two/tests/test_concurrency_acid.py` |

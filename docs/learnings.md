@@ -48,3 +48,18 @@
 **What happened:** Rewiring Metabase and Power BI DirectQuery exclusively to `scbi-cube-sql:5432` required enforcing a programmatic storage-bypass guard (`validate_no_storage_bypass`) that rejects any connection targeting port `5433` (`ducklake_catalog`), raw GCS paths, or embedded DuckDB files, while verifying PostgreSQL wire `SSLRequest` negotiation and `information_schema.tables` reflection over TCP port `5432`.
 **What to do differently:**
 1. Validate BI datasource configurations in CI with `validate_no_storage_bypass()` and verify over TCP socket that direct `scbi_cdp_mart.*` queries are rejected with `403` by `executeSqlApiQuery`.
+
+## 2026-09-26 — V2-4.1-parity-recon-suite
+**Component:** `version-two/tests/test_metric_parity.py` & `version-two/cube/cube.js` (Automated Metric Parity Reconciliation Suite)
+**What happened:** When executing multi-dimensional join queries over the SQL API (e.g., `SELECT AnnuityQuotation.quotationCount, DimMember.member_age FROM AnnuityQuotation`), stripping the `<CubeName>.` prefix before resolving joined dimensions caused `executeSqlApiQuery` to match the lowercase `dim_member` join alias ahead of `DimMember` because both define `member_age`. Additionally, SQL `WHERE` cascades needed to be parsed into canonical `cubeQuery.filters` so filtered queries over the SQL API and REST API apply identical selectivity.
+**What to do differently:**
+1. In SQL-to-semantic query transpilers (`executeSqlApiQuery`), always resolve explicit `<CubeName>.<fieldName>` prefixes against the cube registry before falling back to unprefixed join scanning.
+2. Parse SQL `WHERE` conjunctions into canonical `filters` entries so REST JSON payloads and PostgreSQL wire queries share one deterministic execution path (`computeDeterministicMeasure`).
+
+## 2026-09-26 — V2-4.2-concurrency-acid-suite
+**Component:** `version-two/tests/test_concurrency_acid.py` & `version-two/ducklake/init_catalog.py` (Concurrency & Zero-Torn-Reads Verification Harness)
+**What happened:** Under multi-threaded read load (8 concurrent reader workers querying REST and SQL Wire simultaneously) during multi-stage catalog commits, Node's `node:sqlite` (`DatabaseSync`) defaults to `busy_timeout = 0` and `journal_mode = DELETE`, which risks transient lock contention unless `PRAGMA journal_mode = WAL;` and `PRAGMA busy_timeout = 30000;` are set on both Python writer and Node reader connections. Additionally, fixed `time.sleep` delays before triggering reload commits can race against initial worker socket handshakes under load.
+**What to do differently:**
+1. Always enable `PRAGMA journal_mode = WAL; PRAGMA synchronous = NORMAL; PRAGMA busy_timeout = 30000;` on local SQLite DuckLake catalogs in both Python (`CatalogConnection`) and Node (`EmbeddedDuckLakeDriver`).
+2. In concurrency verification harnesses, synchronize reload writer stages using `threading.Event` barriers triggered by observed pre-reload reader counts rather than fixed `time.sleep` delays.
+

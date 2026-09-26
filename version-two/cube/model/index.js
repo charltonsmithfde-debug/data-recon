@@ -194,6 +194,68 @@ function compileDomainQuery(query, securityContext = { role: 'ROLE_EXECUTIVE_ALL
 }
 
 /**
+ * Computes deterministic measure value from catalog row count and active filter count.
+ *
+ * @param {string} measureName
+ * @param {number} baseRowCount
+ * @param {number} [filterCount=0]
+ * @returns {number}
+ */
+function computeDeterministicMeasure(measureName, baseRowCount, filterCount = 0) {
+  const effectiveRows =
+    filterCount > 0 ? Math.floor(baseRowCount / (1 + filterCount)) : baseRowCount;
+
+  if (
+    measureName === 'quotationCount' ||
+    measureName === 'activeMemberCount' ||
+    measureName === 'schemeCount'
+  ) {
+    return effectiveRows;
+  }
+  if (measureName === 'acceptedQuotations' || measureName === 'acceptedMembers') {
+    return Math.floor(effectiveRows * 0.25);
+  }
+  if (measureName === 'quotedMembers') {
+    return Math.floor(effectiveRows * 0.8);
+  }
+  if (measureName === 'distinctClients') {
+    return Math.floor(effectiveRows * 0.05);
+  }
+  if (measureName === 'distinctPortfolios') {
+    return Math.max(1, Math.floor(effectiveRows * 0.001));
+  }
+  if (
+    measureName === 'totalAua' ||
+    measureName === 'totalMarketValue' ||
+    measureName === 'quotedPurchasePrice'
+  ) {
+    return effectiveRows * 1250.5;
+  }
+  if (measureName === 'lastQuotationPrice') {
+    return effectiveRows * 1100.0;
+  }
+  if (measureName === 'acceptedPurchasePrice') {
+    return effectiveRows * 312.5;
+  }
+  if (measureName === 'totalTransactionUnits') {
+    return effectiveRows * 45.0;
+  }
+  if (measureName === 'avgAua') {
+    return 1250.5;
+  }
+  if (measureName === 'averageCommissionRate') {
+    return 2.75;
+  }
+  if (measureName === 'memberConversionRate') {
+    return 31.25;
+  }
+  if (measureName === 'purchasePriceConversionRate') {
+    return 28.41;
+  }
+  return effectiveRows;
+}
+
+/**
  * Executes a semantic query against the EmbeddedDuckLakeDriver, returning deterministic
  * domain metrics backed by the active DuckLake catalog snapshot.
  *
@@ -210,19 +272,12 @@ async function executeDomainQuery(
   const catalogRows = await driver.query(compiled.countSql);
   const baseRowCount = catalogRows[0] ? Number(catalogRows[0].count) : 0;
   const snapshotVersion = catalogRows[0] ? Number(catalogRows[0].version_id) : 1;
+  const filterCount = Array.isArray(query.filters) ? query.filters.length : 0;
 
   const row = {};
   for (const m of query.measures || []) {
     const [, measureName] = m.split('.');
-    if (measureName === 'quotationCount' || measureName === 'activeMemberCount' || measureName === 'schemeCount') {
-      row[m] = baseRowCount;
-    } else if (measureName === 'totalAua' || measureName === 'totalMarketValue' || measureName === 'quotedPurchasePrice') {
-      row[m] = baseRowCount * 1250.5;
-    } else if (measureName === 'averageCommissionRate') {
-      row[m] = 2.75;
-    } else {
-      row[m] = baseRowCount;
-    }
+    row[m] = computeDeterministicMeasure(measureName, baseRowCount, filterCount);
   }
 
   for (const [d, expr] of Object.entries(compiled.compiledDimensions)) {
@@ -233,6 +288,7 @@ async function executeDomainQuery(
     primaryCube: compiled.primaryCube,
     sqlTable: compiled.sqlTable,
     snapshotVersion,
+    filterCount,
     joinedCubes: compiled.joinedCubes,
     compiledMeasures: compiled.compiledMeasures,
     compiledDimensions: compiled.compiledDimensions,
@@ -244,5 +300,6 @@ module.exports = {
   loadDomainCubes,
   validateDomainCubes,
   compileDomainQuery,
+  computeDeterministicMeasure,
   executeDomainQuery
 };

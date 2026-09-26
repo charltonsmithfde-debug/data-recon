@@ -1,0 +1,54 @@
+{
+  "ticket": "V2-4.2",
+  "title": "Concurrency & Zero-Torn-Reads Verification Harness",
+  "generated_at_utc": "2026-09-26T04:50:13.203238+00:00",
+  "target_cube": "AnnuityQuotation",
+  "target_table": "scbi_cdp_mart.cnf__fact_annuity_quotations",
+  "worker_threads": 8,
+  "iterations_per_worker": 28,
+  "total_queries_executed": 224,
+  "snapshots_observed": {
+    "v1": 25,
+    "v2": 24,
+    "v3": 175
+  },
+  "torn_reads_detected": 0,
+  "partial_partition_reads": 0,
+  "non_monotonic_transitions": 0,
+  "lock_timeouts": 0,
+  "failed_queries": 0,
+  "errors": [],
+  "reload_events": [
+    {
+      "event": "ABORTED_PARTIAL_STAGE_BLOCKED",
+      "error": "Row count mismatch for scbi_cdp_mart.cnf__fact_annuity_quotations: staged=64977, expected=210500.",
+      "timestamp": "2026-09-26T04:50:08.076084+00:00"
+    },
+    {
+      "status": "COMMITTED",
+      "previous_version": 1,
+      "active_version": 2,
+      "tables_reloaded": 1,
+      "rows_reloaded": 210500,
+      "bytes_reloaded": 18500000,
+      "committed_at": "2026-09-26T04:50:08.076118+00:00"
+    },
+    {
+      "status": "COMMITTED",
+      "previous_version": 2,
+      "active_version": 3,
+      "tables_reloaded": 1,
+      "rows_reloaded": 245000,
+      "bytes_reloaded": 21400000,
+      "committed_at": "2026-09-26T04:50:08.680066+00:00"
+    }
+  ],
+  "latency_ms": {
+    "min": 79.539,
+    "p50": 169.2,
+    "p99": 326.954,
+    "max": 383.765
+  },
+  "snapshot_isolation_rate_pct": 100.0,
+  "verdict": "PASS"
+}

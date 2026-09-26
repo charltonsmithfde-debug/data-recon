@@ -75,7 +75,7 @@ function ensureSqliteCatalogSeeded(sqlitePath) {
 
   const db = new DatabaseSync(sqlitePath);
   try {
-    db.exec('PRAGMA foreign_keys = ON;');
+    db.exec('PRAGMA foreign_keys = ON; PRAGMA journal_mode = WAL; PRAGMA synchronous = NORMAL; PRAGMA busy_timeout = 30000;');
     const tableCheck = db
       .prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='ducklake_tables';")
       .get();
@@ -238,6 +238,7 @@ class EmbeddedDuckLakeDriver {
 
     const db = new DatabaseSync(this.catalogDbPath);
     try {
+      db.exec('PRAGMA busy_timeout = 30000;');
       // 1. Information schema table count query
       if (/from\s+lake\.information_schema\.tables/i.test(trimmed)) {
         const row = db.prepare('SELECT count(*) AS table_count FROM ducklake_tables;').get();
@@ -467,6 +468,7 @@ async function startCubeHttpServer(options = {}) {
               securityContext: rewritten.__securityContext,
               compiledDimensionSql:
                 domainResult?.compiledDimensions || rewritten.__compiledDimensionSql,
+              snapshotVersion: domainResult?.snapshotVersion,
               data: domainResult?.data || []
             })
           );
@@ -626,13 +628,34 @@ async function executeSqlApiQuery(driver, sqlText, securityContext) {
         measures.push(`${matchedCubeName}.${defaultMeasureName}`);
         continue;
       }
-      const cleaned = tok
-        .replace(/^MEASURE\s*\(\s*([a-zA-Z0-9_.]+)\s*\).*$/i, '$1')
-        .replace(/^(?:SUM|AVG|MIN|MAX|COUNT)\s*\(\s*([a-zA-Z0-9_.]+)\s*\).*$/i, '$1')
+
+      const unwrapped = tok
+        .replace(/^MEASURE\s*\(\s*([a-zA-Z0-9_."]+)\s*\).*$/i, '$1')
+        .replace(/^(?:SUM|AVG|MIN|MAX|COUNT)\s*\(\s*([a-zA-Z0-9_."]+)\s*\).*$/i, '$1')
         .replace(/\s+AS\s+[a-zA-Z0-9_"]+$/i, '')
-        .replace(/^"?[a-zA-Z0-9_]+"?\./, '')
         .replace(/"/g, '')
         .trim();
+
+      // Check if an explicit <CubeName>.<fieldName> prefix was provided
+      if (unwrapped.includes('.')) {
+        const [prefixCube, fieldName] = unwrapped.split('.', 2);
+        const explicitCubeName = Object.keys(registry).find(
+          (name) => name.toLowerCase() === prefixCube.toLowerCase()
+        );
+        if (explicitCubeName) {
+          const explicitCube = registry[explicitCubeName];
+          if (explicitCube?.measures?.[fieldName]) {
+            measures.push(`${explicitCubeName}.${fieldName}`);
+            continue;
+          }
+          if (explicitCube?.dimensions?.[fieldName]) {
+            dimensions.push(`${explicitCubeName}.${fieldName}`);
+            continue;
+          }
+        }
+      }
+
+      const cleaned = unwrapped.replace(/^[a-zA-Z0-9_]+\./, '').trim();
 
       if (cubeDef.measures && cubeDef.measures[cleaned]) {
         measures.push(`${matchedCubeName}.${cleaned}`);
@@ -664,7 +687,31 @@ async function executeSqlApiQuery(driver, sqlText, securityContext) {
     measures.push(`${matchedCubeName}.${defaultMeasureName}`);
   }
 
-  const cubeQuery = { measures, dimensions };
+  // Parse optional WHERE filter cascade clauses
+  const filters = [];
+  const afterFrom = trimmed.slice(fromMatch.index + fromMatch[0].length).trim();
+  const whereMatch = afterFrom.match(/^WHERE\s+(.+?)(?:\s+GROUP\s+BY\s+.+|\s+ORDER\s+BY\s+.+|\s+LIMIT\s+.+)?$/i);
+  if (whereMatch && whereMatch[1]) {
+    const rawPredicates = whereMatch[1].split(/\s+AND\s+/i);
+    for (const pred of rawPredicates) {
+      const pTrim = pred.trim();
+      if (!pTrim) continue;
+      const colMatch = pTrim.match(/^"?([a-zA-Z0-9_.]+)"?\s*(?:=|<>|!=|>|<|>=|<=|IN|LIKE)\s*(.+)$/i);
+      if (colMatch) {
+        let memberRef = colMatch[1].replace(/"/g, '');
+        if (!memberRef.includes('.')) {
+          memberRef = `${matchedCubeName}.${memberRef}`;
+        }
+        filters.push({
+          member: memberRef,
+          operator: 'equals',
+          values: [colMatch[2].replace(/^'|'$/g, '').trim()]
+        });
+      }
+    }
+  }
+
+  const cubeQuery = filters.length > 0 ? { measures, dimensions, filters } : { measures, dimensions };
   if (hooks) {
     hooks.queryRewrite(cubeQuery, { securityContext });
   }
@@ -676,6 +723,7 @@ async function executeSqlApiQuery(driver, sqlText, securityContext) {
   return {
     columns,
     rows,
+    snapshotVersion: domainResult.snapshotVersion,
     compiledDimensions: domainResult.compiledDimensions,
     securityContext
   };
@@ -804,6 +852,7 @@ async function startCubeSqlServer(options = {}) {
               status: 'OK',
               user: username,
               securityContext: authResult.securityContext,
+              snapshotVersion: queryRes.snapshotVersion,
               columns: queryRes.columns,
               rows: queryRes.rows,
               compiledDimensions: queryRes.compiledDimensions || {}
