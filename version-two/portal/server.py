@@ -416,3 +416,19 @@ def start_portal_http_server(
             return
 
     return http.server.ThreadingHTTPServer((host, port), GatewayHTTPHandler)
+
+
+if __name__ == "__main__":
+    host_addr = os.environ.get("PORTAL_HOST", "127.0.0.1")
+    port_num = int(os.environ.get("PORTAL_PORT", "8000"))
+    portal_app = create_portal_app()
+    httpd = start_portal_http_server(portal_app, host=host_addr, port=port_num)
+    print(
+        f"[OK] SCBI Portal Gateway v2.0 listening on http://{host_addr}:{port_num}",
+        flush=True,
+    )
+    try:
+        httpd.serve_forever()
+    except KeyboardInterrupt:
+        httpd.server_close()
+

@@ -239,11 +239,20 @@ def verify_catalog(db_url: Optional[str] = None) -> Dict[str, Any]:
 
     return {
         "status": "HEALTHY",
-        "tables_registered": table_count,
-        "manifests_registered": manifest_count,
-        "total_rows": total_rows,
-        "total_bytes": total_bytes,
-        "active_snapshot": active_version
+        "tables_registered": int(table_count or 0),
+        "manifests_registered": int(manifest_count or 0),
+        "total_rows": int(total_rows or 0),
+        "total_bytes": int(total_bytes or 0),
+        "active_snapshot": (
+            {
+                "version_id": int(active_version["version_id"]),
+                "committed_at": str(active_version["committed_at"]),
+                "status": str(active_version["status"]),
+                "notes": str(active_version["notes"]),
+            }
+            if active_version
+            else None
+        ),
     }
 
 
